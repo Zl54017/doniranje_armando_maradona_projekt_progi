@@ -3,12 +3,12 @@ Tema: Darivanje krvi
 
 Članovi:
 
-Nikola Borzić
-Bruno Galić
-Zvonko Lelas
-Jelena Lončar
-Nikola Marić
-Bruna Matić
+Nikola Borzić,
+Bruno Galić,
+Zvonko Lelas,
+Jelena Lončar,
+Nikola Marić,
+Bruna Matić,
 Jana Matić
 
 
