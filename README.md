@@ -14,9 +14,9 @@ Jana Matić
 
 Opis projektnog zadatka:    <br />
 
-    Cilj razvoja ove aplikacije je olakšanje prijavljivanja na doniranje krvi u svom ili nekom drugom gradu, <br /> 
-    lakše praćenje akcija Crvenog Križa te lakši izvadak potrebnih dokumenata i potvrda vezanih uz doniranje krvi. <br />
-    Aplikacija je osmišljena za korištenje donorima, zavodima i Crvenom Križu. <br />
+    Cilj razvoja ove aplikacije je olakšanje prijavljivanja na doniranje krvi u svom ili nekom drugom gradu,
+    lakše praćenje akcija Crvenog Križa te lakši izvadak potrebnih dokumenata i potvrda vezanih uz doniranje krvi.
+    Aplikacija je osmišljena za korištenje donorima, zavodima i Crvenom Križu.
     Za izradu koristi se Node js, JavaScript, LaTeX te SQL. 
 
 Podjela posla:  <br />
