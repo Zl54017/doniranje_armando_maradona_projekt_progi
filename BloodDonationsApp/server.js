@@ -5,6 +5,10 @@ const Sequelize = require("sequelize");
 const db = require("./models");
 const Donor = require("./models/donor");
 
+const donorRouter = require("./routes/donor.routes");
+const bloodBankRouter = require("./routes/bloodbank.routes");
+const loginRouter = require("./routes/login.routes");
+
 app.use(
   session({
     secret: "Tajna",
@@ -16,19 +20,9 @@ app.use(
   })
 );
 
-app.get("/donors", async (req, res) => {
-  try {
-    console.log(Donor);
-    const donors = await db.Donor.findAll();
-
-    res.send(
-      `<h1>List of Donors</h1><pre>${JSON.stringify(donors, null, 2)}</pre>`
-    );
-  } catch (error) {
-    console.error("Error retrieving donors:", error);
-    res.status(500).send("Error retrieving donors from the database.");
-  }
-});
+app.use("/donor", donorRouter);
+app.use("/bloodbank", bloodBankRouter);
+app.use("/login", loginRouter);
 
 const portir = 3000;
 app.listen(portir);
