@@ -18,6 +18,8 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
       },
       name: DataTypes.STRING,
+      email: DataTypes.STRING,
+      password: DataTypes.STRING,
       address: DataTypes.STRING,
       numberOfDonors: DataTypes.INTEGER,
     },

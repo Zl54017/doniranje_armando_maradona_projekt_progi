@@ -29,6 +29,8 @@ module.exports = {
         numberOfDonors: numberOfDonors,
         createdAt: new Date(),
         updatedAt: new Date(),
+        email: instituteName.replace(/\s/g, "") + "@gmail.com",
+        password: instituteName.replace(/\s/g, ""),
       });
     }
 
