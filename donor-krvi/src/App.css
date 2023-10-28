@@ -2,6 +2,38 @@
   box-sizing: border-box;
 }
 
+.footer{
+    background-color:rgba(252,215,218,255);
+}
+
+.footer-copyright p{
+    font-size: 16px;
+    line-height: 15px;
+    color: rgb(204, 51, 51);
+    font-weight: 600;
+
+}
+.footer-down{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin-top: 0.7rem;
+  }
+
+.footer-downs{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+.footer-down p{
+    color: rgb(204, 51, 51);
+  text-decoration: row; 
+}
+.footer-down a{
+  color: rgb(204, 51, 51);
+
+    text-decoration: row;
+    padding: 0px;
 body {
   margin: 0;
   background-image: url('../public/background.jpg');
@@ -9,6 +41,15 @@ body {
   background-size:cover;
 }
 
+img{
+  position: relative;
+  float: left;
+  width:  80px;
+  height: 80px;
+  background-position: 50% 50%;
+  background-repeat:   no-repeat;
+  background-size:     cover;
+}
 .imeprezime{
   font-size: 2rem;
   color: inherit;

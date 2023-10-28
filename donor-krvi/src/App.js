@@ -1,4 +1,6 @@
+import logo from './logo.svg';
 import './App.css';
+import Footer from './components/footer';
 import Karta from './components/karta';
 import Navbar from './components/navBar';
 function App() {
@@ -6,6 +8,7 @@ function App() {
     <div className="App">
       <Navbar />
       <Karta />
+      <Footer />
     </div>
   );
 }
