@@ -1,38 +1,71 @@
-.App {
-  text-align: center;
+*{
+  box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+  margin: 0;
+  background-image: url('../public/background.jpg');
+  background-repeat: no-repeat;
+  background-size:cover;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.imeprezime{
+  font-size: 2rem;
+  color: inherit;
+  text-decoration: none;
+  height: 100%;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  padding: 5px;
+  padding-left: 15px;
+}
+
+.nav{
+  background-color: #333;
   color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 2rem;
+  padding: 0 1 rem;
 }
 
-.App-link {
-  color: #61dafb;
+.nav ul{
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  display: flex;
+  gap: 1rem;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.nav a{
+  color: inherit;
+  text-decoration: none;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+}
+
+.nav li.active{
+  font-size: 1.3rem;
+}
+
+.nav li:hover{
+  background-color: #777;
+}
+
+.usericon{
+  width: 40px;
+  padding: 5px;
+}
+
+.karta{
+  align-items: center;
+  height: fit-content;
+  margin: 70px;
+}
+
+.map{
+  height: 70vh;
 }
