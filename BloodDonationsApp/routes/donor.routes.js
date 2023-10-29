@@ -8,6 +8,7 @@ const Action = require("../models/action");
 const Certificate = require("../models/certificate");
 const Donation = require("../models/donation");
 const ActionRegistration = require("../models/actionregistration");
+const Sequelize = require("sequelize");
 
 /**
  * Handle the GET request to retrieve a donor's donations.
