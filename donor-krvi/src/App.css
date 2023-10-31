@@ -7,6 +7,7 @@
 }
 
 .footer-copyright p{
+    margin-top: 40px;
     font-size: 16px;
     line-height: 15px;
     color: rgb(204, 51, 51);
@@ -60,11 +61,12 @@ img{
   align-items: center;
   padding: 5px;
   padding-left: 15px;
+  margin-top: 10px;
 }
 
 .nav{
-  background-color: #333;
-  color: white;
+  background-color:rgba(252,215,218,255);
+  color: rgb(204, 51, 51);
   display: flex;
   justify-content: space-between;
   align-items: stretch;
@@ -104,10 +106,17 @@ img{
 
 .karta{
   align-items: center;
-  height: fit-content;
+  height: 70vh;
+  width: 50vh;
   margin: 70px;
 }
 
 .map{
   height: 70vh;
+  width:max-content;
+  align-self: center;
+}
+
+.skupa{
+  clear:both
 }

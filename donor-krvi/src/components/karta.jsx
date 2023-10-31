@@ -1,7 +1,9 @@
 export default function Karta(){
     return (
-        <div class = "karta">
-            <img class = "map" src = "./karta.png" />
+        <div class = "skupa">
+            <div class = "karta">
+                <img class = "map" src = "./karta.png" />
+            </div>
         </div>
     )
 }

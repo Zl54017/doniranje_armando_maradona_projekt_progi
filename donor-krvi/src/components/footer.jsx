@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <div>
+    <div class = "skupa">
       <div className='footer'>
       <div className='footer-copyright'>
         <p>
