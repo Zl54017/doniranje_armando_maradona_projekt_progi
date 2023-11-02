@@ -21,7 +21,10 @@ module.exports = (sequelize, DataTypes) => {
       address: DataTypes.STRING,
       warning: DataTypes.STRING,
       donorId: DataTypes.STRING,
-      used: DataTypes.BOOLEAN,
+      used: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false, // Početna vrijednost je false, kad se krv iskoristi postaje true 
+      },
     },
     {
       sequelize,
