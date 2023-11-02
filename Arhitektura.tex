@@ -1,0 +1,263 @@
+\chapter{Arhitektura i dizajn sustava}
+		
+		\textbf{\textit{dio 1. revizije}}\\
+
+		\textit{ Potrebno je opisati stil arhitekture te identificirati: podsustave, preslikavanje na radnu platformu, spremišta podataka, mrežne protokole, globalni upravljački tok i sklopovsko-programske zahtjeve. Po točkama razraditi i popratiti odgovarajućim skicama:}
+	\begin{itemize}
+		\item 	\textit{izbor arhitekture temeljem principa oblikovanja pokazanih na predavanjima (objasniti zašto ste baš odabrali takvu arhitekturu)}
+		\item 	\textit{organizaciju sustava s najviše razine apstrakcije (npr. klijent-poslužitelj, baza podataka, datotečni sustav, grafičko sučelje)}
+		\item 	\textit{organizaciju aplikacije (npr. slojevi frontend i backend, MVC arhitektura) }		
+	\end{itemize}
+
+	
+		
+
+		
+
+				
+		\section{Baza podataka}
+			
+			\textbf{\textit{dio 1.b revizije}}\\
+			
+		\textit{Potrebno je opisati koju vrstu i implementaciju baze podataka ste odabrali, glavne komponente od kojih se sastoji i slično.}
+		
+			\subsection{Opis tablica}
+			
+
+				\textit{Svaku tablicu je potrebno opisati po zadanom predlošku. Lijevo se nalazi točno ime varijable u bazi podataka, u sredini se nalazi tip podataka, a desno se nalazi opis varijable. Svjetlozelenom bojom označite primarni ključ. Svjetlo plavom označite strani ključ}
+				
+				\noindent\textbf{Donors (Donatori)} tablica pohranjuje informacije o donatorima, uključujući njihovo ime, email adresu, lozinku, krvnu grupu, povezani institut za transfuziju, broj donacija te datume stvaranja i ažuriranja zapisa. Ovaj entitet je u vezi \textit{One-to-Many} s \textbf{Donations} preko \textit{id},  {Many-to-One} s \textbf{BloodBanks} preko \textit{transfusionInstitute}, \textit{One-to-Many} s \textbf{Certificates} preko \textit{id} i \textit{One-to-Many} s \textbf{ActionRegistrations} preko \textit{id}.
+				\begin{table}[H]
+				    \renewcommand{\arraystretch}{2}
+				    \centering
+				     \begin{tabularx}{1\textwidth}{|c|c|X|}
+				    \hline
+				    \textbf{Naziv Stupca} & \textbf{Vrsta podatka} & \textbf{Opis} \\
+				    \hline
+				    \cellcolor{LightGreen} id & INTEGER & Automatski povećavajući broj\\
+				    \hline
+				    name & STRING & Ime donatora \\
+				    \hline 
+				     email & STRING & Email adresa donatora \\ 
+				    \hline
+				    password & STRING & Lozinka donatora \\
+				    \hline
+				    bloodType & STRING & Krvna grupa donatora \\
+				    \hline
+				    \cellcolor{LightBlue} transfusionInstitute & STRING & Institut za transfuziju zadužen za donatora\\
+				    \hline
+				    numberOfDonations & INTEGER & Broj donacija donatora \\
+				    \hline
+				    createdAt & TIMESTAMP & Datum i vrijeme stvaranja zapisa \\
+				    \hline
+				    updatedAt & TIMESTAMP & Datum i vrijeme posljednjeg ažuriranja zapisa \\
+				    \hline
+				    \end{tabularx}
+				    \caption{Donors}
+				    \label{tab:my_label}
+				\end{table}
+				\clearpage % Start a new page
+				
+				\noindent\textbf{Donations (Donacije)} tablica sadrži informacije o donacijama, uključujući datum donacije, adresu, upozorenje te podatke o povezanom donatoru. Također, sadrži datume stvaranja i ažuriranja zapisa. Ovaj entitet je u vezi \textit{Many-to-One} s \textbf{Donors} preko \textit{donorId}.
+				\begin{table}[H]
+				    \renewcommand{\arraystretch}{2}
+				    \centering
+				     \begin{tabularx}{1\textwidth}{|c|c|X|}
+				    \hline
+				    \textbf{Naziv Stupca} & \textbf{Vrsta podatka} & \textbf{Opis} \\
+				    \hline
+				    \cellcolor{LightGreen}id & INTEGER & Automatski povećavajući broj\\
+				    \hline
+				    date & DATE & Datum donacije \\
+				    \hline
+				    address & STRING & Adresa donacije \\
+				    \hline
+				    warning & STRING & Upozorenje ako krv nije bila potpuno zdrava \\
+				    \hline
+				    createdAt & TIMESTAMP & Datum i vrijeme stvaranja zapisa \\
+				    \hline
+				    updatedAt & TIMESTAMP & Datum i vrijeme posljednjeg ažuriranja zapisa \\
+				    \hline
+				    \cellcolor{LightBlue} donorId & INTEGER & ID donatora  \\
+				    \hline
+				    \end{tabularx}
+				    \caption{Donations}
+				    \label{tab:my_label}
+				\end{table}
+				\clearpage % Start a new page
+				
+				\noindent\textbf{Certificates (Certifikati)} tablica pohranjuje informacije o certifikatima koje donatori mogu postići. Uključuje naziv certifikata, njegove pogodnosti, broj donacija potreban za certifikat te datume stvaranja i ažuriranja zapisa. Također, sadrži podatke o povezanom donatoru. Ovaj entitet je u vezi \textit{Many-to-One} s \textbf{Donors} preko \textit{donorId}.
+				\begin{table}[H]
+				    \renewcommand{\arraystretch}{2}
+				    \centering
+				     \begin{tabularx}{1\textwidth}{|c|c|X|}
+				    \hline
+				    \textbf{Naziv Stupca} & \textbf{Vrsta podatka} & \textbf{Opis} \\
+				    \hline
+				    \cellcolor{LightGreen} id & INTEGER & Automatski povećavajući broj\\
+				    \hline
+				    name & STRING & Naziv certifikata \\
+				    \hline
+				    benefits & STRING & Pogodnosti certifikata \\
+				    \hline
+				    numberOfDonations & INTEGER & Broj donacija potreban za certifikat \\
+				    \hline
+				    createdAt & TIMESTAMP & Datum i vrijeme stvaranja zapisa \\
+				    \hline
+				    updatedAt & TIMESTAMP & Datum i vrijeme posljednjeg ažuriranja zapisa \\
+				    \hline
+				    \cellcolor{LightBlue} donorId & INTEGER & ID donatora \\
+				    \hline
+				    \end{tabularx}
+				    \caption{Certificates}
+				    \label{tab:my_label}
+				\end{table}
+				\clearpage % Start a new page
+				
+				\noindent\textbf{BloodBanks (Zavodi za Transfuziju)} tablica pohranjuje informacije o zavodima za transfuziju krvi, uključujući naziv zavoda za transfuziju, adresu, broj donatora povezanih s zavodom za transfuziju te datume stvaranja i ažuriranja zapisa. Ovaj entitet je u vezi \textit{One-to-Many} s \textbf{Donors} preko \textit{id}.
+				\begin{table}[H]
+				    \renewcommand{\arraystretch}{2}
+				    \centering
+				     \begin{tabularx}{1\textwidth}{|c|c|X|}
+				    \hline
+				    \textbf{Naziv Stupca} & \textbf{Vrsta podatka} & \textbf{Opis} \\
+				    \hline
+				    \cellcolor{LightGreen} id & INTEGER & Automatski povećavajući broj\\
+				    \hline
+				    name & STRING & Naziv zavoda \\
+				    \hline
+				    email & STRING & Email adresa zavoda \\
+				    \hline
+				    password & STRING & Lozinka zavoda \\
+				    \hline
+				    address & STRING & Adresa zavoda \\
+				    \hline
+				    numberOfDonors & INTEGER & Broj donatora povezan sa zavodom \\
+				    \hline
+				    createdAt & TIMESTAMP & Datum i vrijeme stvaranja zapisa \\
+				    \hline
+				    updatedAt & TIMESTAMP & Datum i vrijeme posljednjeg ažuriranja zapisa \\
+				    \hline
+				    \end{tabularx}
+				    \caption{BloodBanks}
+				    \label{tab:my_label}
+				\end{table}
+				\clearpage % Start a new page
+				
+				\noindent\textbf{Actions (Akcije)} tablica pohranjuje informacije o akcijama koje uključuju adresu, datum, minimalni broj donatora potreban za akciju te datume stvaranja i ažuriranja zapisa. Također, sadrži podatak o povezanom zavodu. Ovaj entitet je u vezi \textit{Many-to-One} s \textbf{BloodBanks} preko \textit{bloodBankId}.
+				\begin{table}[H]
+				    \renewcommand{\arraystretch}{2}
+				    \centering
+				     \begin{tabularx}{1\textwidth}{|c|c|X|}
+				    \hline
+				    \textbf{Naziv Stupca} & \textbf{Vrsta podatka} & \textbf{Opis} \\
+				    \hline
+				    \cellcolor{LightGreen}id & INTEGER & Automatski povećavajući broj\\
+				    \hline
+				    address & STRING & Adresa akcije \\
+				    \hline
+				    date & DATE & Datum akcije \\
+				    \hline
+				    minNumberOfDonors & INTEGER & Minimalni broj donatora potreban za akciju \\
+				    \hline
+				    createdAt & TIMESTAMP & Datum i vrijeme stvaranja zapisa \\
+				    \hline
+				    updatedAt & TIMESTAMP & Datum i vrijeme posljednjeg ažuriranja zapisa \\
+				    \hline
+				    \cellcolor{LightBlue} bloodBankId & INTEGER & ID zavoda \\
+				    \hline
+				    \end{tabularx}
+				    \caption{Actions}
+				    \label{tab:my_label}
+				\end{table}
+				\clearpage % Start a new page
+				
+				\noindent\textbf{ActionRegistrations (Registracije za Akcije)} tablica sadrži informacije o registracijama za akcije. Uključuje ID akcije, ID donatora te datume stvaranja i ažuriranja zapisa. Ovaj entitet je u vezi \textit{Many-to-One} s \textbf{Actions} preko \textit{actionId} i \textit{Many-to-One} s \textbf{Donors} preko \textit{donorId}.
+				\begin{table}[H]
+				    \renewcommand{\arraystretch}{2}
+				    \centering
+				     \begin{tabularx}{1\textwidth}{|c|c|X|}
+				    \hline
+				    \textbf{Naziv Stupca} & \textbf{Vrsta podatka} & \textbf{Opis} \\
+				    \hline
+				    \cellcolor{LightGreen} id & INTEGER & Automatski povećavajući broj\\
+				    \hline
+				    \cellcolor{LightBlue} actionId & INTEGER & ID akcije  \\
+				    \hline
+				    \cellcolor{LightGreen}donorId & INTEGER & ID donatora \\
+				    \hline
+				    createdAt & TIMESTAMP & Datum i vrijeme stvaranja zapisa \\
+				    \hline
+				    updatedAt & TIMESTAMP & Datum i vrijeme posljednjeg ažuriranja zapisa \\
+				    \hline
+				    \end{tabularx}
+				    \caption{ActionRegistrations}
+				    \label{tab:my_label}
+				\end{table}
+				\clearpage % Start a new page
+
+				
+				\begin{longtblr}[
+					label=none,
+					entry=none
+					]{
+						width = \textwidth,
+						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						rowhead = 1,
+					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
+					\hline \SetCell[c=3]{c}{\textbf{korisnik - ime tablice}}	 \\ \hline[3pt]
+					\SetCell{LightGreen}IDKorisnik & INT	&  	Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod  	\\ \hline
+					korisnickoIme	& VARCHAR &   	\\ \hline 
+					email & VARCHAR &   \\ \hline 
+					ime & VARCHAR	&  		\\ \hline 
+					\SetCell{LightBlue} primjer	& VARCHAR &   	\\ \hline 
+				\end{longtblr}
+				
+				
+				
+				
+			
+			\subsection{Dijagram baze podataka}
+				\textit{ U ovom potpoglavlju potrebno je umetnuti dijagram baze podataka. Primarni i strani ključevi moraju biti označeni, a tablice povezane. Bazu podataka je potrebno normalizirati. Podsjetite se kolegija "Baze podataka".}
+			
+			\eject
+			
+			
+		\section{Dijagram razreda}
+		
+			\textit{Potrebno je priložiti dijagram razreda s pripadajućim opisom. Zbog preglednosti je moguće dijagram razlomiti na više njih, ali moraju biti grupirani prema sličnim razinama apstrakcije i srodnim funkcionalnostima.}\\
+			
+			\textbf{\textit{dio 1. revizije}}\\
+			
+			\textit{Prilikom prve predaje projekta, potrebno je priložiti potpuno razrađen dijagram razreda vezan uz \textbf{generičku funkcionalnost} sustava. Ostale funkcionalnosti trebaju biti idejno razrađene u dijagramu sa sljedećim komponentama: nazivi razreda, nazivi metoda i vrste pristupa metodama (npr. javni, zaštićeni), nazivi atributa razreda, veze i odnosi između razreda.}\\
+			
+			\textbf{\textit{dio 2. revizije}}\\			
+			
+			\textit{Prilikom druge predaje projekta dijagram razreda i opisi moraju odgovarati stvarnom stanju implementacije}
+			
+			
+			
+			\eject
+		
+		\section{Dijagram stanja}
+			
+			
+			\textbf{\textit{dio 2. revizije}}\\
+			
+			\textit{Potrebno je priložiti dijagram stanja i opisati ga. Dovoljan je jedan dijagram stanja koji prikazuje \textbf{značajan dio funkcionalnosti} sustava. Na primjer, stanja korisničkog sučelja i tijek korištenja neke ključne funkcionalnosti jesu značajan dio sustava, a registracija i prijava nisu. }
+			
+			
+			\eject 
+		
+		\section{Dijagram aktivnosti}
+			
+			\textbf{\textit{dio 2. revizije}}\\
+			
+			 \textit{Potrebno je priložiti dijagram aktivnosti s pripadajućim opisom. Dijagram aktivnosti treba prikazivati značajan dio sustava.}
+			
+			\eject
+		\section{Dijagram komponenti}
+		
+			\textbf{\textit{dio 2. revizije}}\\
+		
+			 \textit{Potrebno je priložiti dijagram komponenti s pripadajućim opisom. Dijagram komponenti treba prikazivati strukturu cijele aplikacije.}
