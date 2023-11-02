@@ -1,18 +1,61 @@
 \chapter{Opis projektnog zadatka}
 		
-		\textbf{\textit{dio 1. revizije}}\\
+		Ova web aplikacija omogućuje donatorima krvi da uz što manje muke nađu najbliže lokacije darivanja krvi te im daje mogućnost prisustvovanja u 				raznim akcijama organiziranih od Crvenog Križa ili drugih zavoda. Donor ima pristup svojoj povijesti darivanja što mu omogućava lako izdavanje 					potvrde od prošlih darivanje te datum isteka perioda čekanja ( od svakog darivanja krvi treba proći 4-6 mjeseci ovisno o spolu, radi tetovaža…). 					Svakim darivanjem krvi donor skuplja mogućnost za razne bonuse.
 		
-		\textit{Na osnovi projektnog zadatka detaljno opisati korisničke zahtjeve. Što jasnije opisati cilj projektnog zadatka, razraditi problematiku zadatka, dodati nove aspekte problema i potencijalnih rješenja. Očekuje se minimalno 3, a poželjno 4-5 stranica opisa.	Teme koje treba dodatno razraditi u ovom poglavlju su:}
+		Crvenom Križu i ostalim zavodima ova aplikacija omogućuje lakše organiziranje akcija u slučaju manjka krvi na nekoj lokaciji. Preko aplikacije 					dodjeljuju priznanja, izdavaju potvrde i davaju pozivnice. Također imaju evidenciju o svim darivateljima (ime, prezime, krvna grupa). Zadaća 					administratora je verificiranje podataka te davanje dopuštenja za darivanje.
+
+		Ova aplikacija bi bila u interesu svih ljudi koji su zainteresirani za darivanje krvi, onih koji žele nešto o tome naučiti te onih koji ih organiziraju. Zbog 				lake uporabe lako povezuje donore s mjestima u krizi (bolnicama, organizacijama). Također omogućava povezanost između mjesta darivanja jer im 				daje uvit koliko koje krvi ima koja ustanova.
+
+		Prilikom pokretanja stranice pojavljuje se karta Republike Hrvatske s označenim lokacijama (Zavod za transfuziju KBC Osijek, KBC Rijeka, KBC Split, OB 		Dubrovnik, OB Varaždin, OB Zadar i Hrvatski zavod za transfuzijsku medicinu Zagreb) te prozor s akcijama Crvenog Križa u Hrvatskoj. Klikom na 					lokacije pojavi se prozor u kojem se nalaze akcije za tu lokaciju, postotci zaliha krvi te gumb za prijavu za donaciju. Neregistriranog korisnika stranica 				vodi na registraciju, a korisniku prikazuje registracijski obrazac za donaciju. 
+		Neregistrirani korisnik se može prijaviti u aplikaciju kao:
+
 		\begin{packed_item}
-			\item \textit{potencijalna korist ovog projekta}
-			\item \textit{postojeća slična rješenja (istražiti i ukratko opisati razlike u odnosu na zadani zadatak). Dodajte slike koja predočavaju slična rješenja.}
-			\item \textit{skup korisnika koji bi mogao biti zainteresiran za ostvareno rješenje.}
-			\item \textit{mogućnost prilagodbe rješenja }
-			\item \textit{opseg projektnog zadatka}
-			\item \textit{moguće nadogradnje projektnog zadatka}
+			\item donor –  pojavljuju mu se skočni prozorčići s pozivima Crvenog Križa na donacije i akcije, omogućena mu je kontrola osobnih 							podataka, prijava na donacije i akcije, statistika vlastitog doniranja, ispis potvrda i zahtjev za nagradama od Crvenog Križa i drugih zavoda te 					brisanje korisničkog računa
+				\begin{packed_item}
+					\item potrebne informacije za registraciju
+				\end{packed_item}
+			\item Crveni Križ – omogućeno mu je objavljivanje akcija, izdavanje potvrda, dodjela priznanja te verificiranje podataka
+				\begin{packed_item}
+					\item potrebne informacije za registraciju
+				\end{packed_item}
+			\item zavodi – omogućen uvid u popis donora, brisanje donorskih korisničkih računa i izdavanje akcija
+				\begin{packed_item}
+					\item potrebne informacije za registraciju
+				\end{packed_item}
 		\end{packed_item}
 		
-		\textit{Za pomoć pogledati reference navedene u poglavlju „Popis literature“, a po potrebi konzultirati sadržaj na internetu koji nudi dobre smjernice u tom pogledu.}
+		Administratori su osobe zaslužne za održavanje aplikacije te se neregistriranom korisniku ne daje pristup prijave kao administrator. 
+
+		Sustav treba podržavati rad više korisnika u stvarnom vremenu.
+
+		Slične web aplikacije:
+		\begin{packed_item}
+			\item  „GiveBlood“ ( https://www.redcross.org/give-blood.html ):
+			Na početnoj web stranici nalaze se obavijesti vezane za različite krvne grupe, krvnu plazmu te različite zanimljivosti vezane uz temu. U alatnoj 					traci nalaze se često pitana pitanja koja su grupirana po temama ( „sve o plazmi“, „zašto dati krv“, „tko može dati krv“,  „proces donacije“). Tu se 			također nalazi tražilica koja traži najbliže lokacije u Engleskoj gdje se može donirati te link s aktualnim zdravstvenim vijestima. Korisnici imaju 					mogućnost prijave i rezervacije termina za donaciju.
+			\begin{figure}[H]
+				\includegraphics[scale=0.23]{slike/giveblood.PNG} 
+				\centering
+				\caption{Prikaz glavne stranice GiveBlood-a}
+				\label{fig:promjene}
+			\end{figure}
+			\item „friends2support“ ( https://www.friends2support.org/index.aspx ):
+			Web stranica traži davatelje krvi diljem svijeta. Korisnik može unijeti krvnu grupu, državu, županiju, okrug i grad te aplikacija na temelju toga 					traži donatore. Korisnik ima mogućnost registracije. Na stranici se također nalaze razne vijesti, videa i slike o darivanju krvi.
+			\begin{figure}[H]
+				\includegraphics[scale=0.23]{slike/friends2support.PNG} 
+				\centering
+				\caption{Prikaz glavne stranice friends2support-a}
+				\label{fig:promjene}
+			\end{figure}
+			\item  „vitalant“ ( https://vitalant.org/ ):
+			Na početnoj stanici nalaze se elementi preko kojih korisnik  može zakazati termin donacije, naučiti o donaciji te saznati je li poželjni donor. 						Također iskaču aktualne vijesti ili nagradne igre. Na alatnoj traci nalaze se razna pitanja i članci grupirani po temama (o donaciji, o krvi,  o 						poželjnosti, o volonterima i o bolnicama).
+			\begin{figure}[H]
+				\includegraphics[scale=0.23]{slike/vitalant.PNG} 
+				\centering
+				\caption{Prikaz glavne stranice vitalant-a}
+				\label{fig:promjene}
+			\end{figure}
+		\end{packed_item}
+
 		\eject
 		
 		\section{Primjeri u \LaTeX u}

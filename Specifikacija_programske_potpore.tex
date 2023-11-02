@@ -2,13 +2,6 @@
 		
 	\section{Funkcionalni zahtjevi}
 			
-			\textbf{\textit{dio 1. revizije}}\\
-			
-			\textit{Navesti \textbf{dionike} koji imaju \textbf{interes u ovom sustavu} ili  \textbf{su nositelji odgovornosti}. To su prije svega korisnici, ali i administratori sustava, naručitelji, razvojni tim.}\\
-				
-			\textit{Navesti \textbf{aktore} koji izravno \textbf{koriste} ili \textbf{komuniciraju sa sustavom}. Oni mogu imati inicijatorsku ulogu, tj. započinju određene procese u sustavu ili samo sudioničku ulogu, tj. obavljaju određeni posao. Za svakog aktora navesti funkcionalne zahtjeve koji se na njega odnose.}\\
-			
-			
 			\noindent \textbf{Dionici:}
 			
 			\begin{packed_enum}
@@ -16,6 +9,10 @@
 				\item Donor
 				\item Zavod
 				\item Crveni Križ
+				\item Administrator
+				\item Razvojni tim ( Bruna Matić, Bruno Galić, Jana Matić, Jelena Lončar, Nikola Borzić, Nikola Marić, Zvonko Lelas )
+				\item Asistent predmeta ( Mateja Golec )
+				\item profesor predmeta ( Vlado Sruk )
 				
 			\end{packed_enum}
 			
@@ -23,6 +20,43 @@
 			
 			
 			\begin{packed_enum}
+				\item  \underbar{Donor (sudionik) može:}
+				
+				\begin{packed_enum}
+					
+					\item pristupiti podacima
+					\begin{packed_enum}
+						
+						\item pristup osobnim podacima (ime, prezime, krvna grupa)
+						\item  pristupiti svojoj povijesti darivanja
+						\item  pristupiti informacijama o akcijama
+						\item pristupiti informacijama o količini krvi u pojedinim gradovima
+						\item brisanje svog korisničkog računa
+				
+					\end{packed_enum}
+
+					\item vidjeti koliki mu je period čekanja do sljedećeg darivanja
+					\item prijava na akcije
+					\item primanje obavijesti od zavoda u slučaju manjka krvi
+					\item potvrđivanje pozivnica za darivanje
+					\item pristup lokacijama na karti u kojima su organizirana doniranja krvi
+					
+				\end{packed_enum}
+				\item  \underbar{Neregistrirani korisnik (sudionik) može:}
+					\begin{packed_enum}
+						
+						\item vidjeti kartu lokacija za doniranje
+						\item vidjeti akcije u kartici
+						\item registrirati se
+						\begin{packed_enum}
+						
+						\item kao donor
+						\item  kao Crveni Križ
+						\item  kao zavod
+				
+					\end{packed_enum}
+				
+					\end{packed_enum}
 				\item  \underbar{Crveni Križ (inicijator) može:}
 				
 				\begin{packed_enum}
@@ -32,36 +66,30 @@
 					\item evidencija darivatelja
 					\item izdavanje potvrda
 					\item davanje pozivnica
-					\begin{packed_enum}
-						
-						\item  podfunkcionalnost 1 
-						\item  podfunkcionalnost 2
-				
-					\end{packed_enum}
-					\item  funkcionalnost 3
-					
 				\end{packed_enum}
-			
-				\item  \underbar{Donor (sudionik) može:}
-				
+
+				\item \underbar{Zavod (inicijator) može:}
 				\begin{packed_enum}
 					
-					\item pristupiti podacima
-					\begin{packed_enum}
-						
-						\item pristup osobnim podacima (ime, prezime, krvna grupa)
-						\item  pristupiti svojoj povijesti davanja
-						\item  pristupiti informacijama o akcijama
-						\item pristupiti informacijama o količini krvi u pojedinim gradovima
-				
-					\end{packed_enum}
-					\item vidjeti koliki mu je period čekanja do sljedećeg darivanja
-					\item prijava na akcije
-					\item primanje obavijesti od zavoda u slučaju manjka krvi
-					\item potvrđivanje pozivnica za darivanje
-					\item pristup gradovima na karti u kojima su organizirana doniranja krvi
-					
+					\item vidjeti popis donora
+					\item brisati korisničke račune
+					\item izdavati akcije
 				\end{packed_enum}
+			
+				\item \underbar{Baza podataka (inicijator) može:}
+				\begin{packed_enum}
+					
+					\item pohraniti sve podatke o donorima i njihovim ovlastima
+					\item pohranjuje podatke o:
+						\begin{packed_enum}
+						
+							\item lokacijama doniranja
+							\item količinama krvi
+							\item akcijama
+							\item odzivima na akcije
+						\end{packed_enum}
+				\end{packed_enum}
+			
 			\end{packed_enum}
 			
 			\eject 

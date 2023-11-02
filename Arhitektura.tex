@@ -22,10 +22,8 @@
 		\textit{Potrebno je opisati koju vrstu i implementaciju baze podataka ste odabrali, glavne komponente od kojih se sastoji i slično.}
 		
 			\subsection{Opis tablica}
-			
 
-				\textit{Svaku tablicu je potrebno opisati po zadanom predlošku. Lijevo se nalazi točno ime varijable u bazi podataka, u sredini se nalazi tip podataka, a desno se nalazi opis varijable. Svjetlozelenom bojom označite primarni ključ. Svjetlo plavom označite strani ključ}
-				
+
 				\noindent\textbf{Donors (Donatori)} tablica pohranjuje informacije o donatorima, uključujući njihovo ime, email adresu, lozinku, krvnu grupu, povezani institut za transfuziju, broj donacija te datume stvaranja i ažuriranja zapisa. Ovaj entitet je u vezi \textit{One-to-Many} s \textbf{Donations} preko \textit{id},  {Many-to-One} s \textbf{BloodBanks} preko \textit{transfusionInstitute}, \textit{One-to-Many} s \textbf{Certificates} preko \textit{id} i \textit{One-to-Many} s \textbf{ActionRegistrations} preko \textit{id}.
 				\begin{table}[H]
 				    \renewcommand{\arraystretch}{2}
