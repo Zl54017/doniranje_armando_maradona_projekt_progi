@@ -1,0 +1,175 @@
+\chapter{Specifikacija programske potpore}
+		
+	\section{Funkcionalni zahtjevi}
+			
+			\noindent \textbf{Dionici:}
+			
+			\begin{packed_enum}
+				
+				\item Donor
+				\item Zavod
+				\item Crveni Križ
+				\item Administrator
+				\item Razvojni tim ( Bruna Matić, Bruno Galić, Jana Matić, Jelena Lončar, Nikola Borzić, Nikola Marić, Zvonko Lelas )
+				\item Asistent predmeta ( Mateja Golec )
+				\item profesor predmeta ( Vlado Sruk )
+				
+			\end{packed_enum}
+			
+			\noindent \textbf{Aktori i njihovi funkcionalni zahtjevi:}
+			
+			
+			\begin{packed_enum}
+				\item  \underbar{Donor (sudionik) može:}
+				
+				\begin{packed_enum}
+					
+					\item pristupiti podacima
+					\begin{packed_enum}
+						
+						\item pristup osobnim podacima (ime, prezime, krvna grupa)
+						\item  pristupiti svojoj povijesti darivanja
+						\item  pristupiti informacijama o akcijama
+						\item pristupiti informacijama o količini krvi u pojedinim gradovima
+						\item brisanje svog korisničkog računa
+				
+					\end{packed_enum}
+
+					\item vidjeti koliki mu je period čekanja do sljedećeg darivanja
+					\item prijava na akcije
+					\item primanje obavijesti od zavoda u slučaju manjka krvi
+					\item potvrđivanje pozivnica za darivanje
+					\item pristup lokacijama na karti u kojima su organizirana doniranja krvi
+					
+				\end{packed_enum}
+				\item  \underbar{Neregistrirani korisnik (sudionik) može:}
+					\begin{packed_enum}
+						
+						\item vidjeti kartu lokacija za doniranje
+						\item vidjeti akcije u kartici
+						\item registrirati se
+						\begin{packed_enum}
+						
+						\item kao donor
+						\item  kao Crveni Križ
+						\item  kao zavod
+				
+					\end{packed_enum}
+				
+					\end{packed_enum}
+				\item  \underbar{Crveni Križ (inicijator) može:}
+				
+				\begin{packed_enum}
+					
+					\item izdavati akcije
+					\item dodjeljivati priznanja (nagrade)
+					\item evidencija darivatelja
+					\item izdavanje potvrda
+					\item davanje pozivnica
+				\end{packed_enum}
+
+				\item \underbar{Zavod (inicijator) može:}
+				\begin{packed_enum}
+					
+					\item vidjeti popis donora
+					\item brisati korisničke račune
+					\item izdavati akcije
+				\end{packed_enum}
+			
+				\item \underbar{Baza podataka (inicijator) može:}
+				\begin{packed_enum}
+					
+					\item pohraniti sve podatke o donorima i njihovim ovlastima
+					\item pohranjuje podatke o:
+						\begin{packed_enum}
+						
+							\item lokacijama doniranja
+							\item količinama krvi
+							\item akcijama
+							\item odzivima na akcije
+						\end{packed_enum}
+				\end{packed_enum}
+			
+			\end{packed_enum}
+			
+			\eject 
+			
+			
+				
+			\subsection{Obrasci uporabe}
+				
+				\textbf{\textit{dio 1. revizije}}
+				
+				\subsubsection{Opis obrazaca uporabe}
+					\textit{Funkcionalne zahtjeve razraditi u obliku obrazaca uporabe. Svaki obrazac je potrebno razraditi prema donjem predlošku. Ukoliko u nekom koraku može doći do odstupanja, potrebno je to odstupanje opisati i po mogućnosti ponuditi rješenje kojim bi se tijek obrasca vratio na osnovni tijek.}\\
+					
+
+					\noindent \underbar{\textbf{UC$<$broj obrasca$>$ -$<$ime obrasca$>$}}
+					\begin{packed_item}
+	
+						\item \textbf{Glavni sudionik: }$<$sudionik$>$
+						\item  \textbf{Cilj:} $<$cilj$>$
+						\item  \textbf{Sudionici:} $<$sudionici$>$
+						\item  \textbf{Preduvjet:} $<$preduvjet$>$
+						\item  \textbf{Opis osnovnog tijeka:}
+						
+						\item[] \begin{packed_enum}
+	
+							\item $<$opis korak jedan$>$
+							\item $<$opis korak dva$>$
+							\item $<$opis korak tri$>$
+							\item $<$opis korak četiri$>$
+							\item $<$opis korak pet$>$
+						\end{packed_enum}
+						
+						\item  \textbf{Opis mogućih odstupanja:}
+						
+						\item[] \begin{packed_item}
+	
+							\item[2.a] $<$opis mogućeg scenarija odstupanja u koraku 2$>$
+							\item[] \begin{packed_enum}
+								
+								\item $<$opis rješenja mogućeg scenarija korak 1$>$
+								\item $<$opis rješenja mogućeg scenarija korak 2$>$
+								
+							\end{packed_enum}
+							\item[2.b] $<$opis mogućeg scenarija odstupanja u koraku 2$>$
+							\item[3.a] $<$opis mogućeg scenarija odstupanja  u koraku 3$>$
+							
+						\end{packed_item}
+					\end{packed_item}
+				
+					
+				\subsubsection{Dijagrami obrazaca uporabe}
+					
+					\textit{Prikazati odnos aktora i obrazaca uporabe odgovarajućim UML dijagramom. Nije nužno nacrtati sve na jednom dijagramu. Modelirati po razinama apstrakcije i skupovima srodnih funkcionalnosti.}
+				\eject		
+				
+			\subsection{Sekvencijski dijagrami}
+				
+				\textbf{\textit{dio 1. revizije}}\\
+				
+				\textit{Nacrtati sekvencijske dijagrame koji modeliraju najvažnije dijelove sustava (max. 4 dijagrama). Ukoliko postoji nedoumica oko odabira, razjasniti s asistentom. Uz svaki dijagram napisati detaljni opis dijagrama.}
+				\eject
+	
+		\section{Ostali zahtjevi}
+		
+			\begin{packed_item}
+
+				\item Sustav treba podržavati rad više korisnika u stvarnom vremenu
+				\item Sustav treba biti izveden kao web aplikacija ispravno funkcionalna u svim web preglednicima
+				\item	 Sustavu pristupaju registrirani korisnici pomoću korisničkog imena i pouzdane lozinke
+				\item Sustav treba koristiti srednjoeuropsko strandardno vrijeme, GTM+1
+				\item Sustav treba biti jednostavan i razumljiv svim korisnicima bez detaljnih uputa
+				\item Sustav treba podržavati hrvatsku abecedu, uključujući dijakritičke znakove
+				\item Na klijentskoj strani potrebno je implementirati korisničko sučelje koristeći React
+				\item Na poslužiteljskoj strani je potrebno koristiti radni okvir Sequlize
+				\item Podatke treba spremati u bazu podataka koristeći SQL?
+				\item Sustav treba koristiti srednjoeuropsko strandardno vrijeme, GTM+1
+				\item Sustav treba biti jednostavan i razumljiv svim korisnicima bez detaljnih uputa
+				\item Sustav treba podržavati hrvatsku abecedu, uključujući dijakritičke znakove
+			\end{packed_item}
+
+			 
+			 
+	
