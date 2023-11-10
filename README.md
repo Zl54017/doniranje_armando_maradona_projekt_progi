@@ -27,9 +27,9 @@ Jana Matić
 # Kontribucije -- CONTRIBUTING.md 
 
 # Podjela posla:
-Frontend - Zvonko Lelas, Jana Matić
-Backend - Nikola Borzić, Bruno Galić
-Baze podataka - Jelena Lončar, Nikola Marić
-Dokumentacija - Bruna Matić
+Frontend - Zvonko Lelas, Jana Matić <br>
+Backend - Nikola Borzić, Bruno Galić <br>
+Baze podataka - Jelena Lončar, Nikola Marić <br>
+Dokumentacija - Bruna Matić <br>
 
-    (ove osobe većinski rade na zadanim cjelinama, ali svi sudjeluju u izradi)
+- (ove osobe većinski rade na zadanim cjelinama, ali svi sudjeluju u izradi)
