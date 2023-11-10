@@ -8,7 +8,11 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Donation.belongsTo(models.Donor, {
+        as: "donor",
+        foreignKey: "donorId",
+        targetKey: "id",
+      });
     }
   }
   Donation.init(
@@ -17,6 +21,10 @@ module.exports = (sequelize, DataTypes) => {
       address: DataTypes.STRING,
       warning: DataTypes.STRING,
       donorId: DataTypes.STRING,
+      used: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false, // Početna vrijednost je false, kad se krv iskoristi postaje true 
+      },
     },
     {
       sequelize,
