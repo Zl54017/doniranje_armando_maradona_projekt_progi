@@ -13,7 +13,7 @@ Aplikacija je osmišljena za korištenje donorima, zavodima i Crvenom Križu. <b
 Aplikacija treba omogućiti rad u stvarnom vremenu za više korisnika, prijavu kao donor ili jedan od zavoda, pregled mjesta doniranja i mogućnost prijave na donaciju, pregled budućih akcija doniranja te izdavanje potvrda 
 
 # Tehnologije
-Za izradu koristi se Node js, JavaScript, LaTeX te SQL. <br>
+Za izradu koristi se Node js, JavaScript, wiki te SQL. <br>
 
 # Članovi tima
 Nikola Borzić,
