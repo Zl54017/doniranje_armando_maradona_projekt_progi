@@ -11,34 +11,36 @@ const ActionRegistration = require("../models/actionregistration");
 const Sequelize = require("sequelize");
 
 /**
- * Handle the GET request to retrieve a donor's donations.
+ * Handle the POST request to retrieve a donor's donations.
  */
-router.get("/donations", async (req, res, next) => {
+router.post("/donations", async (req, res, next) => {
   try {
+    console.log(req.body);
     const donor = await db.Donor.findOne({
       where: {
-        email: req.session.email,
-        password: req.session.password,
+        email: req.body.email,
+        password: req.body.password,
       },
     });
+
     const donations = await donor.getDonations();
 
     res.json(donations);
   } catch (error) {
-    console.error("Error retrieving donations:", error);
+    console.error(error);
     res.status(500).json({ error: "Failed to retrieve donations" });
   }
 });
 
 /**
- * Handle the GET request to retrieve all actions from donor's institute.
+ * Handle the POST request to retrieve all actions from donor's institute.
  */
-router.get("/actions", async (req, res, next) => {
+router.post("/actions", async (req, res, next) => {
   try {
     const donor = await db.Donor.findOne({
       where: {
-        email: req.session.email,
-        password: req.session.password,
+        email: req.body.email,
+        password: req.body.password,
       },
     });
     const bloodBank = await donor.getBloodBank();
@@ -53,6 +55,7 @@ router.get("/actions", async (req, res, next) => {
     });
     res.json(actions);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Failed to retrieve actions" });
   }
 });
@@ -72,6 +75,7 @@ router.get("/allActions", async (req, res, next) => {
     });
     res.json(actions);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Failed to retrieve actions" });
   }
 });
@@ -83,55 +87,19 @@ router.get("/allActions", async (req, res, next) => {
 router.post("/actionRegistration", async (req, res, next) => {
   try {
     const { actionId, donorId } = req.body;
-    const newAction = await db.Action.create({
+    const newActionRegistration = await db.ActionRegistration.create({
       actionId: actionId,
       donorId: donorId,
     });
-    res.json({ message: "New Action created", data: newAction.toJSON() });
+    res.json({
+      message: "New Action Registration created",
+      data: newActionRegistration.toJSON(),
+    });
   } catch (error) {
-    res.status(500).json({ error: "Failed to create a new Action" });
-  }
-});
-
-/**
- * Example, should be removed
- */
-router.get("/", async (req, res, next) => {
-  //req.session.email = "emilywhite@example.com";
-  req.session.password = "mysecret";
-  if (req.session.email == undefined) {
-    const currentDateTime = new Date();
-    const bloodBanks = await db.BloodBank.findAll();
-    const actions = await db.Action.findAll({
-      where: {
-        date: {
-          [db.Sequelize.Op.gt]: currentDateTime, // Use the greater than operator
-        },
-      },
-    });
-    res.send(
-      `<h1>Vi ste gost, ovo su svi instituti i sve akcije</h1><pre>${JSON.stringify(
-        bloodBanks,
-        null,
-        2
-      )}</pre><pre>${JSON.stringify(actions, null, 2)}</pre>`
-    );
-  } else {
-    const donor = await db.Donor.findOne({
-      where: {
-        email: req.session.email,
-        password: req.session.password,
-      },
-    });
-    const donations = await donor.getDonations();
-
-    res.send(
-      `<h1>Hi ${donor.name}, these are your donations</h1><pre>${JSON.stringify(
-        donations,
-        null,
-        2
-      )}</pre>`
-    );
+    console.log(error);
+    res
+      .status(500)
+      .json({ error: "Failed to create a new Action Registration" });
   }
 });
 

@@ -1,6 +1,7 @@
 const express = require("express");
 var session = require("express-session");
 const app = express();
+app.use(express.json());
 const Sequelize = require("sequelize");
 const db = require("./models");
 const Donor = require("./models/donor");

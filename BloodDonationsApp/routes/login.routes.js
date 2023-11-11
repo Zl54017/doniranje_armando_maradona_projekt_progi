@@ -18,25 +18,21 @@ router.post("/", async (req, res) => {
 
   const donor = await db.Donor.findOne({
     where: {
-      email: req.session.email,
-      password: req.session.password,
+      email: email,
+      password: password,
     },
   });
   if (donor) {
-    req.session.email = email;
-    req.session.password = password;
     res.json(donor);
   } else {
     const bloodBank = await db.BloodBank.findOne({
       where: {
-        email: req.session.email,
-        password: req.session.password,
+        email: email,
+        password: password,
       },
     });
 
     if (bloodBank) {
-      req.session.email = email;
-      req.session.password = password;
       res.json(bloodBank);
     } else {
       res.status(401).json({ message: "Login failed" });
