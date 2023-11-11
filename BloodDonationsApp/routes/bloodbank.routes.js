@@ -13,14 +13,14 @@ const Sequelize = require("sequelize");
 router.get("/", async (req, res, next) => {});
 
 /**
- * Handle the GET request to retrieve inventory of blood
+ * Handle the POST request to retrieve inventory of blood
  */
-router.get("/inventory", async (req, res, next) => {
+router.post("/inventory", async (req, res, next) => {
   try {
     const bloodBank = await db.BloodBank.findOne({
       where: {
-        email: req.session.email,
-        password: req.session.password,
+        email: req.body.email,
+        password: req.body.password,
       },
     });
 
@@ -54,18 +54,17 @@ router.get("/inventory", async (req, res, next) => {
     res.json(table);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Failed to retrieve invntory" });
+    res.status(500).json({ error: "Failed to retrieve inventory" });
   }
 });
-
 
 //funkcija za dohvatiti zalihu krvi određene krvne grupe
 router.get("/inventory/:bloodType", async (req, res, next) => {
   try {
     const bloodBank = await db.BloodBank.findOne({
       where: {
-        email: req.session.email,
-        password: req.session.password,
+        email: req.body.email,
+        password: req.body.password,
       },
     });
 
@@ -99,7 +98,6 @@ router.get("/inventory/:bloodType", async (req, res, next) => {
   }
 });
 
-
 //funkcija za uzeti određenu količinu krvi neke krvne grupe
 router.post("/takeBlood/:bloodType/:quantityToTake", async (req, res, next) => {
   try {
@@ -108,8 +106,8 @@ router.post("/takeBlood/:bloodType/:quantityToTake", async (req, res, next) => {
 
     const bloodBank = await db.BloodBank.findOne({
       where: {
-        email: req.session.email,
-        password: req.session.password,
+        email: req.body.email,
+        password: req.body.password,
       },
     });
 
@@ -117,8 +115,8 @@ router.post("/takeBlood/:bloodType/:quantityToTake", async (req, res, next) => {
     const olderDonations = await db.Donation.findAll({
       where: {
         used: false,
-        '$donor.bloodType$': bloodType, // Tražena krvna grupa
-        '$donor.transfusionInstitute$': bloodBank.name, // Banka krvi
+        "$donor.bloodType$": bloodType, // Tražena krvna grupa
+        "$donor.transfusionInstitute$": bloodBank.name, // Banka krvi
       },
       include: [
         {
@@ -126,7 +124,7 @@ router.post("/takeBlood/:bloodType/:quantityToTake", async (req, res, next) => {
           as: "donor",
         },
       ],
-      order: [['date', 'ASC']], // Sortiraj prema atributu "date" (od najstarije prema najnovijoj)
+      order: [["date", "ASC"]], // Sortiraj prema atributu "date" (od najstarije prema najnovijoj)
     });
 
     // Izračunaj ukupnu dostupnu količinu krvi
@@ -151,9 +149,14 @@ router.post("/takeBlood/:bloodType/:quantityToTake", async (req, res, next) => {
         }
       }
 
-      res.json({ success: true, message: `Uspješno je uzeto ${quantityToTake} litara krvi (${bloodType}).` });
+      res.json({
+        success: true,
+        message: `Uspješno je uzeto ${quantityToTake} litara krvi (${bloodType}).`,
+      });
     } else {
-      res.status(400).json({ error: `Nedovoljna količina krvi (${bloodType}) na zalihama.` });
+      res.status(400).json({
+        error: `Nedovoljna količina krvi (${bloodType}) na zalihama.`,
+      });
     }
   } catch (error) {
     console.log(error);
@@ -161,18 +164,68 @@ router.post("/takeBlood/:bloodType/:quantityToTake", async (req, res, next) => {
   }
 });
 
+/**
+ * Handle the POST request to add a donation.
+ */
+router.post("/addDonation", async (req, res, next) => {
+  try {
+    const bloodBank = await db.BloodBank.findOne({
+      where: {
+        email: req.body.email,
+        password: req.body.password,
+      },
+    });
+
+    const { donorId, warning, date } = req.body;
+
+    const newDonation = await db.Donation.create({
+      date: date,
+      address: bloodBank.address,
+      warning: warning,
+      donorId: donorId,
+      used: false,
+    });
+
+    const donor = await db.Donor.findOne({
+      where: {
+        id: donorId,
+      },
+    });
+
+    await db.Donor.update(
+      { numberOfDonations: db.sequelize.literal('"numberOfDonations" + 1') },
+      {
+        where: {
+          id: donorId,
+        },
+      }
+    );
+
+    res.json(newDonation.toJSON());
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to add donation" });
+  }
+});
+
+/**
+ * Handle the POST request to see all registrations for an action.
+ */
+router.post("/registrations", async (req, res, next) => {
+  try {
+    const { actionId } = req.body;
+
+    const registrations = await db.ActionRegistration.findAll({
+      where: {
+        actionId: actionId,
+      },
+    });
+
+    res.json(registrations);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to retrieve registrations" });
+  }
+});
+
 module.exports = router;
-
-/*prijedlog: u tablicu donacije dodati stupac "used",
- * ako je "true" krv je iskorištena,
- * a ako "false" krv je na zalihi,
- *također ako postoji upozorenje krv nećemo ubrojiti u zalihu
- */
-
-/*prijedlog fja:
- * get za zalihu krvi npr. "A+"
- * post za potvrditi dolazak donora na akciju
- * get za dobiti registracije na određenu akciju
- * post za uzeti odredeni broj litara krvi sa zalihe, uzimaju se prvo stariji
- * ...
- */
