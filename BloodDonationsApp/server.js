@@ -9,6 +9,7 @@ const Donor = require("./models/donor");
 const donorRouter = require("./routes/donor.routes");
 const bloodBankRouter = require("./routes/bloodbank.routes");
 const loginRouter = require("./routes/login.routes");
+const registerRouter = require("./routes/register.routes");
 
 app.use(
   session({
@@ -24,6 +25,7 @@ app.use(
 app.use("/donor", donorRouter);
 app.use("/bloodbank", bloodBankRouter);
 app.use("/login", loginRouter);
+app.use("/register", registerRouter);
 
 const portir = 3000;
 app.listen(portir);

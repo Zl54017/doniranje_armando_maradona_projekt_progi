@@ -18,6 +18,31 @@ async function login(email, password) {
   }
 }
 
+async function register(
+  name,
+  email,
+  password,
+  bloodType,
+  transfusionInstitute
+) {
+  const url = address + "register";
+
+  const requestBody = {
+    name,
+    email,
+    password,
+    bloodType,
+    transfusionInstitute,
+  };
+
+  try {
+    const response = await axios.post(url, requestBody);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 async function donations(email, password) {
   const url = address + "donor/donations";
 
@@ -131,6 +156,14 @@ async function TEST() {
   await login("b", "b");
 
   await login("johndoe@example.com", "password123");
+
+  await register(
+    "bruno",
+    "mail",
+    "sifra",
+    "A+",
+    "Hrvatski zavod za transfuzijsku medicinu Zagreb"
+  );
 
   await donations("janesmith@example.com", "securepass");
 
