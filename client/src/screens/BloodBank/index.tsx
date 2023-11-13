@@ -9,8 +9,12 @@ import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import GlobalStyles from "@mui/material/GlobalStyles";
 import Container from "@mui/material/Container";
-import { RootState } from "../../redux/store";
+import { RootState, useAppDispatch } from "../../redux/store";
 import { useSelector } from "react-redux";
+import { Box } from "@mui/material";
+import { useForm } from "react-hook-form";
+import { attemptLogout, clearUser } from "../../redux/slices/authSlice";
+import localStorageUtility from "../../utils/localStorage/auth";
 
 function Copyright(props: any) {
   return (
@@ -34,7 +38,13 @@ function Copyright(props: any) {
 const defaultTheme = createTheme();
 
 export default function BloodBank() {
+  const { register, handleSubmit } = useForm();
+  const dispatch = useAppDispatch();
   const { user, role } = useSelector((state: RootState) => state.auth);
+  const onSubmit = () => {
+    dispatch(attemptLogout());
+  };
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <GlobalStyles
@@ -58,14 +68,16 @@ export default function BloodBank() {
             Donori krvi
           </Typography>
 
-          <Button
-            href="/logout"
-            variant="outlined"
-            color="inherit"
-            sx={{ my: 1, mx: 1.5 }}
-          >
-            Odjavite se
-          </Button>
+          <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+            <Button
+              type="submit"
+              variant="outlined"
+              color="inherit"
+              sx={{ my: 1, mx: 1.5 }}
+            >
+              Odjavite se
+            </Button>
+          </Box>
         </Toolbar>
       </AppBar>
       {/* Hero unit */}

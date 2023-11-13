@@ -31,6 +31,11 @@ const fetchUser = createAsyncThunk("auth/fetchUserStatus", async () => {
   }
 });
 
+const attemptLogout = createAsyncThunk("auth/logoutStatus", async () => {
+  const response = await authService.logout();
+  return response.data;
+});
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -60,11 +65,20 @@ const authSlice = createSlice({
         state.role = action.payload.role;
       }
     );
+
+    builder.addCase(
+      attemptLogout.fulfilled,
+      (state, action: PayloadAction<undefined>) => {
+        localStorageUtility.clearAuthToken();
+        state.user = undefined;
+        state.role = undefined;
+      }
+    );
   },
 });
 
 export const { clearUser } = authSlice.actions;
 
-export { attemptLogin, fetchUser };
+export { attemptLogin, fetchUser, attemptLogout };
 
 export default authSlice.reducer;

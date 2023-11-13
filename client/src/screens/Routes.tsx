@@ -12,21 +12,19 @@ import ProtectedRoute from "../components/common/ProtectedRoute";
 import { ROLE } from "../types/enums/Role";
 import Donor from "./Donor";
 import BloodBank from "./BloodBank";
+import { Logout } from "@mui/icons-material";
 
 const appRouter = createBrowserRouter(
   createRoutesFromElements(
     <>
-      <Route path="/">
-        <Route path="/main" element={<Main />} />
-        <Route element={<ProtectedRoute roles={[ROLE.Donor]} />}>
-          <Route path="/donor" element={<Donor />} />
-        </Route>
-        <Route element={<ProtectedRoute roles={[ROLE.BloodBank]} />}>
-          <Route path="/bloodbank" element={<BloodBank />} />
-        </Route>
-        <Route path="/login" element={<Login />} />
-        {/* <Route path="/register" element={<SignUp />} /> */}
+      <Route path="/" element={<Main />} />
+      <Route element={<ProtectedRoute roles={[ROLE.Donor]} />}>
+        <Route path="/donor" element={<Donor />} />
       </Route>
+      <Route element={<ProtectedRoute roles={[ROLE.BloodBank]} />}>
+        <Route path="/bloodbank" element={<BloodBank />} />
+      </Route>
+      <Route path="/login" element={<Login />} />
     </>
   )
 );

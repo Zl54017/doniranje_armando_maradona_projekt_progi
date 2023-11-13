@@ -9,11 +9,14 @@ const donorRouter = require("./routes/donor.routes");
 const bloodBankRouter = require("./routes/bloodbank.routes");
 const loginRouter = require("./routes/login.routes");
 const registerRouter = require("./routes/register.routes");
+const logoutRouter = require("./routes/logout.routes");
 
 app.use("/donor", donorRouter);
 app.use("/bloodbank", bloodBankRouter);
 app.use("/login", loginRouter);
 app.use("/register", registerRouter);
+app.use("/logout", logoutRouter);
+
 
 const portir = 5000;
 app.listen(portir);
