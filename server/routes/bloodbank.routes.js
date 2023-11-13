@@ -167,6 +167,104 @@ router.post("/takeBlood/:bloodType/:quantityToTake", async (req, res, next) => {
   }
 });
 
+//funkcija za slanje pozivnica donatorima ovisno o manjku pojedine krvne grupe
+router.post("/sendInvitations/:token", async (req, res, next) => {
+  const decoded = decode.jwtDecode(req.params.token);
+  try {
+    const bloodBank = await db.BloodBank.findOne({
+      where: {
+        id: decoded.id,
+      },
+    });
+
+    // Dohvati sve krvne grupe koje imaju manje od 10 litara zaliha
+    const lowInventoryBloodTypes = await db.Donation.findAll({
+      attributes: [
+        [Sequelize.literal('"donor"."bloodType"'), "bloodType"],
+        [Sequelize.literal("0.5 * COUNT(*)"), "totalQuantity"],
+      ],
+      include: [
+        {
+          model: db.Donor,
+          as: "donor",
+          attributes: [],
+          where: {
+            transfusionInstitute: bloodBank.name,
+          },
+        },
+      ],
+      where: {
+        used: false,
+      },
+      group: ["donor.bloodType"],
+      having: Sequelize.literal("totalQuantity < 10"),
+    });
+
+    // Dohvati donatore za svaku krvnu grupu s manje od 10 litara zaliha
+    const donorsToInvite = await db.Donor.findAll({
+      where: {
+        bloodType: lowInventoryBloodTypes.map((item) => item.dataValues.bloodType),
+      },
+    });
+
+    // Treba još implementirati sustav/kanal preko kojega slati pozivnice (e-mail, SMS...)
+
+    res.json({ success: true, message: "Invitations sent successfully." });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to send invitations" });
+  }
+});
+
+//funkcija za izdavanje potvrde donatoru
+router.post("/issueCertificate/:token", async (req, res, next) => {
+  const decoded = decode.jwtDecode(req.params.token);
+  try {
+    const bloodBank = await db.BloodBank.findOne({
+      where: {
+        id: decoded.id,
+      },
+    });
+
+    const { donorId, date } = req.body;
+
+    // Provjeri je li donacija već zabilježena za određenog donatora i datum
+    const existingDonation = await db.Donation.findOne({
+      where: {
+        donorId: donorId,
+        date: date,
+      },
+    });
+
+    if (!existingDonation) {
+      res.status(400).json({ error: "Donation not found for the specified donor and date." });
+      return;
+    }
+
+    // Provjeri je li potvrda već izdana
+    if (existingDonation.used) {
+      res.status(400).json({ error: "Certificate already issued for this donation." });
+      return;
+    }
+
+    // Označi donaciju kao iskorištenu
+    existingDonation.used = true;
+    await existingDonation.save();
+
+    // Kreiranje potvrdu
+    const newCertificate = await db.Certificate.create({
+      date: date,
+      donorId: donorId,
+      bloodBankId: bloodBank.id,
+    });
+
+    res.json(newCertificate.toJSON());
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to issue certificate" });
+  }
+});
+
 /**
  * Handle the POST request to add a donation.
  */
