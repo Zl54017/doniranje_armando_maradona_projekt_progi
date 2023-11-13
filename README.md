@@ -5,7 +5,7 @@ Tema: Darivanje krvi
 
 # Opis projektnog zadatka:
 
-Ovaj projekt je reultat timskog rada u sklopu projeknog zadatka kolegija [Programsko inženjerstvo](https://www.fer.unizg.hr/predmet/proinz) na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu.
+Ovaj projekt je rezultat timskog rada u sklopu projeknog zadatka kolegija [Programsko inženjerstvo](https://www.fer.unizg.hr/predmet/proinz) na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu.
 
 Cilj razvoja ove aplikacije je olakšanje prijavljivanja na doniranje krvi u svom ili nekom drugom gradu,
 lakše praćenje akcija Crvenog Križa te lakši izvadak potrebnih dokumenata i potvrda vezanih uz doniranje krvi.
@@ -17,7 +17,7 @@ Aplikacija treba omogućiti rad u stvarnom vremenu za više korisnika, prijavu k
 
 # Tehnologije
 
-Za izradu koristi se Node js, JavaScript, wiki te SQL. <br>
+Za izradu koristi se Node js, JavaScript, TypeScript, wiki te SQL. <br>
 
 # Članovi tima
 
