@@ -11,6 +11,9 @@ const Donation = require("../models/donation");
 const ActionRegistration = require("../models/actionregistration");
 const Sequelize = require("sequelize");
 
+const jwt = require("jsonwebtoken");
+const decode = require("jwt-decode");
+
 router.get("/", async (req, res, next) => {});
 
 /**
@@ -33,7 +36,7 @@ router.post("/", async (req, res) => {
         .json({ message: "Donor with email already exists" });
     }
 
-    const newDonor = await db.Donor.create({
+    const donor = await db.Donor.create({
       name: name,
       email: email,
       password: password,
@@ -42,9 +45,19 @@ router.post("/", async (req, res) => {
       numberOfDonations: 0,
     });
 
-    res
-      .status(201)
-      .json({ message: "Donor created successfully", donor: newDonor });
+    const data = {
+      id: donor.id,
+      email: donor.email,
+      role: "donor",
+    };
+
+    const token = jwt.sign(data, "progi123");
+
+    res.json({
+      user: donor,
+      role: "donor",
+      token: token,
+    });
   } catch (error) {
     console.error("Error creating donor:", error);
     res.status(500).json({ message: "Error creating donor" });

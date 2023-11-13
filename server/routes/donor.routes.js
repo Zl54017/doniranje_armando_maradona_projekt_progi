@@ -10,16 +10,19 @@ const Donation = require("../models/donation");
 const ActionRegistration = require("../models/actionregistration");
 const Sequelize = require("sequelize");
 
+const jwt = require("jsonwebtoken");
+const decode = require("jwt-decode");
+
 /**
  * Handle the POST request to retrieve a donor's donations.
  */
-router.post("/donations", async (req, res, next) => {
+router.post("/donations/:token", async (req, res, next) => {
+  const decoded = decode.jwtDecode(req.params.token);
   try {
     console.log(req.body);
     const donor = await db.Donor.findOne({
       where: {
-        email: req.body.email,
-        password: req.body.password,
+        id: decoded.id,
       },
     });
 
@@ -35,12 +38,12 @@ router.post("/donations", async (req, res, next) => {
 /**
  * Handle the POST request to retrieve all actions from donor's institute.
  */
-router.post("/actions", async (req, res, next) => {
+router.post("/actions/:token", async (req, res, next) => {
+  const decoded = decode.jwtDecode(req.params.token);
   try {
     const donor = await db.Donor.findOne({
       where: {
-        email: req.body.email,
-        password: req.body.password,
+        id: decoded.id,
       },
     });
     const bloodBank = await donor.getBloodBank();
@@ -84,12 +87,13 @@ router.get("/allActions", async (req, res, next) => {
  * Handle the POST request for action registration.
  * Creates a new action registration and returns a response.
  */
-router.post("/actionRegistration", async (req, res, next) => {
+router.post("/actionRegistration/:token", async (req, res, next) => {
+  const decoded = decode.jwtDecode(req.params.token);
   try {
-    const { actionId, donorId } = req.body;
+    const { actionId } = req.body;
     const newActionRegistration = await db.ActionRegistration.create({
       actionId: actionId,
-      donorId: donorId,
+      donorId: decoded.id,
     });
     res.json({
       message: "New Action Registration created",

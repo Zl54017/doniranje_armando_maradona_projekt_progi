@@ -10,17 +10,20 @@ const Donation = require("../models/donation");
 const ActionRegistration = require("../models/actionregistration");
 const Sequelize = require("sequelize");
 
+const jwt = require("jsonwebtoken");
+const decode = require("jwt-decode");
+
 router.get("/", async (req, res, next) => {});
 
 /**
  * Handle the POST request to retrieve inventory of blood
  */
-router.post("/inventory", async (req, res, next) => {
+router.post("/inventory/:token", async (req, res, next) => {
+  const decoded = decode.jwtDecode(req.params.token);
   try {
     const bloodBank = await db.BloodBank.findOne({
       where: {
-        email: req.body.email,
-        password: req.body.password,
+        id: decoded.id,
       },
     });
 
@@ -167,12 +170,12 @@ router.post("/takeBlood/:bloodType/:quantityToTake", async (req, res, next) => {
 /**
  * Handle the POST request to add a donation.
  */
-router.post("/addDonation", async (req, res, next) => {
+router.post("/addDonation/:token", async (req, res, next) => {
+  const decoded = decode.jwtDecode(req.params.token);
   try {
     const bloodBank = await db.BloodBank.findOne({
       where: {
-        email: req.body.email,
-        password: req.body.password,
+        id: decoded.id,
       },
     });
 
@@ -184,12 +187,6 @@ router.post("/addDonation", async (req, res, next) => {
       warning: warning,
       donorId: donorId,
       used: false,
-    });
-
-    const donor = await db.Donor.findOne({
-      where: {
-        id: donorId,
-      },
     });
 
     await db.Donor.update(

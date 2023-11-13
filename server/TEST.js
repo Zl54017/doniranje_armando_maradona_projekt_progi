@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-const address = "http://127.0.0.1:3000/";
+const address = "http://127.0.0.1:5000/";
 
 async function login(email, password) {
   const url = address + "login";
@@ -13,6 +13,8 @@ async function login(email, password) {
   try {
     const response = await axios.post(url, requestBody);
     console.log(response.data);
+    const { token } = response.data;
+    return token;
   } catch (error) {
     console.error(error);
   }
@@ -38,37 +40,29 @@ async function register(
   try {
     const response = await axios.post(url, requestBody);
     console.log(response.data);
+    const { token } = response.data;
+    return token;
   } catch (error) {
     console.error(error);
   }
 }
 
-async function donations(email, password) {
-  const url = address + "donor/donations";
-
-  const requestBody = {
-    email,
-    password,
-  };
+async function donations(token) {
+  const url = `${address}donor/donations/${token}`;
 
   try {
-    const response = await axios.post(url, requestBody);
+    const response = await axios.post(url);
     console.log(response.data);
   } catch (error) {
     console.error(error);
   }
 }
 
-async function actions(email, password) {
-  const url = address + "donor/actions";
-
-  const requestBody = {
-    email,
-    password,
-  };
+async function actions(token) {
+  const url = `${address}donor/actions/${token}`;
 
   try {
-    const response = await axios.post(url, requestBody);
+    const response = await axios.post(url);
     console.log(response.data);
   } catch (error) {
     console.error(error);
@@ -86,12 +80,11 @@ async function allActions() {
   }
 }
 
-async function actionRegistration(actionId, donorId) {
-  const url = address + "donor/actionRegistration";
+async function actionRegistration(token, actionId) {
+  const url = `${address}donor/actionRegistration/${token}`;
 
   const requestBody = {
     actionId,
-    donorId,
   };
 
   try {
@@ -102,28 +95,21 @@ async function actionRegistration(actionId, donorId) {
   }
 }
 
-async function inventory(email, password) {
-  const url = address + "bloodbank/inventory";
-
-  const requestBody = {
-    email,
-    password,
-  };
+async function inventory(token) {
+  const url = `${address}bloodbank/inventory/${token}`;
 
   try {
-    const response = await axios.post(url, requestBody);
+    const response = await axios.post(url);
     console.log(response.data);
   } catch (error) {
     console.error(error);
   }
 }
 
-async function addDonation(email, password, donorId, warning, date) {
-  const url = address + "bloodbank/addDonation";
+async function addDonation(token, donorId, warning, date) {
+  const url = `${address}bloodbank/addDonation/${token}`;
 
   const requestBody = {
-    email,
-    password,
     donorId,
     warning,
     date,
@@ -153,31 +139,31 @@ async function registrations(actionId) {
 }
 
 async function TEST() {
-  await login("b", "b");
+  var token = await login("johndoe@example.com", "password123");
 
-  await login("johndoe@example.com", "password123");
+  await donations(token);
 
-  await register(
+  await actions(token);
+
+  await allActions();
+
+  await actionRegistration(token, 3);
+
+  token = await login("b", "b");
+
+  await inventory(token);
+
+  await addDonation(token, 1, "", new Date());
+
+  await registrations(3);
+
+  token = await register(
     "bruno",
-    "mail",
+    "2",
     "sifra",
     "A+",
     "Hrvatski zavod za transfuzijsku medicinu Zagreb"
   );
-
-  await donations("janesmith@example.com", "securepass");
-
-  await actions("janesmith@example.com", "securepass");
-
-  await allActions();
-
-  await actionRegistration(3, 3);
-
-  await inventory("zagreb", "zagreb");
-
-  await addDonation("b", "b", 1, "", new Date());
-
-  await registrations(3);
 }
 
 TEST();
