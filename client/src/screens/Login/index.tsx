@@ -61,11 +61,20 @@ export default function Login() {
       dispatch(fetchUser());
     } else if (
       user !== undefined &&
-      localStorageUtility.getAuthToken() !== null
+      localStorageUtility.getAuthToken() !== null &&
+      location.pathname !== "/login"
     ) {
+      console.log(location);
       navigate(`${location.state.from.pathname}`);
     } else if (localStorageUtility.getAuthToken() === null) {
       dispatch(clearUser());
+    } else if (
+      user !== undefined &&
+      localStorageUtility.getAuthToken() !== null &&
+      location.pathname === "/login"
+    ) {
+      navigate(`/${role}`);
+      console.log(role);
     }
   }, [user]);
 
@@ -115,10 +124,7 @@ export default function Login() {
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Zapamti me"
-            />
+
             <Button
               type="submit"
               fullWidth
@@ -128,13 +134,8 @@ export default function Login() {
               Prijavi se
             </Button>
             <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Zaboravljena lozinka?
-                </Link>
-              </Grid>
               <Grid item>
-                <Link href="/signup" variant="body2">
+                <Link href="/register" variant="body2">
                   {"Registriraj se"}
                 </Link>
               </Grid>

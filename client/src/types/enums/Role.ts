@@ -1,4 +1,4 @@
 export enum ROLE {
-  Admin = "admin",
+  BloodBank = "bloodBank",
   Donor = "donor",
 }

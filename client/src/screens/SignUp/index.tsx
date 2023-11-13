@@ -111,14 +111,6 @@ export default function SignUp() {
                   autoComplete="new-password"
                 />
               </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Checkbox value="allowExtraEmails" color="primary" />
-                  }
-                  label="Želim dobivati obavijesti putem emaila."
-                />
-              </Grid>
             </Grid>
             <Button
               type="submit"

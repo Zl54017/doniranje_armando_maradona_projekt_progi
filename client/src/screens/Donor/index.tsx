@@ -9,6 +9,8 @@ import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import GlobalStyles from "@mui/material/GlobalStyles";
 import Container from "@mui/material/Container";
+import { RootState } from "../../redux/store";
+import { useSelector } from "react-redux";
 
 function Copyright(props: any) {
   return (
@@ -31,7 +33,8 @@ function Copyright(props: any) {
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-export default function Main() {
+export default function Donor() {
+  const { user, role } = useSelector((state: RootState) => state.auth);
   return (
     <ThemeProvider theme={defaultTheme}>
       <GlobalStyles
@@ -72,12 +75,12 @@ export default function Main() {
             Novosti
           </Link>
           <Button
-            href="/login"
+            href="/logout"
             variant="outlined"
             color="inherit"
             sx={{ my: 1, mx: 1.5 }}
           >
-            Prijavi se
+            Odjavite se
           </Button>
         </Toolbar>
       </AppBar>
@@ -94,8 +97,8 @@ export default function Main() {
           color="text.secondary"
           component="p"
         >
-          Aplikacija koja će Vam dati sve informacije potrebne za dobrovoljno
-          darivanje krvi.
+          Pozdrav {user !== undefined ? user.name : ""}. Ova aplikacija će Vam
+          olakšati proces darivanja krvi!
         </Typography>
       </Container>
       {/* End hero unit */}

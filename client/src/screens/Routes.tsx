@@ -10,16 +10,24 @@ import SignUp from "./SignUp";
 import Main from "./Main";
 import ProtectedRoute from "../components/common/ProtectedRoute";
 import { ROLE } from "../types/enums/Role";
+import Donor from "./Donor";
+import BloodBank from "./BloodBank";
 
 const appRouter = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/">
-      <Route element={<ProtectedRoute roles={[ROLE.Admin]} />}>
+    <>
+      <Route path="/">
         <Route path="/main" element={<Main />} />
-        <Route path="/severina" element={<>seve rina</>} />
+        <Route element={<ProtectedRoute roles={[ROLE.Donor]} />}>
+          <Route path="/donor" element={<Donor />} />
+        </Route>
+        <Route element={<ProtectedRoute roles={[ROLE.BloodBank]} />}>
+          <Route path="/bloodbank" element={<BloodBank />} />
+        </Route>
+        <Route path="/login" element={<Login />} />
+        {/* <Route path="/register" element={<SignUp />} /> */}
       </Route>
-      <Route path="/login" element={<Login />} />
-    </Route>
+    </>
   )
 );
 
