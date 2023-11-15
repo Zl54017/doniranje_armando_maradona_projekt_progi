@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const bodyParser = require("body-parser");
+const crypto = require("crypto");
 
 const db = require("../models");
 const Donor = require("../models/donor");
@@ -23,6 +24,11 @@ router.get("/", async (req, res, next) => {});
 router.post("/", async (req, res) => {
   const { name, email, password, bloodType, transfusionInstitute } = req.body;
 
+  const hashedPassword = crypto
+    .createHash("sha256")
+    .update(password)
+    .digest("hex");
+
   try {
     const existingDonor = await db.Donor.findOne({
       where: {
@@ -39,7 +45,7 @@ router.post("/", async (req, res) => {
     const donor = await db.Donor.create({
       name: name,
       email: email,
-      password: password,
+      password: hashedPassword,
       bloodType: bloodType,
       transfusionInstitute: transfusionInstitute,
       numberOfDonations: 0,

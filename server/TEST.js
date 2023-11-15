@@ -158,7 +158,7 @@ async function TEST() {
   await registrations(3);
 
   token = await register(
-    "bruno",
+    "armando",
     "2",
     "sifra",
     "A+",

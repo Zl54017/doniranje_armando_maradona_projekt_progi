@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const bodyParser = require("body-parser");
+const crypto = require("crypto");
 
 const db = require("../models");
 const Donor = require("../models/donor");
@@ -51,10 +52,15 @@ router.get("/:token", async (req, res, next) => {
 router.post("/", async (req, res) => {
   const { email, password } = req.body;
 
+  const hashedPassword = crypto
+    .createHash("sha256")
+    .update(password)
+    .digest("hex");
+
   const donor = await db.Donor.findOne({
     where: {
       email: email,
-      password: password,
+      password: hashedPassword,
     },
   });
   if (donor) {
@@ -74,7 +80,7 @@ router.post("/", async (req, res) => {
     const bloodBank = await db.BloodBank.findOne({
       where: {
         email: email,
-        password: password,
+        password: hashedPassword,
       },
     });
 
