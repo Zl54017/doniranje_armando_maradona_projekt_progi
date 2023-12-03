@@ -203,7 +203,9 @@ router.post("/sendInvitations/:token", async (req, res, next) => {
     // Dohvati donatore za svaku krvnu grupu s manje od 10 litara zaliha
     const donorsToInvite = await db.Donor.findAll({
       where: {
-        bloodType: lowInventoryBloodTypes.map((item) => item.dataValues.bloodType),
+        bloodType: lowInventoryBloodTypes.map(
+          (item) => item.dataValues.bloodType
+        ),
       },
     });
 
@@ -237,13 +239,17 @@ router.post("/issueCertificate/:token", async (req, res, next) => {
     });
 
     if (!existingDonation) {
-      res.status(400).json({ error: "Donation not found for the specified donor and date." });
+      res.status(400).json({
+        error: "Donation not found for the specified donor and date.",
+      });
       return;
     }
 
     // Provjeri je li potvrda već izdana
     if (existingDonation.used) {
-      res.status(400).json({ error: "Certificate already issued for this donation." });
+      res
+        .status(400)
+        .json({ error: "Certificate already issued for this donation." });
       return;
     }
 
@@ -320,6 +326,27 @@ router.post("/registrations", async (req, res, next) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Failed to retrieve registrations" });
+  }
+});
+
+/**
+ * Handle the GET request to retrieve all blood banks for selection (id and names).
+ */
+router.get("/allBloodBanks", async (req, res, next) => {
+  try {
+    const bloodbanks = await db.BloodBank.findAll({
+      attributes: ["id", "name"],
+    });
+
+    const bloodbankDictionary = bloodbanks.reduce((acc, bloodbank) => {
+      acc[bloodbank.id] = bloodbank.name;
+      return acc;
+    }, {});
+
+    res.json(bloodbankDictionary);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to retrieve blood banks" });
   }
 });
 

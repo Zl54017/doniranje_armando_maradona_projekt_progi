@@ -1,23 +1,41 @@
 {
   "development": {
     "username": "armando",
-    "password": "maradona",
+    "password": "xFYwI4bdP8KHUO9bh2LCrYOe9tmmIJwW",
     "database": "donationsdb",
-    "host": "127.0.0.1",
-    "dialect": "postgres"
+    "host": "dpg-clm5ta4jtl8s73es5krg-a.frankfurt-postgres.render.com",
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false 
+      }
+    }
   },
   "test": {
     "username": "armando",
-    "password": "maradona",
+    "password": "xFYwI4bdP8KHUO9bh2LCrYOe9tmmIJwW",
     "database": "donationsdb",
-    "host": "127.0.0.1",
-    "dialect": "postgres"
+    "host": "dpg-clm5ta4jtl8s73es5krg-a.frankfurt-postgres.render.com",
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false 
+      }
+    }
   },
   "production": {
     "username": "armando",
-    "password": "maradona",
+    "password": "xFYwI4bdP8KHUO9bh2LCrYOe9tmmIJwW",
     "database": "donationsdb",
-    "host": "127.0.0.1",
-    "dialect": "postgres"
+    "host": "dpg-clm5ta4jtl8s73es5krg-a.frankfurt-postgres.render.com",
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false 
+      }
+    }
   }
 }

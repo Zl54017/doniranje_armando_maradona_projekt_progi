@@ -47,6 +47,26 @@ async function register(
   }
 }
 
+async function registerEmployee(name, email, password, bloodBankId) {
+  const url = address + "employee/register";
+
+  const requestBody = {
+    name,
+    email,
+    password,
+    bloodBankId,
+  };
+
+  try {
+    const response = await axios.post(url, requestBody);
+    console.log(response.data);
+    const { token } = response.data;
+    return token;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 async function donations(token) {
   const url = `${address}donor/donations/${token}`;
 
@@ -138,6 +158,17 @@ async function registrations(actionId) {
   }
 }
 
+async function allBloodBanks() {
+  const url = address + "bloodbank/allBloodBanks";
+
+  try {
+    const response = await axios.get(url);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 async function TEST() {
   var token = await login("johndoe@example.com", "password123");
 
@@ -166,4 +197,30 @@ async function TEST() {
   );
 }
 
-//TEST();
+async function loginTest() {
+  var token = await login("RenatoMatić@gmail.com", "password");
+
+  var token = await login("KBCOsijek@gmail.com", "password");
+
+  var token = await login("LukaModrić@gmail.com", "password");
+}
+
+async function registerTest() {
+  token = await register(
+    "Bruno Galić",
+    "BrunoGalić@gmail.com",
+    "password",
+    "A+",
+    "Hrvatski zavod za transfuzijsku medicinu Zagreb"
+  );
+
+  token = await registerEmployee(
+    "Fran Galić",
+    "FranGalić@gmail.com",
+    "password",
+    1
+  );
+}
+
+//loginTest();
+//registerTest();

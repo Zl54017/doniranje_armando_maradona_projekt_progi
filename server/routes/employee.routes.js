@@ -10,6 +10,7 @@ const Action = require("../models/action");
 const Certificate = require("../models/certificate");
 const Donation = require("../models/donation");
 const ActionRegistration = require("../models/actionregistration");
+const Employee = require("../models/employee");
 const Sequelize = require("sequelize");
 
 const jwt = require("jsonwebtoken");
@@ -18,11 +19,11 @@ const decode = require("jwt-decode");
 router.get("/", async (req, res, next) => {});
 
 /**
- * Create a new donor.
- * Checks if donor with given email already exists.
+ * Create a new employee.
+ * Checks if employee with given email already exists.
  */
-router.post("/", async (req, res) => {
-  const { name, email, password, bloodType, transfusionInstitute } = req.body;
+router.post("/register", async (req, res) => {
+  const { name, email, password, bloodBankId } = req.body;
 
   const hashedPassword = crypto
     .createHash("sha256")
@@ -30,52 +31,41 @@ router.post("/", async (req, res) => {
     .digest("hex");
 
   try {
-    const existingDonor = await db.Donor.findOne({
+    const existingEmployee = await db.Employee.findOne({
       where: {
         email: email,
       },
     });
 
-    if (existingDonor) {
+    if (existingEmployee) {
       return res
         .status(401)
-        .json({ message: "Donor with email already exists" });
+        .json({ message: "Employee with email already exists" });
     }
 
-    const donor = await db.Donor.create({
+    const employee = await db.Employee.create({
       name: name,
       email: email,
       password: hashedPassword,
-      bloodType: bloodType,
-      transfusionInstitute: transfusionInstitute,
-      numberOfDonations: 0,
+      bloodBankId: bloodBankId,
     });
 
-    await db.BloodBank.update(
-      { numberOfDonors: db.sequelize.literal('"numberOfDonors" + 1') },
-      {
-        where: {
-          name: transfusionInstitute,
-        },
-      }
-    );
-
     const data = {
-      id: donor.id,
-      email: donor.email,
-      role: "donor",
+      id: employee.id,
+      email: employee.email,
+      role: "employee",
     };
 
     const token = jwt.sign(data, "progi123");
 
     res.json({
-      user: donor,
-      role: "donor",
+      user: employee,
+      role: "employee",
       token: token,
     });
   } catch (error) {
-    console.error("Error creating donor:", error);
-    res.status(500).json({ message: "Error creating donor" });
+    console.error("Error creating employee:", error);
+    res.status(500).json({ message: "Error creating employee" });
   }
 });
 

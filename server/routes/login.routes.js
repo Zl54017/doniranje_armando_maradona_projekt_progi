@@ -10,6 +10,7 @@ const Action = require("../models/action");
 const Certificate = require("../models/certificate");
 const Donation = require("../models/donation");
 const ActionRegistration = require("../models/actionregistration");
+const Employee = require("../models/employee");
 const Sequelize = require("sequelize");
 
 const jwt = require("jsonwebtoken");
@@ -63,6 +64,21 @@ router.post("/", async (req, res) => {
       password: hashedPassword,
     },
   });
+
+  const bloodBank = await db.BloodBank.findOne({
+    where: {
+      email: email,
+      password: hashedPassword,
+    },
+  });
+
+  const employee = await db.Employee.findOne({
+    where: {
+      email: email,
+      password: hashedPassword,
+    },
+  });
+
   if (donor) {
     const data = {
       id: donor.id,
@@ -76,32 +92,36 @@ router.post("/", async (req, res) => {
       role: "donor",
       token: token,
     });
-  } else {
-    const bloodBank = await db.BloodBank.findOne({
-      where: {
-        email: email,
-        password: hashedPassword,
-      },
+  } else if (bloodBank) {
+    const data = {
+      id: bloodBank.id,
+      email: bloodBank.email,
+      role: "bloodBank",
+    };
+    const token = jwt.sign(data, "progi123");
+
+    res.json({
+      user: bloodBank,
+      role: "bloodBank",
+      token: token,
     });
+  } else if (employee) {
+    const data = {
+      id: employee.id,
+      email: employee.email,
+      role: "employee",
+    };
+    const token = jwt.sign(data, "progi123");
 
-    if (bloodBank) {
-      const data = {
-        id: bloodBank.id,
-        email: bloodBank.email,
-        role: "bloodBank",
-      };
-      const token = jwt.sign(data, "progi123");
-
-      res.json({
-        user: bloodBank,
-        role: "bloodBank",
-        token: token,
-      });
-    } else {
-      res.status(401).json({
-        message: "Login failed",
-      });
-    }
+    res.json({
+      user: employee,
+      role: "employee",
+      token: token,
+    });
+  } else {
+    res.status(401).json({
+      message: "Login failed",
+    });
   }
 });
 

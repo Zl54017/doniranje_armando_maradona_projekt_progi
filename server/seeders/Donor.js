@@ -124,8 +124,8 @@ module.exports = {
         email: name.replace(/\s/g, "") + "@gmail.com",
         password:
           "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
-        bloodType: bloodTypes[i % 7],
-        transfusionInstitute: instituteNames[i % 6],
+        bloodType: bloodTypes[i % 8],
+        transfusionInstitute: instituteNames[i % 7],
         numberOfDonations: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
