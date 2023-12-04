@@ -13,6 +13,7 @@ import { ROLE } from "../types/enums/Role";
 import Donor from "./Donor";
 import BloodBank from "./BloodBank";
 import { Logout } from "@mui/icons-material";
+import Employee from "./Employee";
 
 const appRouter = createBrowserRouter(
   createRoutesFromElements(
@@ -23,6 +24,9 @@ const appRouter = createBrowserRouter(
       </Route>
       <Route element={<ProtectedRoute roles={[ROLE.BloodBank]} />}>
         <Route path="/bloodbank" element={<BloodBank />} />
+      </Route>
+      <Route element={<ProtectedRoute roles={[ROLE.Employee]} />}>
+        <Route path="/employee" element={<Employee />} />
       </Route>
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />

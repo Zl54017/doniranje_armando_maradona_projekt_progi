@@ -111,59 +111,83 @@ export default function SignUp() {
                 <MenuItem value="zavod">Djelatnik zavoda</MenuItem>
               </Select>
             </FormControl>
-
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="Ime"
-                  autoFocus
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Prezime"
-                  name="lastName"
-                  autoComplete="family-name"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Adresa"
-                  name="email"
-                  autoComplete="email"
-                />
-              </Grid>
 
-              <Grid item xs={12}>
-                <TextField
-                  select
-                  required
-                  fullWidth
-                  id="institutionName"
-                  label="Ime Zavoda"
-                  name="institutionName"
-                >
-                  <MenuItem value ="KBC Osijek">KBC Osijek</MenuItem>
-                  <MenuItem value ="KBC Rijeka">KBC Rijeka</MenuItem>
-                  <MenuItem value ="KBC Split">KBC Split</MenuItem>
-                  <MenuItem value ="OB Dubrovnik">OB Dubrovnil</MenuItem>
-                  <MenuItem value ="OB Varaždin">OB Varaždin</MenuItem>
-                  <MenuItem value ="OB Zadar">OB Zadar</MenuItem>
-                  <MenuItem value ="Hrvatski zavod za transfuzijsku medicinu Zagreb">Hrvatski zavod za transfuzijsku medicinu Zagreb</MenuItem>
+              {(registrationType === 'donor' || registrationType === 'zavod') && (
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      autoComplete="given-name"
+                      name="firstName"
+                      required
+                      fullWidth
+                      id="firstName"
+                      label="Ime"
+                      autoFocus
+                    />
+                  </Grid>
+              )}
+              
+              {(registrationType === 'donor' || registrationType === 'zavod') && (
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="lastName"
+                    label="Prezime"
+                    name="lastName"
+                    autoComplete="family-name"
+                  />
+                </Grid>
+              )}
 
-                </TextField>
-              </Grid>
+              {(registrationType === 'donor' || registrationType === 'zavod') && (
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="email"
+                    label="Email Adresa"
+                    name="email"
+                    autoComplete="email"
+                  />
+                </Grid>
+              )}
+
+              {(registrationType === 'donor' || registrationType === 'zavod') && (
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="password"
+                    type = "password"
+                    label="Lozinka"
+                    name="lozinka"
+                    autoComplete="lozinka"
+                  />
+                </Grid>
+              )}
+              
+              {(registrationType ==='donor' || registrationType === 'zavod') &&(
+                <Grid item xs={12}>
+                  <TextField
+                    select
+                    required
+                    fullWidth
+                    id="institutionName"
+                    label="Ime Zavoda"
+                    name="institutionName"
+                  >
+                    <MenuItem value ="KBC Osijek">KBC Osijek</MenuItem>
+                    <MenuItem value ="KBC Rijeka">KBC Rijeka</MenuItem>
+                    <MenuItem value ="KBC Split">KBC Split</MenuItem>
+                    <MenuItem value ="OB Dubrovnik">OB Dubrovnil</MenuItem>
+                    <MenuItem value ="OB Varaždin">OB Varaždin</MenuItem>
+                    <MenuItem value ="OB Zadar">OB Zadar</MenuItem>
+                    <MenuItem value ="Hrvatski zavod za transfuzijsku medicinu Zagreb">Hrvatski zavod za transfuzijsku medicinu Zagreb</MenuItem>
+
+                  </TextField>
+                </Grid>
+              )}
 
               {registrationType === 'donor' && (
                 <Grid item xs={12}>
