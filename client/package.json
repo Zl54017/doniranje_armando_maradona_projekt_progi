@@ -47,13 +47,17 @@
     "web-vitals": "^3.5.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
-    "fix": "eslint src --ext .js,.jsx,.ts,.tsx  --fix"
+  "start": "react-scripts start",
+  "start-prod": "serve -s build",
+  "prebuild": "npm install",
+  "build": "react-scripts build",
+  "test": "react-scripts test",
+  "eject": "react-scripts eject"
   },
+  "engines": {
+    "node": ">=18.18.0 <19.0.0"
+  },
+
   "eslintConfig": {
     "extends": "react-app"
   },
