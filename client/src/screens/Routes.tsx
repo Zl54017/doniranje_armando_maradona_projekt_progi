@@ -25,6 +25,7 @@ const appRouter = createBrowserRouter(
         <Route path="/bloodbank" element={<BloodBank />} />
       </Route>
       <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<SignUp />} />
     </>
   )
 );

@@ -135,7 +135,7 @@ export default function Login() {
             </Button>
             <Grid container>
               <Grid item>
-                <Link href="/register" variant="body2">
+                <Link href="/signup" variant="body2">
                   {"Registriraj se"}
                 </Link>
               </Grid>
