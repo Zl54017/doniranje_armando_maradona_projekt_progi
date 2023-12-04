@@ -3,9 +3,9 @@ TG07 Grupa 1 - Armando Maradona <br>
 Tema: Darivanje krvi <br><br>
 Link za stranicu: https://donacije-mayr.onrender.com/<br>
 Testni podaci:  <br>
-Donor - LukaModrić@gmail.com password<br>
-BloodBank - KBCOsijek@gmail.com password<br>
-Employees - RenatoMatić@gmail.com password<br>
+Donor - username: LukaModrić@gmail.com, password: password<br>
+BloodBank - username: KBCOsijek@gmail.com, password: password<br>
+Employees - username: RenatoMatić@gmail.com, password: password<br>
 
 # Opis projektnog zadatka:
 Ovaj projekt je reultat timskog rada u sklopu projeknog zadatka kolegija [Programsko inženjerstvo](https://www.fer.unizg.hr/predmet/proinz) na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu.
