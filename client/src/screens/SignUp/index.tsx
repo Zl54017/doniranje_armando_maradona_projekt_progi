@@ -59,25 +59,8 @@ function SignUp() {
   };
 
   React.useEffect(() => {
-    if (localStorageUtility.getAuthToken() !== null && user === undefined) {
-      dispatch(fetchUser());
-    } else if (
-      user !== undefined &&
-      localStorageUtility.getAuthToken() !== null &&
-      location.pathname !== "/register"
-    ) {
-      console.log(location);
-      navigate(`${location.state.from.pathname}`);
-    } else if (localStorageUtility.getAuthToken() === null) {
-      dispatch(clearUser());
-    } else if (
-      user !== undefined &&
-      localStorageUtility.getAuthToken() !== null &&
-      location.pathname === "/register"
-    ) {
       navigate(`/${role}`);
       console.log(role);
-    }
   }, [user]);
 
   return (
@@ -131,7 +114,6 @@ function SignUp() {
               {(registrationType === 'donor' || registrationType === 'zavod') && (
                 <Grid item xs={12} sm={6}>
                   <TextField
-                    autoComplete="given-name"
                     name="firstName"
                     required
                     fullWidth
@@ -150,7 +132,6 @@ function SignUp() {
                     id="lastName"
                     label="Prezime"
                     name="lastName"
-                    autoComplete="family-name"
                   />
                 </Grid>
               )}
@@ -163,7 +144,6 @@ function SignUp() {
                     id="email"
                     label="Email Adresa"
                     name="email"
-                    autoComplete="email"
                   />
                 </Grid>
               )}

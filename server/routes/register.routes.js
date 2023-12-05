@@ -22,7 +22,7 @@ router.get("/", async (req, res, next) => {});
  * Checks if donor with given email already exists.
  */
 router.post("/", async (req, res) => {
-  const { name, email, password, bloodType, transfusionInstitute } = req.body;
+  const { firstName, lastName, email, password, bloodType, transfusionInstitute } = req.body;
 
   const hashedPassword = crypto
     .createHash("sha256")
@@ -43,7 +43,7 @@ router.post("/", async (req, res) => {
     }
 
     const donor = await db.Donor.create({
-      name: name,
+      name: firstName+lastName,
       email: email,
       password: hashedPassword,
       bloodType: bloodType,
