@@ -4,6 +4,8 @@ import authService from "../../services/api/routes/auth";
 import localStorageUtility from "../../utils/localStorage/auth";
 import AuthUser from "../../types/inputs/user/AuthUser";
 import { ROLE } from "../../types/enums/Role";
+import { create } from "domain";
+import RegisterInput from "../../types/inputs/user/RegisterInput";
 
 interface AuthState {
   user: LoginInput | undefined;
@@ -19,6 +21,14 @@ const attemptLogin = createAsyncThunk(
   "auth/loginStatus",
   async (user: LoginInput) => {
     const response = await authService.login(user);
+    return response.data;
+  }
+);
+
+const attemptRegister = createAsyncThunk(
+  "auth/registerStatus",
+  async (user: RegisterInput) => {
+    const response = await authService.register(user);
     return response.data;
   }
 );
@@ -74,11 +84,21 @@ const authSlice = createSlice({
         state.role = undefined;
       }
     );
+
+    builder.addCase(
+      attemptRegister.fulfilled,
+      (state, action: PayloadAction<AuthUser>) => {
+        const payload = action.payload;
+        localStorageUtility.setAuthToken(payload.token);
+        state.user = payload.user;
+        state.role = payload.role;
+      }
+    );
   },
 });
 
 export const { clearUser } = authSlice.actions;
 
-export { attemptLogin, fetchUser, attemptLogout };
+export { attemptLogin, fetchUser, attemptLogout, attemptRegister };
 
 export default authSlice.reducer;

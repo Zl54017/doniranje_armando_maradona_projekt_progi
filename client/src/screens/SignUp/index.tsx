@@ -14,6 +14,15 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useState } from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import axios from 'axios';
+import { RootState, useAppDispatch } from "../../redux/store";
+import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { useNavigate, useLocation } from "react-router-dom";
+import LoginInput from "../../types/inputs/user/LoginInput";
+import { attemptLogin, attemptRegister, clearUser, fetchUser } from "../../redux/slices/authSlice";
+import RegisterInput from "../../types/inputs/user/RegisterInput";
+import localStorageUtility from "../../utils/localStorage/auth";
 
 function Copyright(props: any) {
   return (
@@ -36,33 +45,40 @@ function Copyright(props: any) {
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-export default function SignUp() {
+function SignUp() {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { register, handleSubmit } = useForm<RegisterInput>();
+  const { user, role } = useSelector((state: RootState) => state.auth);
+
   const [registrationType, setRegistrationType] = useState('');
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-
-    if (registrationType === 'donor') {
-      console.log({
-        type: 'Donor',
-        firstName: data.get('firstName'),
-        lastName: data.get('lastName'),
-        email: data.get('email'),
-        bloodGroup: data.get('bloodGroup'),
-      });
-      // Dodajte logiku za registraciju kao donor
-    } else if (registrationType === 'zavod') {
-      console.log({
-        type: 'Zavod',
-        firstName: data.get('firstName'),
-        lastName: data.get('lastName'),
-        email: data.get('email'),
-        institutionName: data.get('institutionName'),
-      });
-      // Dodajte logiku za registraciju kao djelatnik zavoda
-    }
+  const onSubmit = (response: RegisterInput) => {
+    dispatch(attemptRegister(response));
   };
+
+  React.useEffect(() => {
+    if (localStorageUtility.getAuthToken() !== null && user === undefined) {
+      dispatch(fetchUser());
+    } else if (
+      user !== undefined &&
+      localStorageUtility.getAuthToken() !== null &&
+      location.pathname !== "/register"
+    ) {
+      console.log(location);
+      navigate(`${location.state.from.pathname}`);
+    } else if (localStorageUtility.getAuthToken() === null) {
+      dispatch(clearUser());
+    } else if (
+      user !== undefined &&
+      localStorageUtility.getAuthToken() !== null &&
+      location.pathname === "/register"
+    ) {
+      navigate(`/${role}`);
+      console.log(role);
+    }
+  }, [user]);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -85,7 +101,7 @@ export default function SignUp() {
           <Box
             component="form"
             noValidate
-            onSubmit={handleSubmit}
+            onSubmit={handleSubmit(onSubmit)}
             sx={{ mt: 3 }}
           >
             <FormControl fullWidth sx={{ mt: 2 }}>
@@ -112,19 +128,18 @@ export default function SignUp() {
               </Select>
             </FormControl>
             <Grid container spacing={2}>
-
               {(registrationType === 'donor' || registrationType === 'zavod') && (
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      autoComplete="given-name"
-                      name="firstName"
-                      required
-                      fullWidth
-                      id="firstName"
-                      label="Ime"
-                      autoFocus
-                    />
-                  </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    autoComplete="given-name"
+                    name="firstName"
+                    required
+                    fullWidth
+                    id="firstName"
+                    label="Ime"
+                    autoFocus
+                  />
+                </Grid>
               )}
               
               {(registrationType === 'donor' || registrationType === 'zavod') && (
@@ -159,15 +174,15 @@ export default function SignUp() {
                     required
                     fullWidth
                     id="password"
-                    type = "password"
+                    type="password"
                     label="Lozinka"
-                    name="lozinka"
-                    autoComplete="lozinka"
+                    name="password"
+                    autoComplete="password"
                   />
                 </Grid>
               )}
               
-              {(registrationType ==='donor' || registrationType === 'zavod') &&(
+              {(registrationType === 'donor' || registrationType === 'zavod') && (
                 <Grid item xs={12}>
                   <TextField
                     select
@@ -177,14 +192,13 @@ export default function SignUp() {
                     label="Ime Zavoda"
                     name="institutionName"
                   >
-                    <MenuItem value ="KBC Osijek">KBC Osijek</MenuItem>
-                    <MenuItem value ="KBC Rijeka">KBC Rijeka</MenuItem>
-                    <MenuItem value ="KBC Split">KBC Split</MenuItem>
-                    <MenuItem value ="OB Dubrovnik">OB Dubrovnil</MenuItem>
-                    <MenuItem value ="OB Varaždin">OB Varaždin</MenuItem>
-                    <MenuItem value ="OB Zadar">OB Zadar</MenuItem>
-                    <MenuItem value ="Hrvatski zavod za transfuzijsku medicinu Zagreb">Hrvatski zavod za transfuzijsku medicinu Zagreb</MenuItem>
-
+                    <MenuItem value="KBC Osijek">KBC Osijek</MenuItem>
+                    <MenuItem value="KBC Rijeka">KBC Rijeka</MenuItem>
+                    <MenuItem value="KBC Split">KBC Split</MenuItem>
+                    <MenuItem value="OB Dubrovnik">OB Dubrovnik</MenuItem>
+                    <MenuItem value="OB Varaždin">OB Varaždin</MenuItem>
+                    <MenuItem value="OB Zadar">OB Zadar</MenuItem>
+                    <MenuItem value="Hrvatski zavod za transfuzijsku medicinu Zagreb">Hrvatski zavod za transfuzijsku medicinu Zagreb</MenuItem>
                   </TextField>
                 </Grid>
               )}
@@ -229,6 +243,9 @@ export default function SignUp() {
           </Box>
         </Box>
       </Container>
+      <Copyright sx={{ mt: 8, mb: 4 }} />
     </ThemeProvider>
   );
 }
+
+export default SignUp;
