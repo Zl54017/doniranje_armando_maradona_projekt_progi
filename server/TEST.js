@@ -222,5 +222,5 @@ async function registerTest() {
   );
 }
 
-//loginTest();
+loginTest();
 //registerTest();
