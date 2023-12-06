@@ -21,7 +21,8 @@ async function login(email, password) {
 }
 
 async function register(
-  name,
+  firstName,
+  lastName,
   email,
   password,
   bloodType,
@@ -30,7 +31,8 @@ async function register(
   const url = address + "register";
 
   const requestBody = {
-    name,
+    firstName,
+    lastName,
     email,
     password,
     bloodType,
@@ -47,11 +49,12 @@ async function register(
   }
 }
 
-async function registerEmployee(name, email, password, bloodBankId) {
+async function registerEmployee(firstName, lastName, email, password, bloodBankId) {
   const url = address + "employee/register";
 
   const requestBody = {
-    name,
+    firstName,
+    lastName,
     email,
     password,
     bloodBankId,
@@ -207,7 +210,8 @@ async function loginTest() {
 
 async function registerTest() {
   token = await register(
-    "Bruno Galić",
+    "Bruno",
+    "Galić",
     "BrunoGalić@gmail.com",
     "password",
     "A+",
@@ -215,7 +219,8 @@ async function registerTest() {
   );
 
   token = await registerEmployee(
-    "Fran Galić",
+    "Fran",
+    "Galić",
     "FranGalić@gmail.com",
     "password",
     1
@@ -223,4 +228,4 @@ async function registerTest() {
 }
 
 loginTest();
-//registerTest();
+registerTest();

@@ -23,7 +23,7 @@ router.get("/", async (req, res, next) => {});
  * Checks if employee with given email already exists.
  */
 router.post("/register", async (req, res) => {
-  const { name, email, password, bloodBankId } = req.body;
+  const { firstName, lastName, email, password, bloodBankId } = req.body;
 
   const hashedPassword = crypto
     .createHash("sha256")
@@ -44,7 +44,7 @@ router.post("/register", async (req, res) => {
     }
 
     const employee = await db.Employee.create({
-      name: name,
+      name: firstName + " " + lastName,
       email: email,
       password: hashedPassword,
       bloodBankId: bloodBankId,

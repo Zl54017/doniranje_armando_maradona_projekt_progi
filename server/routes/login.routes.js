@@ -16,39 +16,6 @@ const Sequelize = require("sequelize");
 const jwt = require("jsonwebtoken");
 const decode = require("jwt-decode");
 
-router.get("/:token", async (req, res, next) => {
-  const decoded = decode.jwtDecode(req.params.token);
-  if (decoded.role === "donor") {
-    const donor = await db.Donor.findOne({
-      where: {
-        id: decoded.id,
-      },
-    });
-
-    res.json({
-      user: donor,
-      role: "donor",
-      token: req.params.token,
-    });
-  } else if (decoded.role === "bloodBank") {
-    const bloodBank = await db.BloodBank.findOne({
-      where: {
-        email: email,
-        password: password,
-      },
-    });
-
-    res.json({
-      user: bloodBank,
-      role: "bloodBank",
-      token: req.params.token,
-    });
-  } else {
-    res.status(404).json({
-      message: "Decode failed",
-    });
-  }
-});
 
 router.post("/", async (req, res) => {
   const { email, password } = req.body;

@@ -10,12 +10,11 @@ const Action = require("../models/action");
 const Certificate = require("../models/certificate");
 const Donation = require("../models/donation");
 const ActionRegistration = require("../models/actionregistration");
+const Employee = require("../models/employee");
 const Sequelize = require("sequelize");
 
 const jwt = require("jsonwebtoken");
 const decode = require("jwt-decode");
-
-router.get("/", async (req, res, next) => {});
 
 /**
  * Create a new donor.
@@ -43,7 +42,7 @@ router.post("/", async (req, res) => {
     }
 
     const donor = await db.Donor.create({
-      name: firstName+lastName,
+      name: firstName + " " + lastName,
       email: email,
       password: hashedPassword,
       bloodType: bloodType,
