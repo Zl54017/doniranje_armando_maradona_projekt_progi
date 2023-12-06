@@ -28,9 +28,10 @@ const appRouter = createBrowserRouter(
       <Route element={<ProtectedRoute roles={[ROLE.Employee]} />}>
         <Route path="/employee" element={<Employee />} />
       </Route>
-      <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
-    </>
+    
+      <Route path="/login" element={<Login />} />
+      </>
   )
 );
 

@@ -47,14 +47,15 @@
     "web-vitals": "^3.5.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "start-prod": "serve -s build",
-    "build": "npm install && npm install serve -g && react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+  "start": "react-scripts start",
+  "start-prod": "serve -s build",
+  "prebuild": "npm install",
+  "build": "react-scripts build",
+  "test": "react-scripts test",
+  "eject": "react-scripts eject"
   },
   "engines": {
-    "node": ">=18.18.0 <19.0.0"
+    "node": ">=18.18.0 <19.0.0"
   },
 
   "eslintConfig": {
