@@ -1,9 +1,9 @@
 {
   "development": {
     "username": "armando",
-    "password": "xFYwI4bdP8KHUO9bh2LCrYOe9tmmIJwW",
-    "database": "donationsdb",
-    "host": "dpg-clm5ta4jtl8s73es5krg-a.frankfurt-postgres.render.com",
+    "password": "wGPkY69e2aROm7uQyvHuc46FvFYzG8p8",
+    "database": "donations_db",
+    "host": "dpg-clod580gqk6s73e78hr0-a.frankfurt-postgres.render.com",
     "dialect": "postgres",
     "dialectOptions": {
       "ssl": {
@@ -14,9 +14,9 @@
   },
   "test": {
     "username": "armando",
-    "password": "xFYwI4bdP8KHUO9bh2LCrYOe9tmmIJwW",
-    "database": "donationsdb",
-    "host": "dpg-clm5ta4jtl8s73es5krg-a.frankfurt-postgres.render.com",
+    "password": "wGPkY69e2aROm7uQyvHuc46FvFYzG8p8",
+    "database": "donations_db",
+    "host": "dpg-clod580gqk6s73e78hr0-a.frankfurt-postgres.render.com",
     "dialect": "postgres",
     "dialectOptions": {
       "ssl": {
@@ -27,9 +27,9 @@
   },
   "production": {
     "username": "armando",
-    "password": "xFYwI4bdP8KHUO9bh2LCrYOe9tmmIJwW",
-    "database": "donationsdb",
-    "host": "dpg-clm5ta4jtl8s73es5krg-a.frankfurt-postgres.render.com",
+    "password": "wGPkY69e2aROm7uQyvHuc46FvFYzG8p8",
+    "database": "donations_db",
+    "host": "dpg-clod580gqk6s73e78hr0-a.frankfurt-postgres.render.com",
     "dialect": "postgres",
     "dialectOptions": {
       "ssl": {
