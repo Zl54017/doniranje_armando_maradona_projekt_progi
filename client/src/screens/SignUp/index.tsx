@@ -14,13 +14,18 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useState } from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import axios from 'axios';
+import axios from "axios";
 import { RootState, useAppDispatch } from "../../redux/store";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import LoginInput from "../../types/inputs/user/LoginInput";
-import { attemptLogin, attemptRegister, clearUser, fetchUser } from "../../redux/slices/authSlice";
+import {
+  attemptLogin,
+  attemptRegister,
+  clearUser,
+  fetchUser,
+} from "../../redux/slices/authSlice";
 import RegisterInput from "../../types/inputs/user/RegisterInput";
 import localStorageUtility from "../../utils/localStorage/auth";
 
@@ -52,16 +57,16 @@ function SignUp() {
   const { register, handleSubmit } = useForm<RegisterInput>();
   const { user, role } = useSelector((state: RootState) => state.auth);
 
-  const [registrationType, setRegistrationType] = useState('');
+  const [registrationType, setRegistrationType] = useState("");
 
   const onSubmit = (response: RegisterInput) => {
     dispatch(attemptRegister(response));
   };
 
-  // // React.useEffect(() => {
-  // //     navigate(`/${role}`);
-  // //     console.log(role);
-  // // }, [user]);
+  /*React.useEffect(() => {
+      navigate(`/${role}`);
+      console.log(role);
+  }, [user]);*/
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -70,16 +75,16 @@ function SignUp() {
         <Box
           sx={{
             marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: '#b2102f' }}>
+          <Avatar sx={{ m: 1, bgcolor: "#b2102f" }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Registriraj se {' '}
+            Registriraj se{" "}
           </Typography>
           <Box
             component="form"
@@ -99,8 +104,8 @@ function SignUp() {
                 onChange={(event) => setRegistrationType(event.target.value)}
                 fullWidth
                 inputProps={{
-                  name: 'registrationType',
-                  id: 'registrationType',
+                  name: "registrationType",
+                  id: "registrationType",
                 }}
               >
                 <MenuItem value="" disabled>
@@ -111,9 +116,11 @@ function SignUp() {
               </Select>
             </FormControl>
             <Grid container spacing={2}>
-              {(registrationType === 'donor' || registrationType === 'zavod') && (
+              {(registrationType === "donor" ||
+                registrationType === "zavod") && (
                 <Grid item xs={12} sm={6}>
                   <TextField
+                    {...register("firstName")}
                     name="firstName"
                     required
                     fullWidth
@@ -123,10 +130,12 @@ function SignUp() {
                   />
                 </Grid>
               )}
-              
-              {(registrationType === 'donor' || registrationType === 'zavod') && (
+
+              {(registrationType === "donor" ||
+                registrationType === "zavod") && (
                 <Grid item xs={12} sm={6}>
                   <TextField
+                    {...register("lastName")}
                     required
                     fullWidth
                     id="lastName"
@@ -136,9 +145,11 @@ function SignUp() {
                 </Grid>
               )}
 
-              {(registrationType === 'donor' || registrationType === 'zavod') && (
+              {(registrationType === "donor" ||
+                registrationType === "zavod") && (
                 <Grid item xs={12}>
                   <TextField
+                    {...register("email")}
                     required
                     fullWidth
                     id="email"
@@ -148,9 +159,11 @@ function SignUp() {
                 </Grid>
               )}
 
-              {(registrationType === 'donor' || registrationType === 'zavod') && (
+              {(registrationType === "donor" ||
+                registrationType === "zavod") && (
                 <Grid item xs={12}>
                   <TextField
+                    {...register("password")}
                     required
                     fullWidth
                     id="password"
@@ -161,16 +174,18 @@ function SignUp() {
                   />
                 </Grid>
               )}
-              
-              {(registrationType === 'donor' || registrationType === 'zavod') && (
+
+              {(registrationType === "donor" ||
+                registrationType === "zavod") && (
                 <Grid item xs={12}>
                   <TextField
+                    {...register("transfusionInstitute")}
                     select
                     required
                     fullWidth
-                    id="institutionName"
+                    id="transfusionInstitute"
                     label="Ime Zavoda"
-                    name="institutionName"
+                    name="transfusionInstitute"
                   >
                     <MenuItem value="KBC Osijek">KBC Osijek</MenuItem>
                     <MenuItem value="KBC Rijeka">KBC Rijeka</MenuItem>
@@ -178,20 +193,23 @@ function SignUp() {
                     <MenuItem value="OB Dubrovnik">OB Dubrovnik</MenuItem>
                     <MenuItem value="OB Varaždin">OB Varaždin</MenuItem>
                     <MenuItem value="OB Zadar">OB Zadar</MenuItem>
-                    <MenuItem value="Hrvatski zavod za transfuzijsku medicinu Zagreb">Hrvatski zavod za transfuzijsku medicinu Zagreb</MenuItem>
+                    <MenuItem value="Hrvatski zavod za transfuzijsku medicinu Zagreb">
+                      Hrvatski zavod za transfuzijsku medicinu Zagreb
+                    </MenuItem>
                   </TextField>
                 </Grid>
               )}
 
-              {registrationType === 'donor' && (
+              {registrationType === "donor" && (
                 <Grid item xs={12}>
                   <TextField
+                    {...register("bloodType")}
                     select
                     required
                     fullWidth
-                    id="bloodGroup"
+                    id="bloodType"
                     label="Krvna grupa"
-                    name="bloodGroup"
+                    name="bloodType"
                   >
                     <MenuItem value="A+">A+</MenuItem>
                     <MenuItem value="A-">A-</MenuItem>
