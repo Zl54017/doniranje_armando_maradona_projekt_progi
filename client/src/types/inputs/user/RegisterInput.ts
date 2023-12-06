@@ -1,6 +1,7 @@
 // Zajednička svojstva za oba tipa
 interface CommonRegisterInput {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
 }
@@ -8,8 +9,8 @@ interface CommonRegisterInput {
 // Tip za korisnika
 interface UserRegisterInput extends CommonRegisterInput {
   bloodType: string;
-  transfusionCInstitute: string;
-  bloodBankId: string;
+  transfusionInstitute: string;
+  // bloodBankId: string;
 }
 
 // Tip za zaposlenika
@@ -20,6 +21,4 @@ interface EmployeeRegisterInput extends CommonRegisterInput {
 // Unija tipova - registracija može biti ili za korisnika ili za zaposlenika
 type RegisterInput = UserRegisterInput | EmployeeRegisterInput;
 
-  
-  export default RegisterInput;
-  
+export default RegisterInput;
