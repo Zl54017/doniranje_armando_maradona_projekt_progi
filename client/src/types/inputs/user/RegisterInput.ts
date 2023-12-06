@@ -1,6 +1,7 @@
 // Zajednička svojstva za oba tipa
 interface CommonRegisterInput {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
 }
