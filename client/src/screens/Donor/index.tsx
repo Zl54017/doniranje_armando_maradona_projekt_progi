@@ -3,9 +3,9 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
-import Grid from "@mui/material/Grid";
 import Toolbar from "@mui/material/Toolbar";
 import Box from "@mui/material/Box";
+import PlaceIcon from "@mui/icons-material/Place";
 
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
@@ -19,8 +19,10 @@ import {
   fetchUser,
 } from "../../redux/slices/authSlice";
 import { useForm } from "react-hook-form";
-
-import localStorageUtility from "../../utils/localStorage/auth";
+import { useState, useEffect, useRef } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
 function Copyright(props: any) {
   return (
@@ -40,6 +42,10 @@ function Copyright(props: any) {
   );
 }
 
+interface Location {
+  lat: number;
+  lng: number;
+}
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
@@ -49,9 +55,68 @@ export default function Donor() {
   const dispatch = useAppDispatch();
   const { user, role } = useSelector((state: RootState) => state.auth);
 
+  const [error, setError] = useState<string | null>(null);
+  const mapRef = useRef<L.Map | null>(null);
+
   const onSubmit = () => {
     dispatch(attemptLogout());
   };
+
+  useEffect(() => {
+    const container = document.getElementById("leaflet-map");
+
+    if (!container) {
+      console.error("Map container not found.");
+      return;
+    }
+
+    if (!mapRef.current) {
+      // Initialize the map
+      const mapInstance = L.map(container).setView([0, 0], 2);
+
+      // Add a tile layer (you can choose a different tile layer provider)
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; OpenStreetMap contributors",
+      }).addTo(mapInstance);
+
+      mapRef.current = mapInstance;
+    }
+
+    // Use navigator.geolocation to get the user's current location
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        if (mapRef.current) {
+          mapRef.current.setView([latitude, longitude], 15);
+          const svgString = renderToStaticMarkup(
+            <PlaceIcon style={{ fontSize: "2rem" }} />
+          );
+          const locationIcon = L.divIcon({
+            className: "leaflet-div-icon",
+            iconSize: [32, 32],
+            //iconAnchor: [16, 32],
+            //popupAnchor: [0, -32],
+            html: `<div>${svgString}</div>`,
+          });
+
+          L.marker([latitude, longitude], { icon: locationIcon }).addTo(
+            mapRef.current
+          );
+        }
+      },
+      (error) => {
+        console.error("Error getting geolocation:", error);
+      }
+    );
+
+    return () => {
+      // Cleanup: Remove the map instance when the component is unmounted
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, []);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -121,8 +186,9 @@ export default function Donor() {
           olakšati proces darivanja krvi!
         </Typography>
       </Container>
-      {/* End hero unit */}
-
+      <Container style={{ display: "flex" }}>
+        <Box id="leaflet-map" style={{ height: "400px", width: "60%" }}></Box>
+      </Container>
       {/* Footer */}
       <Container
         maxWidth="md"
