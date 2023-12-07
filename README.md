@@ -1,7 +1,7 @@
 # Programsko inženjerstvo - darivanje krvi
 TG07 Grupa 1 - Armando Maradona <br>
 Tema: Darivanje krvi <br><br>
-Link za stranicu: https://donacije-mayr.onrender.com/<br>
+Link za stranicu: https://donationsfe.onrender.com<br>
 Testni podaci:  <br>
 Donor - username: LukaModrić@gmail.com, password: password<br>
 BloodBank - username: KBCOsijek@gmail.com, password: password<br>
