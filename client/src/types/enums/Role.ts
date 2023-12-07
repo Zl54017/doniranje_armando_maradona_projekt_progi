@@ -1,5 +1,6 @@
 export enum ROLE {
   BloodBank = "bloodBank",
   Donor = "donor",
-  Employee = "employee"
+  Employee = "employee",
+  RedCross = "redCross"
 }

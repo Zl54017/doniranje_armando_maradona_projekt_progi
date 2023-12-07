@@ -63,10 +63,27 @@ function SignUp() {
     dispatch(attemptRegister(response));
   };
 
-  /*React.useEffect(() => {
+  React.useEffect(() => {
+    if (localStorageUtility.getAuthToken() !== null && user === undefined) {
+      dispatch(fetchUser());
+    } else if (
+      user !== undefined &&
+      localStorageUtility.getAuthToken() !== null &&
+      location.pathname !== "/signup"
+    ) {
+      console.log(location);
+      navigate(`${location.state.from.pathname}`);
+    } else if (localStorageUtility.getAuthToken() === null) {
+      dispatch(clearUser());
+    } else if (
+      user !== undefined &&
+      localStorageUtility.getAuthToken() !== null &&
+      location.pathname === "/signup"
+    ) {
       navigate(`/${role}`);
       console.log(role);
-  }, [user]);*/
+    }
+  }, [user]);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -84,7 +101,7 @@ function SignUp() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Registriraj se{" "}
+            Registriraj se kao donor{" "}
           </Typography>
           <Box
             component="form"
@@ -92,32 +109,7 @@ function SignUp() {
             onSubmit={handleSubmit(onSubmit)}
             sx={{ mt: 3 }}
           >
-            <FormControl fullWidth sx={{ mt: 2 }}>
-              <InputLabel
-                htmlFor="registrationType"
-                shrink={Boolean(registrationType)}
-              >
-                Odabir uloge
-              </InputLabel>
-              <Select
-                value={registrationType}
-                onChange={(event) => setRegistrationType(event.target.value)}
-                fullWidth
-                inputProps={{
-                  name: "registrationType",
-                  id: "registrationType",
-                }}
-              >
-                <MenuItem value="" disabled>
-                  Odabir uloge
-                </MenuItem>
-                <MenuItem value="donor">Donor</MenuItem>
-                <MenuItem value="zavod">Djelatnik zavoda</MenuItem>
-              </Select>
-            </FormControl>
             <Grid container spacing={2}>
-              {(registrationType === "donor" ||
-                registrationType === "zavod") && (
                 <Grid item xs={12} sm={6}>
                   <TextField
                     {...register("firstName")}
@@ -129,10 +121,6 @@ function SignUp() {
                     autoFocus
                   />
                 </Grid>
-              )}
-
-              {(registrationType === "donor" ||
-                registrationType === "zavod") && (
                 <Grid item xs={12} sm={6}>
                   <TextField
                     {...register("lastName")}
@@ -143,10 +131,6 @@ function SignUp() {
                     name="lastName"
                   />
                 </Grid>
-              )}
-
-              {(registrationType === "donor" ||
-                registrationType === "zavod") && (
                 <Grid item xs={12}>
                   <TextField
                     {...register("email")}
@@ -157,10 +141,6 @@ function SignUp() {
                     name="email"
                   />
                 </Grid>
-              )}
-
-              {(registrationType === "donor" ||
-                registrationType === "zavod") && (
                 <Grid item xs={12}>
                   <TextField
                     {...register("password")}
@@ -173,10 +153,6 @@ function SignUp() {
                     autoComplete="password"
                   />
                 </Grid>
-              )}
-
-              {(registrationType === "donor" ||
-                registrationType === "zavod") && (
                 <Grid item xs={12}>
                   <TextField
                     {...register("transfusionInstitute")}
@@ -198,9 +174,6 @@ function SignUp() {
                     </MenuItem>
                   </TextField>
                 </Grid>
-              )}
-
-              {registrationType === "donor" && (
                 <Grid item xs={12}>
                   <TextField
                     {...register("bloodType")}
@@ -221,7 +194,6 @@ function SignUp() {
                     <MenuItem value="0-">0-</MenuItem>
                   </TextField>
                 </Grid>
-              )}
             </Grid>
             <Button
               type="submit"
