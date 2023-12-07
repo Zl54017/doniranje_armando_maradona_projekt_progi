@@ -63,10 +63,27 @@ function SignUp() {
     dispatch(attemptRegister(response));
   };
 
-  /*React.useEffect(() => {
+  React.useEffect(() => {
+    if (localStorageUtility.getAuthToken() !== null && user === undefined) {
+      dispatch(fetchUser());
+    } else if (
+      user !== undefined &&
+      localStorageUtility.getAuthToken() !== null &&
+      location.pathname !== "/signup"
+    ) {
+      console.log(location);
+      navigate(`${location.state.from.pathname}`);
+    } else if (localStorageUtility.getAuthToken() === null) {
+      dispatch(clearUser());
+    } else if (
+      user !== undefined &&
+      localStorageUtility.getAuthToken() !== null &&
+      location.pathname === "/signup"
+    ) {
       navigate(`/${role}`);
       console.log(role);
-  }, [user]);*/
+    }
+  }, [user]);
 
   return (
     <ThemeProvider theme={defaultTheme}>
