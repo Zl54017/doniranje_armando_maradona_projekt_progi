@@ -71,44 +71,49 @@ export default function Donor() {
     }
 
     if (!mapRef.current) {
-      // Initialize the map
-      const mapInstance = L.map(container).setView([0, 0], 2);
+      var mapInstance = L.map(container).setView([0, 0], 2);
 
-      // Add a tile layer (you can choose a different tile layer provider)
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "&copy; OpenStreetMap contributors",
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution:
+          '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       }).addTo(mapInstance);
 
       mapRef.current = mapInstance;
     }
-
-    // Use navigator.geolocation to get the user's current location
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
         if (mapRef.current) {
           mapRef.current.setView([latitude, longitude], 15);
-          const svgString = renderToStaticMarkup(
-            <PlaceIcon style={{ fontSize: "2rem" }} />
-          );
-          const locationIcon = L.divIcon({
-            className: "leaflet-div-icon",
-            iconSize: [32, 32],
-            //iconAnchor: [16, 32],
-            //popupAnchor: [0, -32],
-            html: `<div>${svgString}</div>`,
-          });
 
-          L.marker([latitude, longitude], { icon: locationIcon }).addTo(
-            mapRef.current
-          );
+          L.circleMarker([latitude, longitude]).addTo(mapInstance);
         }
       },
       (error) => {
         console.error("Error getting geolocation:", error);
       }
     );
-
+    const fixedLocations = [
+      { lat: 45.558042202768455, lng: 18.71365045228026 }, //KBC Osijek
+      { lat: 43.503911289394324, lng: 16.45792246443381 }, //KBC Split
+      { lat: 45.332834054047154, lng: 14.425599994595334 }, //KBC Rijeka
+      { lat: 42.64782497663791, lng: 18.075890982807405 }, // OB Dubrovnik
+      { lat: 46.30263721672062, lng: 16.325257294377536 }, //OB Varaždin
+      { lat: 44.10745411911505, lng: 15.23451962336266 }, //OB Zadar
+      { lat: 45.81617537849029, lng: 15.99113679462288 }, //Hrvatski zavod za transfuzijsku medicinu Zagreb
+      //
+    ];
+    if (mapRef.current) {
+      fixedLocations.forEach((fixedLocation) => {
+        L.circle([fixedLocation.lat, fixedLocation.lng], {
+          color: "red",
+          fillColor: "#f03",
+          fillOpacity: 0.5,
+          radius: 100,
+        }).addTo(mapInstance);
+      });
+    }
     return () => {
       // Cleanup: Remove the map instance when the component is unmounted
       if (mapRef.current) {
@@ -169,7 +174,6 @@ export default function Donor() {
           </Box>
         </Toolbar>
       </AppBar>
-      {/* Hero unit */}
       <Container
         disableGutters
         maxWidth="sm"
