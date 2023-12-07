@@ -10,5 +10,6 @@
 *.synctex.gz
 
 *.toc
+*.DS_Store
 
 node_modules/

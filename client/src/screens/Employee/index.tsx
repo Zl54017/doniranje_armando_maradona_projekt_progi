@@ -15,6 +15,13 @@ import { Box } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { attemptLogout, clearUser } from "../../redux/slices/authSlice";
 import localStorageUtility from "../../utils/localStorage/auth";
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Actions from './actions';
+import Statistics from './statistics';
+import ListOfDonors from './listOfDonors';
+import { ReactNode } from "react";
+
+
 
 function Copyright(props: any) {
   return (
@@ -37,6 +44,24 @@ function Copyright(props: any) {
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
+type Props = {
+  state: ReactNode;
+};
+
+function ContentBox({ activeTab }: { activeTab: string }) {
+  return (
+    <div>
+      {activeTab === 'listOfDonors' ? (
+        <ListOfDonors />
+      ) : activeTab === 'statistics' ? (
+        <Actions/>
+      ) : (
+        <Statistics/>
+      )}
+    </div>
+  );
+};
+
 export default function BloodBank() {
   const { register, handleSubmit } = useForm();
   const dispatch = useAppDispatch();
@@ -44,7 +69,7 @@ export default function BloodBank() {
   const onSubmit = () => {
     dispatch(attemptLogout());
   };
-
+  const [activeTab, setActiveTab] = React.useState('listOfDonors');
   return (
     <ThemeProvider theme={defaultTheme}>
       <GlobalStyles
@@ -55,7 +80,7 @@ export default function BloodBank() {
         position="static"
         color="transparent"
         elevation={0}
-        // sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
+      // sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
       >
         <Toolbar sx={{ flexWrap: "wrap" }}>
           <Typography
@@ -69,6 +94,33 @@ export default function BloodBank() {
           </Typography>
 
           <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+            <Link
+              variant="button"
+              color="text.primary"
+              href='#'
+              sx={{ my: 1, mx: 1.5 }}
+              onClick={() => { setActiveTab('listOfDonors'); }}
+            >
+              Popis Donora
+            </Link>
+            <Link
+              variant="button"
+              color="text.primary"
+              href="#"
+              sx={{ my: 1, mx: 1.5 }}
+              onClick={() => { setActiveTab('actions'); }}
+            >
+              Akcije
+            </Link>
+            <Link
+              variant="button"
+              color="text.primary"
+              href="#"
+              sx={{ my: 1, mx: 1.5 }}
+              onClick={() => { setActiveTab('statistics'); }}
+            >
+              Statistika
+            </Link>
             <Button
               type="submit"
               variant="outlined"
@@ -87,15 +139,8 @@ export default function BloodBank() {
         component="main"
         sx={{ pt: 8, pb: 6 }}
       >
-        <Typography
-          variant="h5"
-          align="center"
-          color="text.secondary"
-          component="p"
-        >
-          Pozdrav {user !== undefined ? user.name : ""}. Ova aplikacija će Vam
-          olakšati praćenje zaliha krvi i korisnika!
-        </Typography>
+
+        <ContentBox activeTab={activeTab} />
       </Container>
       {/* End hero unit */}
 
