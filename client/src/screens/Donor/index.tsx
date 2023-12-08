@@ -65,6 +65,7 @@ function ContentBox({ activeTab }: { activeTab: string }) {
         <Map />
       )}
     </div>
+  
   );
 }
 

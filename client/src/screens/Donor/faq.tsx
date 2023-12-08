@@ -167,7 +167,7 @@ function Faq() {
 
         <ListItemButton onClick={() => handleQuestionClick(5)}>
           <Typography variant="h6" color="#b2102f">
-            Zašto se domah nakon darivanja krvi ne smije pušiti?{" "}
+            Zašto se odmah nakon darivanja krvi ne smije pušiti?{" "}
           </Typography>{" "}
         </ListItemButton>
         {selectedQuestion === 5 && (
