@@ -44,6 +44,8 @@ router.post("/inventory/:token", async (req, res, next) => {
       ],
       where: {
         used: false,
+        warning: "",
+        bloodBankId: bloodBank.id,
       },
       group: ["donor.bloodType"],
     });
