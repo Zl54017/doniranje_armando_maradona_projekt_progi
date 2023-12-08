@@ -63,6 +63,99 @@ router.post("/actions/:token", async (req, res, next) => {
   }
 });
 
+/**
+ * Handle the GET request to retrieve all actions.
+ */
+router.get("/allActions", async (req, res, next) => {
+  try {
+    const currentDateTime = new Date();
+    const actions = await db.Action.findAll({
+      where: {
+        date: {
+          [db.Sequelize.Op.gt]: currentDateTime, // Use the greater than operator
+        },
+      },
+    });
+    res.json(actions);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to retrieve actions" });
+  }
+});
+
+/**
+ * Handle the POST request for action registration.
+ * Creates a new action registration and returns a response.
+ */
+router.post("/actionRegistration/:token", async (req, res, next) => {
+  const decoded = decode.jwtDecode(req.params.token);
+  try {
+    const { actionId } = req.body;
+    const newActionRegistration = await db.ActionRegistration.create({
+      actionId: actionId,
+      donorId: decoded.id,
+    });
+    res.json({
+      message: "New Action Registration created",
+      data: newActionRegistration.toJSON(),
+    });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ error: "Failed to create a new Action Registration" });
+  }
+});
+
+/**
+ * Handle the POST request to retrieve inventory of blood
+ */
+router.post("/bloodBanksInventory/:token", async (req, res, next) => {
+  const decoded = decode.jwtDecode(req.params.token);
+  try {
+    const bloodBanks = await db.BloodBank.findAll({});
+    const inventory = {};
+
+    for (const bloodBank of bloodBanks) {
+      const results = await db.Donation.findAll({
+        attributes: [
+          [Sequelize.literal('"donor"."bloodType"'), "bloodType"],
+          [Sequelize.literal("0.5 * COUNT(*)"), "donationCount"],
+        ],
+        include: [
+          {
+            model: db.Donor,
+            as: "donor",
+            attributes: [],
+            where: {
+              transfusionInstitute: bloodBank.name,
+            },
+          },
+        ],
+        where: {
+          used: false,
+          warning: "",
+        },
+        group: ["donor.bloodType"],
+      });
+
+      const bloodTypeCounts = {};
+      results.forEach((result) => {
+        bloodTypeCounts[result.dataValues.bloodType] = parseFloat(
+          result.dataValues.donationCount
+        );
+      });
+
+      inventory[bloodBank.name] = bloodTypeCounts;
+    }
+
+    res.json(inventory);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to retrieve inventory" });
+  }
+});
+
 //funkcija kojom donor može provjeriti zalihu krvi njegove krvne grupe u svakom zavodu (na svakoj lokaciji) kako bi znao gdje ima najmanje krvi pa tamo išao donirati
 router.post("/bloodBankInventory/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);
@@ -120,50 +213,6 @@ router.post("/bloodBankInventory/:token", async (req, res, next) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Failed to retrieve blood bank inventory" });
-  }
-});
-
-/**
- * Handle the GET request to retrieve all actions.
- */
-router.get("/allActions", async (req, res, next) => {
-  try {
-    const currentDateTime = new Date();
-    const actions = await db.Action.findAll({
-      where: {
-        date: {
-          [db.Sequelize.Op.gt]: currentDateTime, // Use the greater than operator
-        },
-      },
-    });
-    res.json(actions);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Failed to retrieve actions" });
-  }
-});
-
-/**
- * Handle the POST request for action registration.
- * Creates a new action registration and returns a response.
- */
-router.post("/actionRegistration/:token", async (req, res, next) => {
-  const decoded = decode.jwtDecode(req.params.token);
-  try {
-    const { actionId } = req.body;
-    const newActionRegistration = await db.ActionRegistration.create({
-      actionId: actionId,
-      donorId: decoded.id,
-    });
-    res.json({
-      message: "New Action Registration created",
-      data: newActionRegistration.toJSON(),
-    });
-  } catch (error) {
-    console.log(error);
-    res
-      .status(500)
-      .json({ error: "Failed to create a new Action Registration" });
   }
 });
 

@@ -227,5 +227,48 @@ async function registerTest() {
   );
 }
 
-loginTest();
-registerTest();
+async function addDonations() {
+
+  const instituteNames = [
+    "KBC Osijek",
+    "KBC Rijeka",
+    "KBC Split",
+    "OB Dubrovnik",
+    "OB Varaždin",
+    "OB Zadar",
+    "Hrvatski zavod za transfuzijsku medicinu Zagreb",
+  ];
+
+  
+  for (var i = 1; i < 97; i++) {
+    var token = await login(instituteNames[i % 7].replace(/\s/g, "") + "@gmail.com", "password");
+    for (var j = 1; j < 6; j++) {
+      var date = new Date();
+      date.setMonth(date.getMonth() - 3 * j);
+      await addDonation(token, i, "", date);
+    }
+  }
+}
+
+
+async function inventoryTest() {
+  const instituteNames = [
+    "KBC Osijek",
+    "KBC Rijeka",
+    "KBC Split",
+    "OB Dubrovnik",
+    "OB Varaždin",
+    "OB Zadar",
+    "Hrvatski zavod za transfuzijsku medicinu Zagreb",
+  ];
+
+  for (var i = 1; i < 7; i++) {
+    var token = await login(
+      instituteNames[i].replace(/\s/g, "") + "@gmail.com",
+      "password"
+    );
+    await inventory(token);
+  }
+}
+
+inventoryTest();
