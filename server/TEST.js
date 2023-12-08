@@ -81,6 +81,17 @@ async function donations(token) {
   }
 }
 
+async function archiveDonor(token) {
+  const url = `${address}donor/delete/${token}`;
+
+  try {
+    const response = await axios.post(url);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 async function actions(token) {
   const url = `${address}donor/actions/${token}`;
 
@@ -140,14 +151,14 @@ async function inventory(token) {
   }
 }
 
-async function addDonation(token, donorId, warning, date, address) {
+async function addDonation(token, donorId, warning, date, addressOfDonation) {
   const url = `${address}bloodbank/addDonation/${token}`;
 
   const requestBody = {
     donorId,
     warning,
     date,
-    address,
+    address: addressOfDonation,
   };
 
   try {
@@ -262,13 +273,24 @@ async function addDonations() {
     "Hrvatski zavod za transfuzijsku medicinu Zagreb",
   ];
 
+  const addresses = [
+    "Ul. Josipa Huttlera 4, 31000, Osijek",
+    "Krešimirova ul. 42, 51000, Rijeka",
+    "Spinčićeva ul. 1, 21000, Split",
+    "Dr. Roka Mišetića 2, 20000, Dubrovnik",
+    "Ul. Ivana Meštrovića 1, 42000, Varaždin",
+    "Ul. Bože Peričića 5, 23000, Zadar",
+    "Petrova ul. 3, 10000, Zagreb",
+  ];
+
+
   
   for (var i = 1; i < 97; i++) {
-    var token = await login(instituteNames[i % 7].replace(/\s/g, "") + "@gmail.com", "password");
+    var token = await login(instituteNames[(i-1) % 7].replace(/\s/g, "") + "@gmail.com", "password");
     for (var j = 1; j < 6; j++) {
       var date = new Date();
       date.setMonth(date.getMonth() - 3 * j);
-      await addDonation(token, i, "", date);
+      await addDonation(token, i, "", date, addresses[(i - 1) % 7]);
     }
   }
 }
@@ -285,14 +307,15 @@ async function inventoryTest() {
     "Hrvatski zavod za transfuzijsku medicinu Zagreb",
   ];
 
-  for (var i = 1; i < 7; i++) {
+  for (var i = 0; i < 7; i++) {
     var token = await login(
       instituteNames[i].replace(/\s/g, "") + "@gmail.com",
       "password"
     );
     await inventory(token);
   }
-  var token = await login("BrunoGalić@gmail.com", "password");
+  var token = await login("DinoCiani@gmail.com", "password");
+  await donations(token);
   bloodBanksInventory(token);
   lastDonationDays(token);
 }

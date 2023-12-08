@@ -13,6 +13,30 @@ const Sequelize = require("sequelize");
 const jwt = require("jsonwebtoken");
 const decode = require("jwt-decode");
 
+router.post("/delete/:token", async (req, res, next) => {
+  try {
+    console.log(req.body);
+    const donor = await db.Donor.findOne({
+      where: {
+        id: decoded.id,
+      },
+    });
+
+    // Add the word "archived" to the donor's email
+    const archivedEmail = `${donor.email} (archived)`;
+
+    // Update the donor's email in the database
+    await donor.update({
+      email: archivedEmail,
+    });
+
+    res.json({ message: "Donor successfully archived" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to archive donor" });
+  }
+});
+
 /**
  * Handle the POST request to retrieve a donor's donations.
  */
