@@ -320,4 +320,23 @@ async function inventoryTest() {
   lastDonationDays(token);
 }
 
-inventoryTest();
+async function loginTest() {
+  var token = await login("ProbaArhive@gmail.com (archived)", "password");
+
+}
+
+
+
+async function actionsTest() {
+  var token = await login("DinoCiani@gmail.com", "password");
+
+  await actionRegistration(token,2);
+
+  await actions(token);
+}
+
+actionsTest();
+
+async function testForFE() { 
+  var token = await login("DinoCiani@gmail.com", "password");
+}
