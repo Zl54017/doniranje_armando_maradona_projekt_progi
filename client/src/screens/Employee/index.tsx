@@ -56,10 +56,10 @@ function ContentBox({ activeTab }: { activeTab: string }) {
     <div>
       {activeTab === 'listOfDonors' ? (
         <ListOfDonors />
-      ) : activeTab === 'statistics' ? (
-        <Actions/>
+      ) : activeTab === 'actions' ? (
+        <Actions />
       ) : (
-        <Statistics/>
+        <Statistics />
       )}
     </div>
   );
