@@ -283,13 +283,14 @@ router.post("/addDonation/:token", async (req, res, next) => {
       },
     });
 
-    const { donorId, warning, date } = req.body;
+    const { donorId, warning, date, address } = req.body;
 
     const newDonation = await db.Donation.create({
       date: date,
-      address: bloodBank.address,
+      address: address,
       warning: warning,
       donorId: donorId,
+      bloodBankId: bloodBank.id,
       used: false,
     });
 

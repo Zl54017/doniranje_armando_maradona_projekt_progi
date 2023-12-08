@@ -13,6 +13,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "donorId",
         targetKey: "id",
       });
+
+      Donation.belongsTo(models.BloodBank, {
+        as: "bloodBank",
+        foreignKey: "bloodBankId",
+        targetKey: "id",
+      });
     }
   }
   Donation.init(
@@ -20,10 +26,11 @@ module.exports = (sequelize, DataTypes) => {
       date: DataTypes.DATE,
       address: DataTypes.STRING,
       warning: DataTypes.STRING,
-      donorId: DataTypes.STRING,
+      donorId: DataTypes.INTEGER,
+      bloodBankId: DataTypes.INTEGER,
       used: {
         type: DataTypes.BOOLEAN,
-        defaultValue: false, // Početna vrijednost je false, kad se krv iskoristi postaje true 
+        defaultValue: false, // Početna vrijednost je false, kad se krv iskoristi postaje true
       },
     },
     {

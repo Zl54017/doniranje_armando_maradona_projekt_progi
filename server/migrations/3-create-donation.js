@@ -39,6 +39,16 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
+      bloodBankId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          model: "BloodBanks",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
     });
   },
   async down(queryInterface, Sequelize) {

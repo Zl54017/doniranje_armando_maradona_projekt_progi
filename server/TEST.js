@@ -122,7 +122,7 @@ async function lastDonationDays(token) {
   const url = `${address}donor/lastDonationDays/${token}`;
 
   try {
-    const response = await axios.post(url, requestBody);
+    const response = await axios.post(url);
     console.log(response.data);
   } catch (error) {
     console.error(error);
@@ -140,13 +140,14 @@ async function inventory(token) {
   }
 }
 
-async function addDonation(token, donorId, warning, date) {
+async function addDonation(token, donorId, warning, date, address) {
   const url = `${address}bloodbank/addDonation/${token}`;
 
   const requestBody = {
     donorId,
     warning,
     date,
+    address,
   };
 
   try {
@@ -291,7 +292,7 @@ async function inventoryTest() {
     );
     await inventory(token);
   }
-  var token = await login("LukaModrić@gmail.com", "password");
+  var token = await login("BrunoGalić@gmail.com", "password");
   bloodBanksInventory(token);
   lastDonationDays(token);
 }
