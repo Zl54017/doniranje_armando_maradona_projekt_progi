@@ -162,9 +162,6 @@ router.post("/bloodBanksInventory/:token", async (req, res, next) => {
             model: db.Donor,
             as: "donor",
             attributes: [],
-            where: {
-              transfusionInstitute: bloodBank.name,
-            },
           },
         ],
         where: {
