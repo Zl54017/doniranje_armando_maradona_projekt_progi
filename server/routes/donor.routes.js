@@ -35,6 +35,41 @@ router.post("/donations/:token", async (req, res, next) => {
   }
 });
 
+router.post("/lastDonationDays/:token", async (req, res, next) => {
+  try {
+    const decodedToken = decode.jwtDecode(req.params.token);
+
+    const donor = await db.Donor.findOne({
+      where: {
+        id: decodedToken.id,
+      },
+    });
+
+    if (!donor) {
+      return res.status(404).json({ error: "Donor not found" });
+    }
+
+    const donations = await donor.getDonations({
+      order: [["date", "DESC"]],
+    });
+
+    if (!donations || donations.length === 0) {
+      return res.json({ daysSinceLastDonation: 0 });
+    }
+
+    const today = new Date();
+    const lastDonationDate = new Date(donations[0].date);
+    const daysSinceLastDonation = Math.floor(
+      (today - lastDonationDate) / (1000 * 60 * 60 * 24)
+    );
+
+    res.json({ daysSinceLastDonation });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to retrieve donations" });
+  }
+});
+
 /**
  * Handle the POST request to retrieve all actions from donor's institute.
  */

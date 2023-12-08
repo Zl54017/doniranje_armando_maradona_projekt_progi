@@ -118,6 +118,17 @@ async function actionRegistration(token, actionId) {
   }
 }
 
+async function lastDonationDays(token) {
+  const url = `${address}donor/lastDonationDays/${token}`;
+
+  try {
+    const response = await axios.post(url, requestBody);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 async function inventory(token) {
   const url = `${address}bloodbank/inventory/${token}`;
 
@@ -166,6 +177,17 @@ async function allBloodBanks() {
 
   try {
     const response = await axios.get(url);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function bloodBanksInventory(token) {
+  const url = `${address}donor/bloodBanksInventory/${token}`;
+
+  try {
+    const response = await axios.post(url);
     console.log(response.data);
   } catch (error) {
     console.error(error);
@@ -269,6 +291,9 @@ async function inventoryTest() {
     );
     await inventory(token);
   }
+  var token = await login("LukaModrić@gmail.com", "password");
+  bloodBanksInventory(token);
+  lastDonationDays(token);
 }
 
 inventoryTest();
