@@ -14,6 +14,7 @@ const jwt = require("jsonwebtoken");
 const decode = require("jwt-decode");
 
 router.post("/delete/:token", async (req, res, next) => {
+  const decoded = decode.jwtDecode(req.params.token);
   try {
     console.log(req.body);
     const donor = await db.Donor.findOne({
