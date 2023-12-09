@@ -65,12 +65,13 @@ const authSlice = createSlice({
         state.role = payload.role;
       }
     );
-    builder.addCase(attemptLogin.rejected, (state, action) => {});
+    builder.addCase(fetchUser.rejected, (state, action) => {
+      console.log(action.error);
+    });
 
     builder.addCase(
       fetchUser.fulfilled,
       (state, action: PayloadAction<AuthUser>) => {
-        console.log(action.payload.user);
         state.user = action.payload.user;
         state.role = action.payload.role;
       }

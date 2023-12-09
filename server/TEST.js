@@ -13,7 +13,9 @@ async function login(email, password) {
   try {
     const response = await axios.post(url, requestBody);
     console.log(response.data);
-    const { token } = response.data;
+    const {
+      token
+    } = response.data;
     return token;
   } catch (error) {
     console.error(error);
@@ -42,7 +44,9 @@ async function register(
   try {
     const response = await axios.post(url, requestBody);
     console.log(response.data);
-    const { token } = response.data;
+    const {
+      token
+    } = response.data;
     return token;
   } catch (error) {
     console.error(error);
@@ -63,7 +67,9 @@ async function registerEmployee(firstName, lastName, email, password, bloodBankI
   try {
     const response = await axios.post(url, requestBody);
     console.log(response.data);
-    const { token } = response.data;
+    const {
+      token
+    } = response.data;
     return token;
   } catch (error) {
     console.error(error);
@@ -284,9 +290,9 @@ async function addDonations() {
   ];
 
 
-  
+
   for (var i = 1; i < 97; i++) {
-    var token = await login(instituteNames[(i-1) % 7].replace(/\s/g, "") + "@gmail.com", "password");
+    var token = await login(instituteNames[(i - 1) % 7].replace(/\s/g, "") + "@gmail.com", "password");
     for (var j = 1; j < 6; j++) {
       var date = new Date();
       date.setMonth(date.getMonth() - 3 * j);
@@ -330,13 +336,13 @@ async function loginTest() {
 async function actionsTest() {
   var token = await login("DinoCiani@gmail.com", "password");
 
-  await actionRegistration(token,2);
+  await actionRegistration(token, 2);
 
   await actions(token);
 }
 
 actionsTest();
 
-async function testForFE() { 
+async function testForFE() {
   var token = await login("DinoCiani@gmail.com", "password");
 }

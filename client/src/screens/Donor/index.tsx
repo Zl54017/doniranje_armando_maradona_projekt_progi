@@ -30,6 +30,7 @@ import PersonalInfo from "./personalInfo";
 import Faq from "./faq";
 import Main from "../Main";
 import Map from "./map";
+import localStorageUtility from "../../utils/localStorage/auth";
 
 function Copyright(props: any) {
   return (
@@ -65,7 +66,6 @@ function ContentBox({ activeTab }: { activeTab: string }) {
         <Map />
       )}
     </div>
-  
   );
 }
 

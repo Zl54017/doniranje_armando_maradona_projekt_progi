@@ -29,9 +29,9 @@ const appRouter = createBrowserRouter(
         <Route path="/employee" element={<Employee />} />
       </Route>
       <Route path="/signup" element={<SignUp />} />
-    
+
       <Route path="/login" element={<Login />} />
-      </>
+    </>
   )
 );
 
