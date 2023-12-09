@@ -29,6 +29,18 @@ router.get("/:token", async (req, res, next) => {
       role: 'donor',
       token: req.params.token,
     })
+  } else if (decoded.role === "employee") {
+    const employee = await db.Employee.findOne({
+      where: {
+        id: decoded.id,
+      },
+    });
+    res.json({
+      user: employee,
+      role: 'employee',
+      token: req.params.token,
+    })
+
   } else {
     res.status(404).json({
       message: "Decode failed"
