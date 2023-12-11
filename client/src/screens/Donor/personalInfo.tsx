@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import { Container } from "@mui/material";
 
 function PersonalInfo() {
   const [userInfo, setUserInfo] = useState({
@@ -38,13 +39,14 @@ function PersonalInfo() {
   };
 
   return (
-    <Box mt={5} ml={10}>
-      <Typography variant="h4" mb={2} color="error.main">
-        Osobni Podaci
+    <Container >    
+    <Box mt={5} ml={10} style={{ display: "flex" , flexDirection:"column" }} >
+      <Typography variant="h4" mb={2} color="#b2102f">
+        Osobni Podaci:
       </Typography>
       <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <Typography variant="subtitle1" color="error.main" style={{ width: "120px" }}>
+          <Typography variant="subtitle1"  color="#b2102f" style={{ width: "120px" }}>
             Ime:
           </Typography>
           <TextField
@@ -54,7 +56,7 @@ function PersonalInfo() {
           />
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <Typography variant="subtitle1" color="error.main" style={{ width: "120px" }}>
+          <Typography variant="subtitle1"  color="#b2102f" style={{ width: "120px" }}>
             Prezime:
           </Typography>
           <TextField
@@ -64,7 +66,7 @@ function PersonalInfo() {
           />
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <Typography variant="subtitle1" color="error.main" style={{ width: "120px" }}>
+          <Typography variant="subtitle1"  color="#b2102f" style={{ width: "120px" }}>
             Email:
           </Typography>
           <TextField
@@ -74,7 +76,7 @@ function PersonalInfo() {
           />
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <Typography variant="subtitle1" color="error.main" style={{ width: "120px" }}>
+          <Typography variant="subtitle1"  color="#b2102f" style={{ width: "120px" }}>
             Lozinka:
           </Typography>
           <TextField
@@ -85,7 +87,7 @@ function PersonalInfo() {
           />
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <Typography variant="subtitle1" color="error.main" style={{ width: "120px" }}>
+          <Typography variant="subtitle1"  color="#b2102f" style={{ width: "120px" }}>
             Zavod:
           </Typography>
           <Select
@@ -106,7 +108,7 @@ function PersonalInfo() {
           </Select>
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <Typography variant="subtitle1" color="error.main" style={{ width: "120px" }}>
+          <Typography variant="subtitle1"  color="#b2102f" style={{ width: "120px" }}>
             Krvna Grupa:
           </Typography>
           <Select
@@ -135,6 +137,7 @@ function PersonalInfo() {
         </div>
       </div>
     </Box>
+    </Container>
   );
 }
 
