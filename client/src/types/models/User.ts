@@ -6,6 +6,8 @@ interface User {
   bloodType: string;
   transfusionInstitute: string;
   numberOfDonations: string;
+  gender: string;
+  age: number;
 }
 
 export default User;

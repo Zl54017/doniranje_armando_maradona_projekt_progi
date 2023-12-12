@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
@@ -6,14 +6,18 @@ import Typography from "@mui/material/Typography";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { Container } from "@mui/material";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 function PersonalInfo() {
+
+  const { user, role } = useSelector((state: RootState) => state.auth);
+
   const [userInfo, setUserInfo] = useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
-    confirmedPassword: "",
     gender: "",
     organization: "",
     bloodType: "",
@@ -21,6 +25,22 @@ function PersonalInfo() {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      const [firstName, lastName] = user.name.split(" ");
+      setUserInfo({
+        firstName: firstName || "",
+        lastName: lastName || "",
+        email: user.email,
+        password: user.password,
+        gender: "",
+        organization: "",
+        bloodType: "",
+        donations: [],
+      });
+    }
+  }, [user]);
 
   const handleInputChange = (field: string, value: string) => {
     setUserInfo((prev) => ({ ...prev, [field]: value }));
@@ -31,11 +51,13 @@ function PersonalInfo() {
   };
 
   const handleSaveChanges = () => {
-    console.log("Changes saved:", userInfo);
+    console.log("Promjene spremljene:", userInfo);
+    // Dodaj logiku za spremanje promjena u bazu podataka putem Redux akcije
   };
 
   const handleDeleteAccount = () => {
-    console.log("Account deleted");
+    console.log("Račun obrisan");
+    // Dodaj logiku za brisanje računa iz baze podataka putem Redux akcije
   };
 
   return (
