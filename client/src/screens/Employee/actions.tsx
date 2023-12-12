@@ -4,6 +4,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, StaticTimePicker, TimePicker } from '@mui/x-date-pickers';
+import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
 //TODO : SPREMANJE SKCIJA KAO GODISNJE ( DA IMAMO PREDLOZAK SKROZ PUN)
 //TODO : VIDIT TRIBA LI NAP OD DO U TRAJANJU AKCIJU
 
@@ -114,7 +115,14 @@ const Actions: React.FC = () => {
                                         </Grid>
                                         <Grid item xs={12}>
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                <StaticTimePicker orientation="landscape" />
+                                                <TimePicker
+                                                    label="With Time Clock"
+                                                    viewRenderers={{
+                                                        hours: renderTimeViewClock,
+                                                        minutes: renderTimeViewClock,
+                                                        seconds: renderTimeViewClock,
+                                                    }}
+                                                />
                                             </LocalizationProvider>
                                         </Grid>
                                     </Grid>
