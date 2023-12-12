@@ -189,23 +189,39 @@ function PersonalInfo() {
             </div>
           </div>
         </Box>
-        <Box style={{ display: "flex", flexDirection: "column" }} >
-          <Box ml={10} style={{ display: "flex", flexDirection: "column" }}>
+        <Box style={{ display: "flex", flexDirection: "column", maxWidth: "1000px"}} >
+          <Box ml={30} style={{ display: "flex", flexDirection: "column"}}>
             <Typography variant="h4" mb={2} color="#b2102f">
               Popis Prijašnjih Donacija:
             </Typography>
-            <Box>
+            <Box style={{maxHeight: "200px", overflowY: "auto" }}>
               //TODO for petlja za renderanje donacija
+              <Box>Item 1</Box>
+              <Box>Item 2</Box>
+              <Box>Item 1</Box>
+              <Box>Item 2</Box>
+              <Box>Item 1</Box>
+              <Box>Item 2</Box>
+              <Box>Item 1</Box>
+              <Box>Item 2</Box>
               <Box>Item 1</Box>
               <Box>Item 2</Box>
             </Box>
           </Box>
-          <Box mt={5} ml={10} style={{ display: "flex", flexDirection: "column" }}>
+          <Box mt={5} ml={30} style={{ display: "flex", flexDirection: "column"}}>
             <Typography variant="h4" mb={2} color="#b2102f">
               Nagrade:
             </Typography>
-            <Box>
+            <Box style = {{maxHeight: "200px", overflowY: "auto" }}>
               //TODO for petlja za renderanje nagrada
+              <Box>Item 1</Box>
+              <Box>Item 2</Box>
+              <Box>Item 1</Box>
+              <Box>Item 2</Box>
+              <Box>Item 1</Box>
+              <Box>Item 2</Box>
+              <Box>Item 1</Box>
+              <Box>Item 2</Box>
               <Box>Item 1</Box>
               <Box>Item 2</Box>
             </Box>

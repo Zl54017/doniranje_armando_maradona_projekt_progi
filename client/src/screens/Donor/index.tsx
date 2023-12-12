@@ -31,6 +31,7 @@ import Faq from "./faq";
 import Main from "../Main";
 import Map from "./map";
 import localStorageUtility from "../../utils/localStorage/auth";
+import News from "./news";
 
 function Copyright(props: any) {
   return (
@@ -62,7 +63,9 @@ function ContentBox({ activeTab }: { activeTab: string }) {
         <PersonalInfo />
       ) : activeTab == "faq" ? (
         <Faq />
-      ) : (
+      ) : activeTab==="news" ? (
+        <News />
+      ): (
         <Map />
       )}
     </div>
@@ -132,6 +135,9 @@ export default function Donor() {
             color="text.primary"
             href="#"
             sx={{ my: 1, mx: 1.5 }}
+            onClick={() => {
+              setActiveTab("news")
+            }}
           >
             Novosti
           </Link>
