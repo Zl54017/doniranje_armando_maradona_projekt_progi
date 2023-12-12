@@ -7,10 +7,13 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { Container } from "@mui/material";
 import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
+import { RootState, useAppDispatch } from "../../redux/store";
+import { fetchData, fetchUser } from "../../redux/slices/authSlice";
+import RegisterInput from "../../types/inputs/user/RegisterInput";
 
 function PersonalInfo() {
 
+  const ageOptions = Array.from({ length: 48 }, (_, index) => 18 + index);
   const { user, role } = useSelector((state: RootState) => state.auth);
 
   const [userInfo, setUserInfo] = useState({
@@ -21,23 +24,23 @@ function PersonalInfo() {
     gender: "",
     organization: "",
     bloodType: "",
-    donations: [],
+    age: 0,
   });
 
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (user) {
-      const [firstName, lastName] = user.name.split(" ");
+      const [firstName, lastName] = user.name.split(' ');
       setUserInfo({
         firstName: firstName || "",
         lastName: lastName || "",
-        email: user.email,
-        password: user.password,
-        gender: "",
-        organization: "",
-        bloodType: "",
-        donations: [],
+        email: user.email || "",
+        password: user.password || "",
+        gender: user.gender,
+        organization: user.transfusionInstitute,
+        bloodType: user.bloodType,
+        age: user.age,
       });
     }
   }, [user]);
@@ -108,6 +111,38 @@ function PersonalInfo() {
             onChange={(e) => handleInputChange("password", e.target.value)}
           />
         </div>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <Typography variant="subtitle1" color="#b2102f" style={{ width: "120px" }}>
+          Dob:
+        </Typography>
+        <Select
+          id="age"
+          value={userInfo.age}
+          onChange={(e) => handleInputChange("age", String(e.target.value))}
+          style={{ minWidth: "200px" }}
+        >
+          {ageOptions.map((age) => (
+              <MenuItem key={age} value={age}>
+                {age}
+            </MenuItem>
+          ))}
+        </Select>
+      </div>
+
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <Typography variant="subtitle1" color="#b2102f" style={{ width: "120px" }}>
+          Spol:
+        </Typography>
+        <Select
+          id="gender"
+          value={userInfo.gender}
+          onChange={(e) => handleInputChange("gender", e.target.value)}
+          style={{ minWidth: "200px" }}
+        >
+          <MenuItem value="m">Muško</MenuItem>
+          <MenuItem value="ž">Žensko</MenuItem>
+        </Select>
+      </div>
         <div style={{ display: "flex", alignItems: "center" }}>
           <Typography variant="subtitle1"  color="#b2102f" style={{ width: "120px" }}>
             Zavod:

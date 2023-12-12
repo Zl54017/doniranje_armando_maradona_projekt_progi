@@ -11,4 +11,5 @@ export default {
   getUser: (jwt: string) => axios.get(`${auth.base}/login/${jwt}`),
   logout: () => axios.post(`${auth.base}/logout`, null),
   register: (user: RegisterInput) => axios.post(`${auth.base}/register`, user),
+  getData: (jwt: string) => axios.post(`${auth.base}/login/${jwt}`),
 };
