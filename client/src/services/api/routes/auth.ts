@@ -13,4 +13,5 @@ export default {
   logout: () => axios.post(`${auth.base}/logout`, null),
   register: (user: RegisterInput) => axios.post(`${auth.base}/register`, user),
   actionset: (actionInput: ActionInput) => axios.post(`${auth.base}/bloodbank`, actionInput),
+  getData: (jwt: string) => axios.post(`${auth.base}/login/${jwt}`),
 };

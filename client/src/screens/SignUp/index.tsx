@@ -58,6 +58,8 @@ function SignUp() {
   const { user, role } = useSelector((state: RootState) => state.auth);
 
   const [registrationType, setRegistrationType] = useState("");
+  const ageOptions = Array.from({ length: 48 }, (_, index) => 18 + index);
+
 
   const onSubmit = (response: RegisterInput) => {
     dispatch(attemptRegister(response));
@@ -110,90 +112,121 @@ function SignUp() {
             sx={{ mt: 3 }}
           >
             <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    {...register("firstName")}
-                    name="firstName"
-                    required
-                    fullWidth
-                    id="firstName"
-                    label="Ime"
-                    autoFocus
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    {...register("lastName")}
-                    required
-                    fullWidth
-                    id="lastName"
-                    label="Prezime"
-                    name="lastName"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    {...register("email")}
-                    required
-                    fullWidth
-                    id="email"
-                    label="Email Adresa"
-                    name="email"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    {...register("password")}
-                    required
-                    fullWidth
-                    id="password"
-                    type="password"
-                    label="Lozinka"
-                    name="password"
-                    autoComplete="password"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    {...register("transfusionInstitute")}
-                    select
-                    required
-                    fullWidth
-                    id="transfusionInstitute"
-                    label="Ime Zavoda"
-                    name="transfusionInstitute"
-                  >
-                    <MenuItem value="KBC Osijek">KBC Osijek</MenuItem>
-                    <MenuItem value="KBC Rijeka">KBC Rijeka</MenuItem>
-                    <MenuItem value="KBC Split">KBC Split</MenuItem>
-                    <MenuItem value="OB Dubrovnik">OB Dubrovnik</MenuItem>
-                    <MenuItem value="OB Varaždin">OB Varaždin</MenuItem>
-                    <MenuItem value="OB Zadar">OB Zadar</MenuItem>
-                    <MenuItem value="Hrvatski zavod za transfuzijsku medicinu Zagreb">
-                      Hrvatski zavod za transfuzijsku medicinu Zagreb
-                    </MenuItem>
-                  </TextField>
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    {...register("bloodType")}
-                    select
-                    required
-                    fullWidth
-                    id="bloodType"
-                    label="Krvna grupa"
-                    name="bloodType"
-                  >
-                    <MenuItem value="A+">A+</MenuItem>
-                    <MenuItem value="A-">A-</MenuItem>
-                    <MenuItem value="B+">B+</MenuItem>
-                    <MenuItem value="B-">B-</MenuItem>
-                    <MenuItem value="AB+">AB+</MenuItem>
-                    <MenuItem value="AB-">AB-</MenuItem>
-                    <MenuItem value="0+">0+</MenuItem>
-                    <MenuItem value="0-">0-</MenuItem>
-                  </TextField>
-                </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  {...register("firstName")}
+                  name="firstName"
+                  required
+                  fullWidth
+                  id="firstName"
+                  label="Ime"
+                  autoFocus
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  {...register("lastName")}
+                  required
+                  fullWidth
+                  id="lastName"
+                  label="Prezime"
+                  name="lastName"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  {...register("email")}
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email Adresa"
+                  name="email"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  {...register("password")}
+                  required
+                  fullWidth
+                  id="password"
+                  type="password"
+                  label="Lozinka"
+                  name="password"
+                  autoComplete="password"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <InputLabel>Dob</InputLabel>
+                <Select
+                  {...register("age", { required: true })}
+                  required
+                  fullWidth
+                  id="age"
+                  label="Dob"
+                  name="age"
+                >
+                  {ageOptions.map((age) => (
+              <MenuItem key={age} value={age}>
+                {age}
+              </MenuItem>
+            ))}
+                </Select>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  {...register("gender")}
+                  select
+                  required
+                  fullWidth
+                  id="gender"
+                  label="Spol"
+                  name="gender"
+                >
+                  <MenuItem value="musko"> M </MenuItem>
+                  <MenuItem value="zensko"> Ž </MenuItem>
+                </TextField>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  {...register("transfusionInstitute")}
+                  select
+                  required
+                  fullWidth
+                  id="transfusionInstitute"
+                  label="Ime Zavoda"
+                  name="transfusionInstitute"
+                >
+                  <MenuItem value="KBC Osijek">KBC Osijek</MenuItem>
+                  <MenuItem value="KBC Rijeka">KBC Rijeka</MenuItem>
+                  <MenuItem value="KBC Split">KBC Split</MenuItem>
+                  <MenuItem value="OB Dubrovnik">OB Dubrovnik</MenuItem>
+                  <MenuItem value="OB Varaždin">OB Varaždin</MenuItem>
+                  <MenuItem value="OB Zadar">OB Zadar</MenuItem>
+                  <MenuItem value="Hrvatski zavod za transfuzijsku medicinu Zagreb">
+                    Hrvatski zavod za transfuzijsku medicinu Zagreb
+                  </MenuItem>
+                </TextField>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  {...register("bloodType")}
+                  select
+                  required
+                  fullWidth
+                  id="bloodType"
+                  label="Krvna grupa"
+                  name="bloodType"
+                >
+                  <MenuItem value="A+">A+</MenuItem>
+                  <MenuItem value="A-">A-</MenuItem>
+                  <MenuItem value="B+">B+</MenuItem>
+                  <MenuItem value="B-">B-</MenuItem>
+                  <MenuItem value="AB+">AB+</MenuItem>
+                  <MenuItem value="AB-">AB-</MenuItem>
+                  <MenuItem value="0+">0+</MenuItem>
+                  <MenuItem value="0-">0-</MenuItem>
+                </TextField>
+              </Grid>
             </Grid>
             <Button
               type="submit"

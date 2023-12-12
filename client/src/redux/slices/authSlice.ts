@@ -33,6 +33,14 @@ const attemptRegister = createAsyncThunk(
   }
 );
 
+const fetchData = createAsyncThunk("auth/fetchDataStatus", async (user: RegisterInput) => {
+  const token = localStorageUtility.getAuthToken();
+  if (token!==null){
+    const response = await authService.getData(token);
+    return response.data
+  }
+})
+
 const fetchUser = createAsyncThunk("auth/fetchUserStatus", async () => {
   const token = localStorageUtility.getAuthToken();
   if (token !== null) {
@@ -95,11 +103,19 @@ const authSlice = createSlice({
         state.role = payload.role;
       }
     );
+
+    builder.addCase(
+      fetchData.fulfilled, 
+      (state, action: PayloadAction<AuthUser>) => {
+        state.user = action.payload.user;
+        state.role = action.payload.role;
+      }
+    )
   },
 });
 
 export const { clearUser } = authSlice.actions;
 
-export { attemptLogin, fetchUser, attemptLogout, attemptRegister };
+export { attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData };
 
 export default authSlice.reducer;
