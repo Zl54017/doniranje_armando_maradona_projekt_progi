@@ -1,11 +1,33 @@
-import React, { useState } from 'react';
-import { Container, Select, MenuItem, Typography, SelectChangeEvent } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Container, Select, MenuItem, Typography, SelectChangeEvent, Grid, TextField, InputAdornment } from '@mui/material';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider, StaticTimePicker, TimePicker } from '@mui/x-date-pickers';
+//TODO : SPREMANJE SKCIJA KAO GODISNJE ( DA IMAMO PREDLOZAK SKROZ PUN)
+//TODO : VIDIT TRIBA LI NAP OD DO U TRAJANJU AKCIJU
 
 const Actions: React.FC = () => {
     const [selectedQuestion, setSelectedQuestion] = useState<number | ''>('');
 
+
     const handleQuestionChange = (event: SelectChangeEvent<number | ''>) => {
         setSelectedQuestion(event.target.value as number | '');
+    };
+    const [selectedDate, setSelectedDate] = useState(null);
+
+    useEffect(() => {
+        setSelectedDate(null);
+    }, []);
+
+    const handleDateChange = (date: any) => {
+        setSelectedDate(date);
+    }
+
+    const [selectedTime, setSelectedTime] = useState<Date | null>(null);
+
+    const handleTimeChange = (time: Date | null) => {
+        setSelectedTime(time);
     };
 
     return (
@@ -35,11 +57,552 @@ const Actions: React.FC = () => {
                     {/* Prilagodite sadržaj prema potrebama */}
                     {selectedQuestion === 0 && (
                         <>
-                            Krv može darivati svaki čovjek dobrog općeg zdravstvenog stanja...
+                            <Container>
+                                <React.Fragment>
+                                    <Typography variant="h6" gutterBottom>
+                                        Akcija
+                                    </Typography>
+                                    <Grid container spacing={3}>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                id="grad"
+                                                name="grad"
+                                                label="Grad"
+                                                fullWidth
+                                                autoComplete="given-name"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                id="adresa"
+                                                name="adresa"
+                                                label="Adresa"
+                                                fullWidth
+                                                autoComplete="family-name"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <TextField
+                                                required
+                                                id="imeZavoda"
+                                                name="imeZavoda"
+                                                label="Ime zavoda"
+                                                fullWidth
+                                                autoComplete="shipping address-line1"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <label htmlFor="datepicker" style={{ display: 'block', fontSize: '15px', color: 'grey' }}>
+                                                Odaberi datum akcije *
+                                            </label>
+                                            <DatePicker
+                                                required
+                                                id="datepicker"
+                                                selected={selectedDate}
+                                                onChange={handleDateChange}
+                                                dateFormat="dd/MM/yyyy"
+                                                minDate={new Date()}
+                                                showMonthDropdown
+                                                showYearDropdown
+                                                dropdownMode="select"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                <StaticTimePicker orientation="landscape" />
+                                            </LocalizationProvider>
+                                        </Grid>
+                                    </Grid>
+                                </React.Fragment>
+                            </Container>
+                        </>
+                    )}
+                    {selectedQuestion === 1 && (
+                        <>
+                            <Container>
+                                <React.Fragment>
+                                    <Typography variant="h6" gutterBottom>
+                                        Akcija
+                                    </Typography>
+                                    <Grid container spacing={3}>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                id="grad"
+                                                name="grad"
+                                                label="Grad"
+                                                fullWidth
+                                                autoComplete="given-name"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                id="adresa"
+                                                name="adresa"
+                                                label="Adresa"
+                                                fullWidth
+                                                autoComplete="family-name"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <TextField
+                                                required
+                                                id="imeZavoda"
+                                                name="imeZavoda"
+                                                label="Ime zavoda"
+                                                fullWidth
+                                                autoComplete="shipping address-line1"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <label htmlFor="datepicker" style={{ display: 'block', fontSize: '15px', color: 'grey' }}>
+                                                Odaberi datum akcije *
+                                            </label>
+                                            <DatePicker
+                                                required
+                                                id="datepicker"
+                                                selected={selectedDate}
+                                                onChange={handleDateChange}
+                                                dateFormat="dd/MM/yyyy"
+                                                minDate={new Date()}
+                                                showMonthDropdown
+                                                showYearDropdown
+                                                dropdownMode="select"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                id="vrijeme"
+                                                name="vrijeme"
+                                                label="Vrijeme održavanja akcije"
+                                                fullWidth
+                                                autoComplete="shipping address-level2"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        {/* <Grid item xs={12}>
+                                            <FormControlLabel
+                                                control={<Checkbox color="secondary" name="saveAddress" value="yes" />}
+                                                label="Spremi akciju kao kao godišnju"
+                                            />
+                                        </Grid> */}
+                                    </Grid>
+                                </React.Fragment>
+                            </Container>
                             {/* Dodajte sadržaj za prvo pitanje */}
                         </>
                     )}
-                    {/* Dodajte slično sadržaj za ostala pitanja */}
+                    {selectedQuestion === 2 && (
+                        <>
+                            <Container>
+                                <React.Fragment>
+                                    <Typography variant="h6" gutterBottom>
+                                        Akcija
+                                    </Typography>
+                                    <Grid container spacing={3}>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                id="grad"
+                                                name="grad"
+                                                label="Grad"
+                                                fullWidth
+                                                autoComplete="given-name"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                id="adresa"
+                                                name="adresa"
+                                                label="Adresa"
+                                                fullWidth
+                                                autoComplete="family-name"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <TextField
+                                                required
+                                                id="imeZavoda"
+                                                name="imeZavoda"
+                                                label="Ime zavoda"
+                                                fullWidth
+                                                autoComplete="shipping address-line1"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <label htmlFor="datepicker" style={{ display: 'block', fontSize: '15px', color: 'grey' }}>
+                                                Odaberi datum akcije *
+                                            </label>
+                                            <DatePicker
+                                                required
+                                                id="datepicker"
+                                                selected={selectedDate}
+                                                onChange={handleDateChange}
+                                                dateFormat="dd/MM/yyyy"
+                                                minDate={new Date()}
+                                                showMonthDropdown
+                                                showYearDropdown
+                                                dropdownMode="select"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                id="vrijeme"
+                                                name="vrijeme"
+                                                label="Vrijeme održavanja akcije"
+                                                fullWidth
+                                                autoComplete="shipping address-level2"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        {/* <Grid item xs={12}>
+                                            <FormControlLabel
+                                                control={<Checkbox color="secondary" name="saveAddress" value="yes" />}
+                                                label="Spremi akciju kao kao godišnju"
+                                            />
+                                        </Grid> */}
+                                    </Grid>
+                                </React.Fragment>
+                            </Container>
+                            {/* Dodajte sadržaj za prvo pitanje */}
+                        </>
+                    )}
+                    {selectedQuestion === 3 && (
+                        <>
+                            <Container>
+                                <React.Fragment>
+                                    <Typography variant="h6" gutterBottom>
+                                        Akcija
+                                    </Typography>
+                                    <Grid container spacing={3}>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                id="grad"
+                                                name="grad"
+                                                label="Grad"
+                                                fullWidth
+                                                autoComplete="given-name"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                id="adresa"
+                                                name="adresa"
+                                                label="Adresa"
+                                                fullWidth
+                                                autoComplete="family-name"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <TextField
+                                                required
+                                                id="imeZavoda"
+                                                name="imeZavoda"
+                                                label="Ime zavoda"
+                                                fullWidth
+                                                autoComplete="shipping address-line1"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <label htmlFor="datepicker" style={{ display: 'block', fontSize: '15px', color: 'grey' }}>
+                                                Odaberi datum akcije *
+                                            </label>
+                                            <DatePicker
+                                                required
+                                                id="datepicker"
+                                                selected={selectedDate}
+                                                onChange={handleDateChange}
+                                                dateFormat="dd/MM/yyyy"
+                                                minDate={new Date()}
+                                                showMonthDropdown
+                                                showYearDropdown
+                                                dropdownMode="select"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                id="vrijeme"
+                                                name="vrijeme"
+                                                label="Vrijeme održavanja akcije"
+                                                fullWidth
+                                                autoComplete="shipping address-level2"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        {/* <Grid item xs={12}>
+                                            <FormControlLabel
+                                                control={<Checkbox color="secondary" name="saveAddress" value="yes" />}
+                                                label="Spremi akciju kao kao godišnju"
+                                            />
+                                        </Grid> */}
+                                    </Grid>
+                                </React.Fragment>
+                            </Container>
+                            {/* Dodajte sadržaj za prvo pitanje */}
+                        </>
+                    )}
+                    {selectedQuestion === 4 && (
+                        <>
+                            <Container>
+                                <React.Fragment>
+                                    <Typography variant="h6" gutterBottom>
+                                        Akcija
+                                    </Typography>
+                                    <Grid container spacing={3}>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                id="grad"
+                                                name="grad"
+                                                label="Grad"
+                                                fullWidth
+                                                autoComplete="given-name"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                id="adresa"
+                                                name="adresa"
+                                                label="Adresa"
+                                                fullWidth
+                                                autoComplete="family-name"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <TextField
+                                                required
+                                                id="imeZavoda"
+                                                name="imeZavoda"
+                                                label="Ime zavoda"
+                                                fullWidth
+                                                autoComplete="shipping address-line1"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <label htmlFor="datepicker" style={{ display: 'block', fontSize: '15px', color: 'grey' }}>
+                                                Odaberi datum akcije *
+                                            </label>
+                                            <DatePicker
+                                                required
+                                                id="datepicker"
+                                                selected={selectedDate}
+                                                onChange={handleDateChange}
+                                                dateFormat="dd/MM/yyyy"
+                                                minDate={new Date()}
+                                                showMonthDropdown
+                                                showYearDropdown
+                                                dropdownMode="select"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                id="vrijeme"
+                                                name="vrijeme"
+                                                label="Vrijeme održavanja akcije"
+                                                fullWidth
+                                                autoComplete="shipping address-level2"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        {/* <Grid item xs={12}>
+                                            <FormControlLabel
+                                                control={<Checkbox color="secondary" name="saveAddress" value="yes" />}
+                                                label="Spremi akciju kao kao godišnju"
+                                            />
+                                        </Grid> */}
+                                    </Grid>
+                                </React.Fragment>
+                            </Container>
+                            {/* Dodajte sadržaj za prvo pitanje */}
+                        </>
+                    )}
+                    {selectedQuestion === 5 && (
+                        <>
+                            <Container>
+                                <React.Fragment>
+                                    <Typography variant="h6" gutterBottom>
+                                        Akcija
+                                    </Typography>
+                                    <Grid container spacing={3}>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                id="grad"
+                                                name="grad"
+                                                label="Grad"
+                                                fullWidth
+                                                autoComplete="given-name"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                id="adresa"
+                                                name="adresa"
+                                                label="Adresa"
+                                                fullWidth
+                                                autoComplete="family-name"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <TextField
+                                                required
+                                                id="imeZavoda"
+                                                name="imeZavoda"
+                                                label="Ime zavoda"
+                                                fullWidth
+                                                autoComplete="shipping address-line1"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <label htmlFor="datepicker" style={{ display: 'block', fontSize: '15px', color: 'grey' }}>
+                                                Odaberi datum akcije *
+                                            </label>
+                                            <DatePicker
+                                                required
+                                                id="datepicker"
+                                                selected={selectedDate}
+                                                onChange={handleDateChange}
+                                                dateFormat="dd/MM/yyyy"
+                                                minDate={new Date()}
+                                                showMonthDropdown
+                                                showYearDropdown
+                                                dropdownMode="select"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                id="vrijeme"
+                                                name="vrijeme"
+                                                label="Vrijeme održavanja akcije"
+                                                fullWidth
+                                                autoComplete="shipping address-level2"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        {/* <Grid item xs={12}>
+                                            <FormControlLabel
+                                                control={<Checkbox color="secondary" name="saveAddress" value="yes" />}
+                                                label="Spremi akciju kao kao godišnju"
+                                            />
+                                        </Grid> */}
+                                    </Grid>
+                                </React.Fragment>
+                            </Container>
+                            {/* Dodajte sadržaj za prvo pitanje */}
+                        </>
+                    )}
+                    {selectedQuestion === 6 && (
+                        <>
+                            <Container>
+                                <React.Fragment>
+                                    <Typography variant="h6" gutterBottom>
+                                        Akcija
+                                    </Typography>
+                                    <Grid container spacing={3}>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                id="grad"
+                                                name="grad"
+                                                label="Grad"
+                                                fullWidth
+                                                autoComplete="given-name"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                id="adresa"
+                                                name="adresa"
+                                                label="Adresa"
+                                                fullWidth
+                                                autoComplete="family-name"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <TextField
+                                                required
+                                                id="imeZavoda"
+                                                name="imeZavoda"
+                                                label="Ime zavoda"
+                                                fullWidth
+                                                autoComplete="shipping address-line1"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <label htmlFor="datepicker" style={{ display: 'block', fontSize: '15px', color: 'grey' }}>
+                                                Odaberi datum akcije *
+                                            </label>
+                                            <DatePicker
+                                                required
+                                                id="datepicker"
+                                                selected={selectedDate}
+                                                onChange={handleDateChange}
+                                                dateFormat="dd/MM/yyyy"
+                                                minDate={new Date()}
+                                                showMonthDropdown
+                                                showYearDropdown
+                                                dropdownMode="select"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                id="vrijeme"
+                                                name="vrijeme"
+                                                label="Vrijeme održavanja akcije"
+                                                fullWidth
+                                                autoComplete="shipping address-level2"
+                                                variant="standard"
+                                            />
+                                        </Grid>
+
+                                        {/* <Grid item xs={12}>
+                                            <FormControlLabel
+                                                control={<Checkbox color="secondary" name="saveAddress" value="yes" />}
+                                                label="Spremi akciju kao kao godišnju"
+                                            />
+                                        </Grid> */}
+                                    </Grid>
+                                </React.Fragment>
+                            </Container>
+                            {/* Dodajte sadržaj za prvo pitanje */}
+                        </>
+                    )}
                 </Typography>
             )}
         </Container>
@@ -48,76 +611,4 @@ const Actions: React.FC = () => {
 
 export default Actions;
 
-// return (
-//   <Container>
-//     <React.Fragment>
-//       <Typography variant="h6" gutterBottom>
-//         Akcija
-//       </Typography>
-//       <Grid container spacing={3}>
-//         <Grid item xs={12} sm={6}>
-//           <TextField
-//             required
-//             id="grad"
-//             name="grad"
-//             label="Grad"
-//             fullWidth
-//             autoComplete="given-name"
-//             variant="standard"
-//           />
-//         </Grid>
-//         <Grid item xs={12} sm={6}>
-//           <TextField
-//             required
-//             id="adresa"
-//             name="adresa"
-//             label="Adresa"
-//             fullWidth
-//             autoComplete="family-name"
-//             variant="standard"
-//           />
-//         </Grid>
-//         <Grid item xs={12}>
-//           <TextField
-//             required
-//             id="imeZavoda"
-//             name="imeZavoda"
-//             label="Ime zavoda"
-//             fullWidth
-//             autoComplete="shipping address-line1"
-//             variant="standard"
-//           />
-//         </Grid>
-//         <Grid item xs={12}>
-//           <TextField
-//             required
-//             id="datum"
-//             name="datum"
-//             label="Datum održavanja akcije"
-//             fullWidth
-//             autoComplete="shipping address-line2"
-//             variant="standard"
-//           />
-//         </Grid>
-//         <Grid item xs={12} sm={6}>
-//           <TextField
-//             required
-//             id="vrijeme"
-//             name="vrijeme"
-//             label="Vrijeme održavanja akcije"
-//             fullWidth
-//             autoComplete="shipping address-level2"
-//             variant="standard"
-//           />
-//         </Grid>
-//         <Grid item xs={12}>
-//           <FormControlLabel
-//             control={<Checkbox color="secondary" name="saveAddress" value="yes" />}
-//             label="Spremi akciju kao kao godišnju"
-//           />
-//         </Grid>
-//       </Grid>
-//     </React.Fragment>
-//   </Container>
-// );
 
