@@ -8,13 +8,15 @@ import MenuItem from "@mui/material/MenuItem";
 import { Container } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../redux/store";
-import { fetchData, fetchUser } from "../../redux/slices/authSlice";
+import { attemptRegister, fetchData, fetchUser } from "../../redux/slices/authSlice";
 import RegisterInput from "../../types/inputs/user/RegisterInput";
+import { useForm } from "react-hook-form";
 
 function PersonalInfo() {
-
+  const dispatch = useAppDispatch();
   const ageOptions = Array.from({ length: 48 }, (_, index) => 18 + index);
   const { user, role } = useSelector((state: RootState) => state.auth);
+  const { register, handleSubmit } = useForm<RegisterInput>();
 
   const [userInfo, setUserInfo] = useState({
     firstName: "",
@@ -45,17 +47,9 @@ function PersonalInfo() {
     }
   }, [user]);
 
-  const handleInputChange = (field: string, value: string) => {
-    setUserInfo((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const togglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev);
-  };
-
-  const handleSaveChanges = () => {
+  const onSubmit = (response: RegisterInput) => {
+    dispatch(attemptRegister(response))
     console.log("Promjene spremljene:", userInfo);
-    // Dodaj logiku za spremanje promjena u bazu podataka putem Redux akcije
   };
 
   const handleDeleteAccount = () => {
@@ -75,9 +69,9 @@ function PersonalInfo() {
             Ime:
           </Typography>
           <TextField
+            {...register("firstName")}
             id="firstName"
             value={userInfo.firstName}
-            onChange={(e) => handleInputChange("firstName", e.target.value)}
           />
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
@@ -85,9 +79,9 @@ function PersonalInfo() {
             Prezime:
           </Typography>
           <TextField
+            {...register("lastName")}
             id="lastName"
             value={userInfo.lastName}
-            onChange={(e) => handleInputChange("lastName", e.target.value)}
           />
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
@@ -95,9 +89,9 @@ function PersonalInfo() {
             Email:
           </Typography>
           <TextField
+            {...register("email")}
             id="email"
             value={userInfo.email}
-            onChange={(e) => handleInputChange("email", e.target.value)}
           />
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
@@ -105,10 +99,10 @@ function PersonalInfo() {
             Lozinka:
           </Typography>
           <TextField
+            {...register("password")}
             id="password"
             type={showPassword ? "text" : "password"}
             value={userInfo.password}
-            onChange={(e) => handleInputChange("password", e.target.value)}
           />
         </div>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -116,9 +110,9 @@ function PersonalInfo() {
           Dob:
         </Typography>
         <Select
+          {...register("age", { required: true })}
           id="age"
           value={userInfo.age}
-          onChange={(e) => handleInputChange("age", String(e.target.value))}
           style={{ minWidth: "200px" }}
         >
           {ageOptions.map((age) => (
@@ -134,9 +128,9 @@ function PersonalInfo() {
           Spol:
         </Typography>
         <Select
+          {...register("gender")}
           id="gender"
           value={userInfo.gender}
-          onChange={(e) => handleInputChange("gender", e.target.value)}
           style={{ minWidth: "200px" }}
         >
           <MenuItem value="m">Muško</MenuItem>
@@ -148,9 +142,9 @@ function PersonalInfo() {
             Zavod:
           </Typography>
           <Select
+            {...register("transfusionInstitute")}
             id="organization"
             value={userInfo.organization}
-            onChange={(e) => handleInputChange("organization", e.target.value)}
             style={{ minWidth: "200px" }}
           >
             <MenuItem value="KBC Osijek">KBC Osijek</MenuItem>
@@ -169,9 +163,9 @@ function PersonalInfo() {
             Krvna Grupa:
           </Typography>
           <Select
+            {...register("bloodType")}
             id="bloodType"
             value={userInfo.bloodType}
-            onChange={(e) => handleInputChange("bloodType", e.target.value)}
             style={{ minWidth: "200px" }}
           >
             <MenuItem value="A+">A+</MenuItem>
@@ -185,7 +179,7 @@ function PersonalInfo() {
           </Select>
         </div>
         <div style={{ display: "flex", gap: "10px" }}>
-          <Button onClick={handleSaveChanges} variant="contained" color="error">
+          <Button onClick={handleSubmit(onSubmit)} variant="contained" color="error">
             Spremi Promjene
           </Button>
           <Button onClick={handleDeleteAccount} variant="contained" color="error">
