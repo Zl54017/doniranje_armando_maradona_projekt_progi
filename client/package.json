@@ -52,7 +52,7 @@
   "scripts": {
     "start": "react-scripts start",
     "start-prod": "serve -s build",
-    "prebuild": "npm install && npm install @mui/x-date-pickers && npm install dayjs",
+    "prebuild": "npm install && npm install @mui/x-date-pickers && npm install dayjs && npm install react-datepicker",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
