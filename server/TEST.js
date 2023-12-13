@@ -319,4 +319,4 @@ async function testForFE() {
   var token = await login("DinoCiani@gmail.com", "password");
 }
 
-inventoryTest();
+registerTest();
