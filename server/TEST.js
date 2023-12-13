@@ -13,9 +13,7 @@ async function login(email, password) {
   try {
     const response = await axios.post(url, requestBody);
     console.log(response.data);
-    const {
-      token
-    } = response.data;
+    const { token } = response.data;
     return token;
   } catch (error) {
     console.error(error);
@@ -27,6 +25,8 @@ async function register(
   lastName,
   email,
   password,
+  age,
+  gender,
   bloodType,
   transfusionInstitute
 ) {
@@ -37,6 +37,8 @@ async function register(
     lastName,
     email,
     password,
+    age,
+    gender,
     bloodType,
     transfusionInstitute,
   };
@@ -44,16 +46,20 @@ async function register(
   try {
     const response = await axios.post(url, requestBody);
     console.log(response.data);
-    const {
-      token
-    } = response.data;
+    const { token } = response.data;
     return token;
   } catch (error) {
     console.error(error);
   }
 }
 
-async function registerEmployee(firstName, lastName, email, password, bloodBankId) {
+async function registerEmployee(
+  firstName,
+  lastName,
+  email,
+  password,
+  bloodBankId
+) {
   const url = address + "employee/register";
 
   const requestBody = {
@@ -67,9 +73,7 @@ async function registerEmployee(firstName, lastName, email, password, bloodBankI
   try {
     const response = await axios.post(url, requestBody);
     console.log(response.data);
-    const {
-      token
-    } = response.data;
+    const { token } = response.data;
     return token;
   } catch (error) {
     console.error(error);
@@ -212,34 +216,6 @@ async function bloodBanksInventory(token) {
   }
 }
 
-async function TEST() {
-  var token = await login("johndoe@example.com", "password123");
-
-  await donations(token);
-
-  await actions(token);
-
-  await allActions();
-
-  await actionRegistration(token, 3);
-
-  token = await login("b", "b");
-
-  await inventory(token);
-
-  await addDonation(token, 1, "", new Date());
-
-  await registrations(3);
-
-  token = await register(
-    "armando",
-    "2",
-    "sifra",
-    "A+",
-    "Hrvatski zavod za transfuzijsku medicinu Zagreb"
-  );
-}
-
 async function loginTest() {
   var token = await login("RenatoMatić@gmail.com", "password");
 
@@ -254,6 +230,8 @@ async function registerTest() {
     "Galić",
     "BrunoGalić@gmail.com",
     "password",
+    21,
+    "M",
     "A+",
     "Hrvatski zavod za transfuzijsku medicinu Zagreb"
   );
@@ -268,7 +246,6 @@ async function registerTest() {
 }
 
 async function addDonations() {
-
   const instituteNames = [
     "KBC Osijek",
     "KBC Rijeka",
@@ -289,10 +266,11 @@ async function addDonations() {
     "Petrova ul. 3, 10000, Zagreb",
   ];
 
-
-
   for (var i = 1; i < 97; i++) {
-    var token = await login(instituteNames[(i - 1) % 7].replace(/\s/g, "") + "@gmail.com", "password");
+    var token = await login(
+      instituteNames[(i - 1) % 7].replace(/\s/g, "") + "@gmail.com",
+      "password"
+    );
     for (var j = 1; j < 6; j++) {
       var date = new Date();
       date.setMonth(date.getMonth() - 3 * j);
@@ -300,7 +278,6 @@ async function addDonations() {
     }
   }
 }
-
 
 async function inventoryTest() {
   const instituteNames = [
@@ -328,10 +305,7 @@ async function inventoryTest() {
 
 async function loginTest() {
   var token = await login("ProbaArhive@gmail.com (archived)", "password");
-
 }
-
-
 
 async function actionsTest() {
   var token = await login("DinoCiani@gmail.com", "password");
@@ -341,8 +315,8 @@ async function actionsTest() {
   await actions(token);
 }
 
-actionsTest();
-
 async function testForFE() {
   var token = await login("DinoCiani@gmail.com", "password");
 }
+
+inventoryTest();

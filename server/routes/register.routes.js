@@ -21,7 +21,16 @@ const decode = require("jwt-decode");
  * Checks if donor with given email already exists.
  */
 router.post("/", async (req, res) => {
-  const { firstName, lastName, email, password, bloodType, transfusionInstitute } = req.body;
+  const {
+    firstName,
+    lastName,
+    email,
+    password,
+    age,
+    gender,
+    bloodType,
+    transfusionInstitute,
+  } = req.body;
 
   const hashedPassword = crypto
     .createHash("sha256")
@@ -45,6 +54,8 @@ router.post("/", async (req, res) => {
       name: firstName + " " + lastName,
       email: email,
       password: hashedPassword,
+      age: age,
+      gender: gender,
       bloodType: bloodType,
       transfusionInstitute: transfusionInstitute,
       numberOfDonations: 0,
