@@ -24,7 +24,7 @@ import {
 import { useForm } from "react-hook-form";
 import { useState, useEffect, useRef } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import L from "leaflet";
+import L, { Icon, Marker } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import PersonalInfo from "./personalInfo";
 import Faq from "./faq";
@@ -68,6 +68,7 @@ function Map() {
         console.error("Error getting geolocation:", error);
       }
     );
+    
     const fixedLocations = [
       { lat: 45.558042202768455, lng: 18.71365045228026 }, //KBC Osijek
       { lat: 43.503911289394324, lng: 16.45792246443381 }, //KBC Split
@@ -77,11 +78,11 @@ function Map() {
       { lat: 44.10745411911505, lng: 15.23451962336266 }, //OB Zadar
       { lat: 45.81617537849029, lng: 15.99113679462288 }, //Hrvatski zavod za transfuzijsku medicinu Zagreb
       //
-    ];
+     ];
     if (mapRef.current) {
       fixedLocations.forEach((fixedLocation) => {
         L.circle([fixedLocation.lat, fixedLocation.lng], {
-          color: "red",
+          color:"red",
           fillColor: "#f03",
           fillOpacity: 0.5,
           radius: 100,
@@ -139,11 +140,9 @@ function Map() {
                 primary="Dobrovoljno darivanje krvi 25.12.2023., PMF"
               />
             </ListItem>
-            {/* Add more ListItems as needed */}
           </List>
         </Box>
       </Container>
-      {/* Footer */}
     </ThemeProvider>
   );
 }
