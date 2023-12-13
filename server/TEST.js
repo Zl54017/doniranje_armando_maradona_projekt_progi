@@ -150,6 +150,17 @@ async function lastDonationDays(token) {
   }
 }
 
+async function daysUntilNextDonation(token) {
+  const url = `${address}donor/daysUntilNextDonation/${token}`;
+
+  try {
+    const response = await axios.get(url);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 async function inventory(token) {
   const url = `${address}bloodbank/inventory/${token}`;
 
@@ -317,6 +328,24 @@ async function actionsTest() {
 
 async function testForFE() {
   var token = await login("DinoCiani@gmail.com", "password");
+  await lastDonationDays(token);
+  await daysUntilNextDonation(token);
+
+  var token = await login("KBCOsijek@gmail.com", "password");
+  const twoDaysAgo = new Date();
+  twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+
+  await addDonation(
+    token,
+    86,
+    "",
+    twoDaysAgo,
+    "Ul. Josipa Huttlera 4, 31000, Osijek"
+  );
+
+  var token = await login("DinoCiani@gmail.com", "password");
+  await lastDonationDays(token);
+  await daysUntilNextDonation(token);
 }
 
-inventoryTest();
+testForFE();

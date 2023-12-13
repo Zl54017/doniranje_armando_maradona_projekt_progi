@@ -124,7 +124,7 @@ router.get("/daysUntilNextDonation/:token", async (req, res, next) => {
     );
     const gender = donor.gender;
 
-    const daysUntilNextDonation = 0;
+    var daysUntilNextDonation = 0;
 
     if (gender == "M") {
       if (daysSinceLastDonation < 90) {
