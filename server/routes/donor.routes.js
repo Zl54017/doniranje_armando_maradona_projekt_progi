@@ -95,6 +95,56 @@ router.post("/lastDonationDays/:token", async (req, res, next) => {
   }
 });
 
+router.get("/daysUntilNextDonation/:token", async (req, res, next) => {
+  try {
+    const decodedToken = decode.jwtDecode(req.params.token);
+
+    const donor = await db.Donor.findOne({
+      where: {
+        id: decodedToken.id,
+      },
+    });
+
+    if (!donor) {
+      return res.status(404).json({ error: "Donor not found" });
+    }
+
+    const donations = await donor.getDonations({
+      order: [["date", "DESC"]],
+    });
+
+    if (!donations || donations.length === 0) {
+      return res.json({ daysUntilNextDonation: 0 });
+    }
+
+    const today = new Date();
+    const lastDonationDate = new Date(donations[0].date);
+    const daysSinceLastDonation = Math.floor(
+      (today - lastDonationDate) / (1000 * 60 * 60 * 24)
+    );
+    const gender = donor.gender;
+
+    const daysUntilNextDonation = 0;
+
+    if (gender == "M") {
+      if (daysSinceLastDonation < 90) {
+        daysUntilNextDonation = 90 - daysSinceLastDonation;
+      }
+    } else if (gender == "F") {
+      if (daysSinceLastDonation < 120) {
+        daysUntilNextDonation = 120 - daysSinceLastDonation;
+      }
+    } else {
+      res.status(500).json({ error: "Failed to retrieve donors gender" });
+    }
+
+    res.json({ daysUntilNextDonation });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to retrieve donation information" });
+  }
+});
+
 /**
  * Handle the POST request to retrieve all actions from donor's institute.
  */
@@ -227,7 +277,13 @@ router.post("/bloodBankInventory/:token", async (req, res, next) => {
     const bloodType = donor.bloodType;
 
     //lista lokacija (treba ju na kraju updateati s stvarnim lokacijama)
-    const bloodBankLocations = ['Location1', 'Location2', 'Location3', 'Location4', 'Location5']; 
+    const bloodBankLocations = [
+      "Location1",
+      "Location2",
+      "Location3",
+      "Location4",
+      "Location5",
+    ];
 
     const inventory = {};
 

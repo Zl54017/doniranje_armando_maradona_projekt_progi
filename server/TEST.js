@@ -304,7 +304,7 @@ async function inventoryTest() {
 }
 
 async function loginTest() {
-  var token = await login("ProbaArhive@gmail.com (archived)", "password");
+  var token = await login("LukaModrić@gmail.com", "password");
 }
 
 async function actionsTest() {
@@ -319,4 +319,4 @@ async function testForFE() {
   var token = await login("DinoCiani@gmail.com", "password");
 }
 
-registerTest();
+inventoryTest();
