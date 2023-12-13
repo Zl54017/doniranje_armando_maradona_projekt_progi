@@ -13,6 +13,10 @@ const Sequelize = require("sequelize");
 const jwt = require("jsonwebtoken");
 const decode = require("jwt-decode");
 
+/**
+ * Handle the POST request for deleting a donor.
+ * Adds the word "archived" to the donor's email.
+ */
 router.post("/delete/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);
   try {
@@ -40,6 +44,7 @@ router.post("/delete/:token", async (req, res, next) => {
 
 /**
  * Handle the POST request to retrieve a donor's donations.
+ * Returns a list of donations.
  */
 router.post("/donations/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);
@@ -60,6 +65,10 @@ router.post("/donations/:token", async (req, res, next) => {
   }
 });
 
+/**
+ * Handle the POST request to retrieve the number of days since the donors last donation.
+ * Returns the number of days since the donors last donation
+ */
 router.post("/lastDonationDays/:token", async (req, res, next) => {
   try {
     const decodedToken = decode.jwtDecode(req.params.token);
@@ -95,6 +104,10 @@ router.post("/lastDonationDays/:token", async (req, res, next) => {
   }
 });
 
+/**
+ * Handle the GET request to retrieve the number of days the donor has to wait until another donation.
+ * Returns the number of days until the donor can donate again
+ */
 router.get("/daysUntilNextDonation/:token", async (req, res, next) => {
   try {
     const decodedToken = decode.jwtDecode(req.params.token);
@@ -147,6 +160,7 @@ router.get("/daysUntilNextDonation/:token", async (req, res, next) => {
 
 /**
  * Handle the POST request to retrieve all actions from donor's institute.
+ * Returns a list of actions.
  */
 router.post("/actions/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);
@@ -175,6 +189,7 @@ router.post("/actions/:token", async (req, res, next) => {
 
 /**
  * Handle the GET request to retrieve all actions.
+ * Returns a list of actions.
  */
 router.get("/allActions", async (req, res, next) => {
   try {
@@ -218,7 +233,8 @@ router.post("/actionRegistration/:token", async (req, res, next) => {
 });
 
 /**
- * Handle the POST request to retrieve inventory of blood
+ * Handle the POST request to retrieve inventory of blood of all blood types in all blood banks.
+ * Returns a list of blood banks and their inventory.
  */
 router.post("/bloodBanksInventory/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);
@@ -264,6 +280,10 @@ router.post("/bloodBanksInventory/:token", async (req, res, next) => {
   }
 });
 
+/**
+ * Handle the GET request to retrieve inventory of blood of the donors blood type in all blood banks.
+ * Returns a number of liters of blood.
+ */
 router.get("/inventoryOfBloodType/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);
   try {

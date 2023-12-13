@@ -130,7 +130,20 @@ async function actionRegistration(token, actionId) {
 }
 
 //primanje obavijesti od zavoda u slučaju manjka krvi
-//biti će implementirano po dogovoru
+//dodao sam ovu metodu koja vraca kolicinu krvi za donorovu krvnu grupu
+//to je ukupna zaliha u svim zavodima
+//mislio sam da odredimo neku granicu, npr 50 litara, pa ako pozivom ove metode dobijemo manji broj
+//prikazemo pop up na stranici koji kaze da bi donor trebao donirati ako moze
+async function inventoryOfBloodType(token) {
+  const url = `${address}donor/inventoryOfBloodType/${token}`;
+
+  try {
+    const response = await axios.get(url);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 //potvrđivanje pozivnica za darivanje
 //biti će implementirano po dogovoru
@@ -145,6 +158,7 @@ async function testForFE() {
   await actions(token);
   await allActions();
   await bloodBanksInventory(token);
+  await inventoryOfBloodType(token);
   //await archiveDonor(token);
   await lastDonationDays(token);
   await daysUntilNextDonation(token);
