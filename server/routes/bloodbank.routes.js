@@ -270,6 +270,47 @@ router.post("/issueCertificate/:token", async (req, res, next) => {
   }
 });
 
+//funkcija za kreiranje akcije
+router.post("/createAction", async (req, res, next) => {
+  try {
+    const { bloodBankId, date, minNumberOfDonors } = req.body; 
+    const bloodBank = await db.BloodBank.findByPk(bloodBankId); 
+
+    if (!bloodBank) {
+      return res.status(404).json({ error: "Blood bank not found" });
+    }
+
+    const newAction = await db.Action.create({
+      bloodBankId: bloodBank.id,
+      address: bloodBank.address, 
+      date: date,
+      minNumberOfDonors: minNumberOfDonors,
+    });
+
+    res.json(newAction.toJSON());
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to create action" });
+  }
+});
+
+//funkcija koja na zahtjev korisnika vraca uvid u popis donora pojedinog zavoda
+router.get("/donorsByBloodBank/:bloodBankId", async (req, res, next) => {
+  try {
+    const bloodBankId = req.params.bloodBankId; 
+    const donors = await db.Donor.findAll({
+      where: {
+        transfusionInstitute: bloodBankId, 
+      },
+    });
+
+    res.json(donors);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to retrieve donors by blood bank" });
+  }
+});
+
 /**
  * Handle the POST request to add a donation.
  */
