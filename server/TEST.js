@@ -227,6 +227,17 @@ async function bloodBanksInventory(token) {
   }
 }
 
+async function inventoryOfBloodType(token) {
+  const url = `${address}donor/inventoryOfBloodType/${token}`;
+
+  try {
+    const response = await axios.get(url);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 async function loginTest() {
   var token = await login("RenatoMatić@gmail.com", "password");
 
@@ -327,10 +338,12 @@ async function actionsTest() {
 }
 
 async function testForFE() {
-  var token = await login("DinoCiani@gmail.com", "password");
+  var token = await login("NikolinaPišek@gmail.com", "password");
   await lastDonationDays(token);
   await daysUntilNextDonation(token);
+}
 
+async function temp() {
   var token = await login("KBCOsijek@gmail.com", "password");
   const twoDaysAgo = new Date();
   twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);

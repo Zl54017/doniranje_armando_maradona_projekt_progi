@@ -100,6 +100,18 @@ async function lastDonationDays(token) {
     console.error(error);
   }
 }
+//dodan gender u tablicu, pa sam dodao i ovu funkciju, uzeo sam podatak da zene moraju cekati 120, a muskarci 90 dana
+//ova metoda vraca izracunat broj dana do sljedece donacije
+async function daysUntilNextDonation(token) {
+  const url = `${address}donor/daysUntilNextDonation/${token}`;
+
+  try {
+    const response = await axios.get(url);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 //prijava na akcije
 async function actionRegistration(token, actionId) {
@@ -126,7 +138,6 @@ async function actionRegistration(token, actionId) {
 //pristup lokacijama na karti na kojima su organizirana doniranja krvi
 //ovdje samo staviti adrese zavoda za pocetak?
 
-
 //pozivanje gornjih funkcija
 async function testForFE() {
   var token = await login("PeroGalić@gmail.com", "password");
@@ -136,10 +147,10 @@ async function testForFE() {
   await bloodBanksInventory(token);
   //await archiveDonor(token);
   await lastDonationDays(token);
+  await daysUntilNextDonation(token);
   await actionRegistration(token, 5);
 }
 
 testForFE();
 
-
-//pokretanje iz direktorija server: node DonorFunkcijeZaFE.js 
+//pokretanje iz direktorija server: node DonorFunkcijeZaFE.js

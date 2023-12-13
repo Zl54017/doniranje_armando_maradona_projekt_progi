@@ -264,6 +264,53 @@ router.post("/bloodBanksInventory/:token", async (req, res, next) => {
   }
 });
 
+router.get("/inventoryOfBloodType/:token", async (req, res, next) => {
+  const decoded = decode.jwtDecode(req.params.token);
+  try {
+    const donor = await db.Donor.findOne({
+      where: {
+        id: decoded.id,
+      },
+    });
+
+    const bloodBanks = await db.BloodBank.findAll({});
+    var inventory = 0;
+
+    for (const bloodBank of bloodBanks) {
+      const results = await db.Donation.findAll({
+        attributes: [
+          [Sequelize.literal('"donor"."bloodType"'), "bloodType"],
+          [Sequelize.literal("0.5 * COUNT(*)"), "donationCount"],
+        ],
+        include: [
+          {
+            model: db.Donor,
+            as: "donor",
+            attributes: [],
+          },
+        ],
+        where: {
+          used: false,
+          warning: "",
+          bloodBankId: bloodBank.id,
+        },
+        group: ["donor.bloodType"],
+      });
+
+      results.forEach((result) => {
+        if (result.dataValues.bloodType == donor.bloodType) {
+          inventory += parseFloat(result.dataValues.donationCount);
+        }
+      });
+    }
+
+    res.json(inventory);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to retrieve inventory" });
+  }
+});
+
 //funkcija kojom donor može provjeriti zalihu krvi njegove krvne grupe u svakom zavodu (na svakoj lokaciji) kako bi znao gdje ima najmanje krvi pa tamo išao donirati
 router.post("/bloodBankInventory/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);
