@@ -9,6 +9,7 @@ const Certificate = require("../models/certificate");
 const Donation = require("../models/donation");
 const ActionRegistration = require("../models/actionregistration");
 const Sequelize = require("sequelize");
+const crypto = require("crypto");
 
 const jwt = require("jsonwebtoken");
 const decode = require("jwt-decode");
