@@ -218,7 +218,7 @@ function PersonalInfo() {
                 Promjeni lozinku
               </Button>
             </Box>
-          </Box>
+          </Box> 
         </Box>
         <Box style={{ display: "flex", flexDirection: "column", maxWidth: "1000px" }} >
           <Box ml={30} style={{ display: "flex", flexDirection: "column" }}>

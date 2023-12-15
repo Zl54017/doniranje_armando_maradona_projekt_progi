@@ -51,7 +51,7 @@ function Map() {
         console.error("Error retrieving actions:", error);
       });
   }, [dispatch]);
-
+ 
   useEffect(() => {
     const container = document.getElementById("leaflet-map");
 

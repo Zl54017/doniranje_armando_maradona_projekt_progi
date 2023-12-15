@@ -85,7 +85,7 @@ const retrieveAwards = createAsyncThunk(
     if(token){
       const response = await authService.getAwards(token);
       return response.data;
-    }
+    } 
   }
 );
 
