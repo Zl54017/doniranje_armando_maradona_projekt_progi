@@ -8,7 +8,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { Container } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../redux/store";
-import { attemptChange, attemptDelete, attemptRegister, fetchData, fetchUser } from "../../redux/slices/authSlice";
+import { attemptChange, attemptDelete, attemptRegister, fetchData, fetchUser, retrieveAwards, retrievePrevActions } from "../../redux/slices/authSlice";
 import RegisterInput from "../../types/inputs/user/RegisterInput";
 import { useForm } from "react-hook-form";
 
@@ -29,7 +29,31 @@ function PersonalInfo() {
     age: 0,
   });
 
-  const [showPassword, setShowPassword] = useState(false);
+  const [prevActions, setPrevActions] = useState<any[]>([]);
+  useEffect(() => {
+    // Fetch actions when component mounts
+    dispatch(retrievePrevActions())
+      .then((response: any) => {
+        setPrevActions(response.payload || []);
+        console.log(prevActions);
+      })
+      .catch((error: any) => {
+        console.error("Error retrieving actions:", error);
+      });
+  }, [dispatch]);
+
+  const [awards, setAwards] = useState<any[]>([]);
+  useEffect(() => {
+    // Fetch actions when component mounts
+    dispatch(retrieveAwards())
+      .then((response: any) => {
+        setAwards(response.payload || []);
+        console.log(awards);
+      })
+      .catch((error: any) => {
+        console.error("Error retrieving actions:", error);
+      });
+  }, [dispatch]);
 
   useEffect(() => {
     if (user) {
@@ -144,10 +168,10 @@ function PersonalInfo() {
               </Typography>
               <Select
                 {...register("transfusionInstitute")}
-                id="organization"
+                id="transfusionInstitute"
                 value={userInfo.transfusionInstitute}
                 style={{ minWidth: "200px" }}
-                onChange={(e) => handleChange("organization", e.target.value)}
+                onChange={(e) => handleChange("transfusionInstitute", e.target.value)}
               >
                 <MenuItem value="KBC Osijek">KBC Osijek</MenuItem>
                 <MenuItem value="KBC Rijeka">KBC Rijeka</MenuItem>
@@ -196,42 +220,49 @@ function PersonalInfo() {
             </Box>
           </Box>
         </Box>
-        <Box style={{ display: "flex", flexDirection: "column", maxWidth: "1000px"}} >
-          <Box ml={30} style={{ display: "flex", flexDirection: "column"}}>
+        <Box style={{ display: "flex", flexDirection: "column", maxWidth: "1000px" }} >
+          <Box ml={30} style={{ display: "flex", flexDirection: "column" }}>
             <Typography variant="h4" mb={2} color="#b2102f">
               Popis Prijašnjih Donacija:
             </Typography>
-            <Box style={{maxHeight: "200px", overflowY: "auto" }}>
-              //TODO for petlja za renderanje donacija
-              <Box>Item 1</Box>
-              <Box>Item 2</Box>
-              <Box>Item 1</Box>
-              <Box>Item 2</Box>
-              <Box>Item 1</Box>
-              <Box>Item 2</Box>
-              <Box>Item 1</Box>
-              <Box>Item 2</Box>
-              <Box>Item 1</Box>
-              <Box>Item 2</Box>
-            </Box>
+            {prevActions.length > 0 ? (
+              <Box style={{ maxHeight: "200px", overflowY: "auto" }}>
+                {prevActions.map((donation: any, index: number) => (
+                  <Box key={index} marginBottom={2} padding={2} border="1px solid #b2102f" borderRadius={5}>
+                    <Typography variant="body1">
+                      Mjesto donacije: {donation.address}
+                    </Typography>
+                    <Typography variant="body1">
+                      Datum donacije: {new Date(donation.date).toLocaleDateString()}
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
+            ) : (
+              <Typography variant="body1">Nema zabilježenih donacija.</Typography>
+            )}
           </Box>
-          <Box mt={5} ml={30} style={{ display: "flex", flexDirection: "column"}}>
+          <Box mt={5} ml={30} style={{ display: "flex", flexDirection: "column" }}>
             <Typography variant="h4" mb={2} color="#b2102f">
               Nagrade:
             </Typography>
-            <Box style = {{maxHeight: "200px", overflowY: "auto" }}>
-              //TODO for petlja za renderanje nagrada
-              <Box>Item 1</Box>
-              <Box>Item 2</Box>
-              <Box>Item 1</Box>
-              <Box>Item 2</Box>
-              <Box>Item 1</Box>
-              <Box>Item 2</Box>
-              <Box>Item 1</Box>
-              <Box>Item 2</Box>
-              <Box>Item 1</Box>
-              <Box>Item 2</Box>
-            </Box>
+            {awards.length > 0 ? (
+              <Box style={{ maxHeight: "200px", overflowY: "auto" }}>
+                {awards.map((award: any, index: number) => (
+                  <Box key={index} marginBottom={2} padding={2} border="1px solid #b2102f" borderRadius={5}>
+                    <Typography variant="body1">
+                      Naziv nagrade: {award.name}
+                    </Typography>
+                    <Typography variant="body1">
+                      Datum dodjele: {new Date(award.date).toLocaleDateString()}
+                    </Typography>
+                    {/* Add any additional award information you want to display */}
+                  </Box>
+                ))}
+              </Box>
+            ) : (
+              <Typography variant="body1">Nema zabilježenih nagrada.</Typography>
+            )}
           </Box>
         </Box>
       </Box>

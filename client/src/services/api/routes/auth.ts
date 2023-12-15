@@ -17,4 +17,6 @@ export default {
   delete: (jwt: string) => axios.post(`${auth.base}/donor/delete/${jwt}`),
   change: (user: RegisterInput) => axios.post(`${auth.base}/donor/change`, user),
   getAction: (jwt: string) => axios.post(`${auth.base}/donor/actions/${jwt}`),
+  getPrevAction: (jwt: string) => axios.post(`${auth.base}/donor/donations/${jwt}`),
+  getAwards: (jwt: string) => axios.post(`${auth.base}/donor/awards/${jwt}`),
 };

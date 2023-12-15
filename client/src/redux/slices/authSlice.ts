@@ -64,6 +64,28 @@ const retrieveActions = createAsyncThunk(
   }
 );
 
+const retrievePrevActions = createAsyncThunk(
+  "auth/retrievePrevActionsStatus",
+  async () => {
+    const token = localStorageUtility.getAuthToken();
+    if(token){
+      const response = await authService.getPrevAction(token);
+      return response.data;
+    }
+  }
+);
+
+const retrieveAwards = createAsyncThunk(
+  "auth/retrieveAwardsStatus",
+  async () => {
+    const token = localStorageUtility.getAuthToken();
+    if(token){
+      const response = await authService.getAwards(token);
+      return response.data;
+    }
+  }
+);
+
 const fetchData = createAsyncThunk("auth/fetchDataStatus", async () => {
   const token = localStorageUtility.getAuthToken();
   if (token!==null){
@@ -152,17 +174,11 @@ const authSlice = createSlice({
         state.role = payload.role;
       }
     );
-
-    builder.addCase(
-      retrieveActions.fulfilled, 
-      (state, action: PayloadAction<AuthUser>) => {
-      }
-    )
   },
 });
 
 export const { clearUser } = authSlice.actions;
 
-export { retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete };
+export { retrieveAwards, retrievePrevActions, retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete };
 
 export default authSlice.reducer;

@@ -12,6 +12,8 @@ import {
   List,
   ListItem,
   ListItemText,
+  CircularProgress,
+  ListItemButton,
 } from "@mui/material";
 import GlobalStyles from "@mui/material/GlobalStyles";
 import { RootState, useAppDispatch } from "../../redux/store";
@@ -20,6 +22,7 @@ import {
   attemptLogout,
   clearUser,
   fetchUser,
+  retrieveActions,
 } from "../../redux/slices/authSlice";
 import { useForm } from "react-hook-form";
 import { useState, useEffect, useRef } from "react";
@@ -32,10 +35,23 @@ import Faq from "./faq";
 const defaultTheme = createTheme();
 
 function Map() {
+  
   const { user, role } = useSelector((state: RootState) => state.auth);
-
- // const [error, setError] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
   const mapRef = useRef<L.Map | null>(null);
+  const [upcomingActions, setUpcomingActions] = useState<any[]>([]);
+  useEffect(() => {
+    // Fetch actions when component mounts
+    dispatch(retrieveActions())
+      .then((response: any) => {
+        setUpcomingActions(response.payload || []);
+        console.log(upcomingActions);
+      })
+      .catch((error: any) => {
+        console.error("Error retrieving actions:", error);
+      });
+  }, [dispatch]);
+
   useEffect(() => {
     const container = document.getElementById("leaflet-map");
 
@@ -130,6 +146,10 @@ function Map() {
     };
   }, []);
 
+  function handleDonationClick(action: any): void {
+    console.log("Prijavi se");
+  }
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <GlobalStyles
@@ -160,20 +180,40 @@ function Map() {
           <Typography variant="h6" gutterBottom color="text.secondary">
             Kalendar nadolazećih akcija darivanja krvi:
           </Typography>
-          <List>
-            <ListItem>
-              <ListItemText
-                color="text.secondary"
-                primary="Dobrovoljno darivanje krvi 25.12.2023., FER"
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemText
-                color="text.secondary"
-                primary="Dobrovoljno darivanje krvi 25.12.2023., PMF"
-              />
-            </ListItem>
+          {upcomingActions.length > 0 ? (
+            <List>
+            {upcomingActions.map((action: any) => (
+              <ListItemButton
+              key={action.id}
+              component="a"
+              onClick={() => handleDonationClick(action)}
+              sx={{
+                border: "2px solid #b2102f", // Red border around each action
+                borderRadius: 5, // Optional: Add border radius
+                marginBottom: 2, // Optional: Add margin between actions
+              }}
+            >
+                <ListItemText
+                  color="text.secondary"
+                  primary={action.address}
+                  secondary={
+                    <React.Fragment>
+                      <Typography variant="body2" component="span">
+                        {new Date(action.date).toLocaleDateString()}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" component="span">
+                        {" "}
+                        (Min broj donora: {action.minNumberOfDonors})
+                      </Typography>
+                    </React.Fragment>
+                  }
+                />
+              </ListItemButton>
+            ))}
           </List>
+          ) : (
+            <CircularProgress />
+          )}
         </Box>
       </Container>
     </ThemeProvider>
