@@ -8,7 +8,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { Container } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../redux/store";
-import { attemptRegister, fetchData, fetchUser } from "../../redux/slices/authSlice";
+import { attemptChange, attemptDelete, attemptRegister, fetchData, fetchUser } from "../../redux/slices/authSlice";
 import RegisterInput from "../../types/inputs/user/RegisterInput";
 import { useForm } from "react-hook-form";
 
@@ -23,9 +23,9 @@ function PersonalInfo() {
     lastName: "",
     email: "",
     password: "",
-    gender: "",
-    organization: "",
     bloodType: "",
+    transfusionInstitute: "",
+    gender: "",
     age: 0,
   });
 
@@ -40,32 +40,38 @@ function PersonalInfo() {
         email: user.email || "",
         password: user.password || "",
         gender: user.gender,
-        organization: user.transfusionInstitute,
+        transfusionInstitute: user.transfusionInstitute,
         bloodType: user.bloodType,
         age: user.age,
       });
     }
   }, [user]);
 
-  const onSubmit = (response: RegisterInput) => {
-    dispatch(attemptRegister(response))
-    console.log("Promjene spremljene:", userInfo);
+  const handleChange = (key: string, value: any) => {
+    setUserInfo({ ...userInfo, [key]: value });
+  };
+
+  const handleChangeUser = () => {
+    dispatch(attemptChange(userInfo));
   };
 
   const handleDeleteAccount = () => {
-    console.log("Račun obrisan");
-    // Dodaj logiku za brisanje računa iz baze podataka putem Redux akcije
+    dispatch(attemptDelete());
   };
 
+  const handleChangePassword = () => {
+    console.log("Brisi pass");
+  }
+
   return (
-    <Container >
+    <Container>
       <Box mt={5} ml={10} style={{ display: "flex" }}>
-        <Box style={{ display: "flex", flexDirection: "column" }} >
+        <Box style={{ display: "flex", flexDirection: "column" }}>
           <Typography variant="h4" mb={2} color="#b2102f">
             Osobni Podaci:
           </Typography>
-          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            <div style={{ display: "flex", alignItems: "center" }}>
+          <Box style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            <Box style={{ display: "flex", alignItems: "center" }}>
               <Typography variant="subtitle1" color="#b2102f" style={{ width: "120px" }}>
                 Ime:
               </Typography>
@@ -73,9 +79,10 @@ function PersonalInfo() {
                 {...register("firstName")}
                 id="firstName"
                 value={userInfo.firstName}
+                onChange={(e) => handleChange("firstName", e.target.value)}
               />
-            </div>
-            <div style={{ display: "flex", alignItems: "center" }}>
+            </Box>
+            <Box style={{ display: "flex", alignItems: "center" }}>
               <Typography variant="subtitle1" color="#b2102f" style={{ width: "120px" }}>
                 Prezime:
               </Typography>
@@ -83,9 +90,10 @@ function PersonalInfo() {
                 {...register("lastName")}
                 id="lastName"
                 value={userInfo.lastName}
+                onChange={(e) => handleChange("lastName", e.target.value)}
               />
-            </div>
-            <div style={{ display: "flex", alignItems: "center" }}>
+            </Box>
+            <Box style={{ display: "flex", alignItems: "center" }}>
               <Typography variant="subtitle1" color="#b2102f" style={{ width: "120px" }}>
                 Email:
               </Typography>
@@ -93,20 +101,10 @@ function PersonalInfo() {
                 {...register("email")}
                 id="email"
                 value={userInfo.email}
+                onChange={(e) => handleChange("email", e.target.value)}
               />
-            </div>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <Typography variant="subtitle1" color="#b2102f" style={{ width: "120px" }}>
-                Lozinka:
-              </Typography>
-              <TextField
-                {...register("password")}
-                id="password"
-                type={showPassword ? "text" : "password"}
-                value={userInfo.password}
-              />
-            </div>
-            <div style={{ display: "flex", alignItems: "center" }}>
+            </Box>
+            <Box style={{ display: "flex", alignItems: "center" }}>
               <Typography variant="subtitle1" color="#b2102f" style={{ width: "120px" }}>
                 Dob:
               </Typography>
@@ -115,6 +113,7 @@ function PersonalInfo() {
                 id="age"
                 value={userInfo.age}
                 style={{ minWidth: "200px" }}
+                onChange={(e) => handleChange("age", e.target.value)}
               >
                 {ageOptions.map((age) => (
                   <MenuItem key={age} value={age}>
@@ -122,9 +121,9 @@ function PersonalInfo() {
                   </MenuItem>
                 ))}
               </Select>
-            </div>
+            </Box>
 
-            <div style={{ display: "flex", alignItems: "center" }}>
+            <Box style={{ display: "flex", alignItems: "center" }}>
               <Typography variant="subtitle1" color="#b2102f" style={{ width: "120px" }}>
                 Spol:
               </Typography>
@@ -133,20 +132,22 @@ function PersonalInfo() {
                 id="gender"
                 value={userInfo.gender}
                 style={{ minWidth: "200px" }}
+                onChange={(e) => handleChange("gender", e.target.value)}
               >
-                <MenuItem value="m">Muško</MenuItem>
-                <MenuItem value="ž">Žensko</MenuItem>
+                <MenuItem value="M">M</MenuItem>
+                <MenuItem value="F">F</MenuItem>
               </Select>
-            </div>
-            <div style={{ display: "flex", alignItems: "center" }}>
+            </Box>
+            <Box style={{ display: "flex", alignItems: "center" }}>
               <Typography variant="subtitle1" color="#b2102f" style={{ width: "120px" }}>
                 Zavod:
               </Typography>
               <Select
                 {...register("transfusionInstitute")}
                 id="organization"
-                value={userInfo.organization}
+                value={userInfo.transfusionInstitute}
                 style={{ minWidth: "200px" }}
+                onChange={(e) => handleChange("organization", e.target.value)}
               >
                 <MenuItem value="KBC Osijek">KBC Osijek</MenuItem>
                 <MenuItem value="KBC Rijeka">KBC Rijeka</MenuItem>
@@ -158,8 +159,8 @@ function PersonalInfo() {
                   Hrvatski zavod za transfuzijsku medicinu Zagreb
                 </MenuItem>
               </Select>
-            </div>
-            <div style={{ display: "flex", alignItems: "center" }}>
+            </Box>
+            <Box style={{ display: "flex", alignItems: "center" }}>
               <Typography variant="subtitle1" color="#b2102f" style={{ width: "120px" }}>
                 Krvna Grupa:
               </Typography>
@@ -168,6 +169,7 @@ function PersonalInfo() {
                 id="bloodType"
                 value={userInfo.bloodType}
                 style={{ minWidth: "200px" }}
+                onChange={(e) => handleChange("bloodType", e.target.value)}
               >
                 <MenuItem value="A+">A+</MenuItem>
                 <MenuItem value="A-">A-</MenuItem>
@@ -178,16 +180,21 @@ function PersonalInfo() {
                 <MenuItem value="0+">0+</MenuItem>
                 <MenuItem value="0-">0-</MenuItem>
               </Select>
-            </div>
-            <div style={{ display: "flex", gap: "10px" }}>
-              <Button onClick={handleSubmit(onSubmit)} variant="contained" color="error">
+            </Box>
+            <Box style={{ display: "flex", gap: "10px" }}>
+              <Button onClick={handleChangeUser} variant="contained" style={{ backgroundColor: "#b2102f", color: "white" }}>
                 Spremi Promjene
               </Button>
-              <Button onClick={handleDeleteAccount} variant="contained" color="error">
+              <Button onClick={handleDeleteAccount} variant="contained" style={{ backgroundColor: "#b2102f", color: "white" }}>
                 Obriši Račun
               </Button>
-            </div>
-          </div>
+            </Box>
+            <Box style={{ display: "flex", gap: "10px" }}>
+              <Button onClick={handleChangePassword} variant="contained" style={{ backgroundColor: "#b2102f", color: "white" }}>
+                Promjeni lozinku
+              </Button>
+            </Box>
+          </Box>
         </Box>
         <Box style={{ display: "flex", flexDirection: "column", maxWidth: "1000px"}} >
           <Box ml={30} style={{ display: "flex", flexDirection: "column"}}>

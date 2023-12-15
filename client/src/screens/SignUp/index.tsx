@@ -182,8 +182,8 @@ function SignUp() {
                   label="Spol"
                   name="gender"
                 >
-                  <MenuItem value="musko"> M </MenuItem>
-                  <MenuItem value="zensko"> Ž </MenuItem>
+                  <MenuItem value="M"> M </MenuItem>
+                  <MenuItem value="F"> F </MenuItem>
                 </TextField>
               </Grid>
               <Grid item xs={12}>

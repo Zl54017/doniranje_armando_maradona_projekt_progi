@@ -33,13 +33,32 @@ const attemptRegister = createAsyncThunk(
   }
 );
 
-const fetchData = createAsyncThunk("auth/fetchDataStatus", async (user: RegisterInput) => {
+const attemptDelete = createAsyncThunk(
+  "auth/deleteStatus",
+  async () => {
+    const token = localStorageUtility.getAuthToken();
+    if (token){
+      const response = await authService.delete(token);
+      return response.data
+    } 
+  }
+);
+
+const attemptChange = createAsyncThunk(
+  "auth/changeStatus",
+  async (user: RegisterInput) => {
+    const response = await authService.change(user);
+    return response.data;
+  }
+);
+
+const fetchData = createAsyncThunk("auth/fetchDataStatus", async () => {
   const token = localStorageUtility.getAuthToken();
   if (token!==null){
     const response = await authService.getData(token);
     return response.data
   }
-})
+});
 
 const fetchUser = createAsyncThunk("auth/fetchUserStatus", async () => {
   const token = localStorageUtility.getAuthToken();
@@ -86,6 +105,15 @@ const authSlice = createSlice({
     );
 
     builder.addCase(
+      attemptDelete.fulfilled,
+      (state, action: PayloadAction<undefined>) => {
+        localStorageUtility.clearAuthToken();
+        state.user = undefined;
+        state.role = undefined;
+      }
+    );
+
+    builder.addCase(
       attemptLogout.fulfilled,
       (state, action: PayloadAction<undefined>) => {
         localStorageUtility.clearAuthToken();
@@ -105,6 +133,15 @@ const authSlice = createSlice({
     );
 
     builder.addCase(
+      attemptChange.fulfilled,
+      (state, action: PayloadAction<AuthUser>) => {
+        const payload = action.payload;
+        state.user = payload.user;
+        state.role = payload.role;
+      }
+    );
+
+    builder.addCase(
       fetchData.fulfilled, 
       (state, action: PayloadAction<AuthUser>) => {
         state.user = action.payload.user;
@@ -116,6 +153,6 @@ const authSlice = createSlice({
 
 export const { clearUser } = authSlice.actions;
 
-export { attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData };
+export { attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete };
 
 export default authSlice.reducer;
