@@ -254,7 +254,7 @@ function PersonalInfo() {
                       Naziv nagrade: {award.name}
                     </Typography>
                     <Typography variant="body1">
-                      Datum dodjele: {new Date(award.date).toLocaleDateString()}
+                      Datum dodjele: {new Date(award.createdAt).toLocaleDateString()}
                     </Typography>
                     {/* Add any additional award information you want to display */}
                   </Box>
