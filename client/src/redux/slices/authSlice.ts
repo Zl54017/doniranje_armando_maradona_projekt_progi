@@ -6,6 +6,7 @@ import AuthUser from "../../types/inputs/user/AuthUser";
 import { ROLE } from "../../types/enums/Role";
 import { create } from "domain";
 import RegisterInput from "../../types/inputs/user/RegisterInput";
+import { ListAction } from "@mui/base/useList";
 
 interface AuthState {
   user: LoginInput | undefined;
@@ -52,11 +53,22 @@ const attemptChange = createAsyncThunk(
   }
 );
 
+const retrieveActions = createAsyncThunk(
+  "auth/retrieveActionsStatus",
+  async () => {
+    const token = localStorageUtility.getAuthToken();
+    if(token){
+      const response = await authService.getAction(token);
+      return response.data;
+    }
+  }
+);
+
 const fetchData = createAsyncThunk("auth/fetchDataStatus", async () => {
   const token = localStorageUtility.getAuthToken();
   if (token!==null){
     const response = await authService.getData(token);
-    return response.data
+    return response.data;
   }
 });
 
@@ -142,10 +154,8 @@ const authSlice = createSlice({
     );
 
     builder.addCase(
-      fetchData.fulfilled, 
+      retrieveActions.fulfilled, 
       (state, action: PayloadAction<AuthUser>) => {
-        state.user = action.payload.user;
-        state.role = action.payload.role;
       }
     )
   },
@@ -153,6 +163,6 @@ const authSlice = createSlice({
 
 export const { clearUser } = authSlice.actions;
 
-export { attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete };
+export { retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete };
 
 export default authSlice.reducer;
