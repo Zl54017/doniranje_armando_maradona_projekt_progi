@@ -332,72 +332,6 @@ router.get("/inventoryOfBloodType/:token", async (req, res, next) => {
   }
 });
 
-//funkcija kojom donor može provjeriti zalihu krvi njegove krvne grupe u svakom zavodu (na svakoj lokaciji) kako bi znao gdje ima najmanje krvi pa tamo išao donirati
-router.post("/bloodBankInventory/:token", async (req, res, next) => {
-  const decoded = decode.jwtDecode(req.params.token);
-  try {
-    const donor = await db.Donor.findOne({
-      where: {
-        id: decoded.id,
-      },
-    });
-
-    const bloodType = donor.bloodType;
-
-    //lista lokacija (treba ju na kraju updateati s stvarnim lokacijama)
-    const bloodBankLocations = [
-      "Location1",
-      "Location2",
-      "Location3",
-      "Location4",
-      "Location5",
-    ];
-
-    const inventory = {};
-
-    for (const location of bloodBankLocations) {
-      const bloodBank = await db.BloodBank.findOne({
-        where: {
-          name: location,
-        },
-      });
-
-      const result = await db.Donation.findAll({
-        attributes: [
-          [Sequelize.literal('"donor"."bloodType"'), "bloodType"],
-          [Sequelize.literal("0.5 * COUNT(*)"), "donationCount"],
-        ],
-        include: [
-          {
-            model: db.Donor,
-            as: "donor",
-            attributes: [],
-            where: {
-              transfusionInstitute: bloodBank.name,
-              bloodType: bloodType,
-            },
-          },
-        ],
-        where: {
-          used: false,
-        },
-        group: ["donor.bloodType"],
-      });
-
-      if (result.length > 0) {
-        inventory[location] = parseFloat(result[0].dataValues.donationCount);
-      } else {
-        inventory[location] = 0;
-      }
-    }
-
-    res.json(inventory);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Failed to retrieve blood bank inventory" });
-  }
-});
-
 router.post("/change/:token", async (req, res) => {
   const decoded = decode.jwtDecode(req.params.token);
   const {
@@ -411,10 +345,12 @@ router.post("/change/:token", async (req, res) => {
     transfusionInstitute,
   } = req.body;
 
-  const hashedPassword = crypto
+  var hashedPassword = crypto
     .createHash("sha256")
     .update(password)
     .digest("hex");
+
+  if (password.length == 64) hashedPassword = password;
 
   try {
     const existingDonor = await db.Donor.findOne({
