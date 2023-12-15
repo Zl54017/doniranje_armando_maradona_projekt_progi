@@ -416,7 +416,7 @@ router.post("/awards/:token", async (req, res, next) => {
       },
     });
 
-    const certificates = await donor.certificates();
+    const certificates = await donor.getCertificates();
 
     res.json(certificates);
   } catch (error) {
