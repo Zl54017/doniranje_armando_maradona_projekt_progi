@@ -397,4 +397,76 @@ router.post("/bloodBankInventory/:token", async (req, res, next) => {
   }
 });
 
+router.post("/change/:token", async (req, res) => {
+  const decoded = decode.jwtDecode(req.params.token);
+  const {
+    firstName,
+    lastName,
+    email,
+    password,
+    age,
+    gender,
+    bloodType,
+    transfusionInstitute,
+  } = req.body;
+
+  const hashedPassword = crypto
+    .createHash("sha256")
+    .update(password)
+    .digest("hex");
+
+  try {
+    const existingDonor = await db.Donor.findOne({
+      where: {
+        email: email,
+      },
+    });
+
+    if (existingDonor && existingDonor.id !== decoded.id) {
+      return res
+        .status(401)
+        .json({ message: "Donor with email already exists" });
+    }
+
+    const donor = await db.Donor.findOne({
+      where: {
+        id: decoded.id,
+      },
+    });
+
+    if (!donor) {
+      return res.status(404).json({ message: "Donor not found" });
+    }
+
+    // Update donor fields
+    donor.name = firstName + " " + lastName;
+    donor.email = email;
+    donor.password = hashedPassword;
+    donor.age = age;
+    donor.gender = gender;
+    donor.bloodType = bloodType;
+    donor.transfusionInstitute = transfusionInstitute;
+
+    // Save the changes
+    await donor.save();
+
+    const data = {
+      id: donor.id,
+      email: donor.email,
+      role: "donor",
+    };
+
+    const token = jwt.sign(data, "progi123");
+
+    res.json({
+      user: donor,
+      role: "donor",
+      token: token,
+    });
+  } catch (error) {
+    console.error("Error changing donor: ", error);
+    res.status(500).json({ message: "Error changing donor" });
+  }
+});
+
 module.exports = router;

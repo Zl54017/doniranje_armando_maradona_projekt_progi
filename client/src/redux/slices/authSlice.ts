@@ -48,8 +48,11 @@ const attemptDelete = createAsyncThunk(
 const attemptChange = createAsyncThunk(
   "auth/changeStatus",
   async (user: RegisterInput) => {
-    const response = await authService.change(user);
-    return response.data;
+    const token = localStorageUtility.getAuthToken();
+    if (token){
+      const response = await authService.change(user, token);
+      return response.data
+    } 
   }
 );
 

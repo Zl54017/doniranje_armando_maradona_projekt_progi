@@ -15,6 +15,6 @@ export default {
   actionset: (actionInput: ActionInput) => axios.post(`${auth.base}/bloodbank`, actionInput),
   getData: (jwt: string) => axios.post(`${auth.base}/login/${jwt}`),
   delete: (jwt: string) => axios.post(`${auth.base}/donor/delete/${jwt}`),
-  change: (user: RegisterInput) => axios.post(`${auth.base}/donor/change`, user),
+  change: (user: RegisterInput, jwt: string) => axios.post(`${auth.base}/donor/change/${jwt}`, user),
   getAction: (jwt: string) => axios.post(`${auth.base}/donor/actions/${jwt}`),
 };
