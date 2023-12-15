@@ -34,10 +34,36 @@ const defaultTheme = createTheme();
 function Map() {
   const { user, role } = useSelector((state: RootState) => state.auth);
 
-  const [error, setError] = useState<string | null>(null);
+ // const [error, setError] = useState<string | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   useEffect(() => {
     const container = document.getElementById("leaflet-map");
+
+    function findNearestFixedLocation(currentLocation: { lat: number; lng: number }): { lat: number; lng: number } {
+      let nearestLocation = fixedLocations.reduce((nearest, fixedLocation) => {
+        const currentDistance = getDistance(currentLocation, fixedLocation);
+        const nearestDistance = getDistance(currentLocation, nearest);
+        return currentDistance < nearestDistance ? fixedLocation : nearest;
+      }, fixedLocations[0]);
+  
+      return nearestLocation;
+    }
+  
+    function getDistance(point1: { lat: number; lng: number }, point2: { lat: number; lng: number }): number {
+      const R = 6371; 
+      const dLat = (point2.lat - point1.lat) * (Math.PI / 180);
+      const dLon = (point2.lng - point1.lng) * (Math.PI / 180);
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(point1.lat * (Math.PI / 180)) *
+          Math.cos(point2.lat * (Math.PI / 180)) *
+          Math.sin(dLon / 2) *
+          Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      const distance = R * c;
+  
+      return distance;
+    }
 
     if (!container) {
       console.error("Map container not found.");
@@ -62,6 +88,11 @@ function Map() {
           mapRef.current.setView([latitude, longitude], 15);
 
           L.circleMarker([latitude, longitude]).addTo(mapInstance);
+          let nearestFixedLocation = findNearestFixedLocation({ lat: latitude, lng: longitude });
+
+        // Adjust the map view to include both the current and nearest fixed locations
+        let bounds = L.latLngBounds([latitude, longitude], [nearestFixedLocation.lat, nearestFixedLocation.lng]);
+        mapRef.current.fitBounds(bounds);
         }
       },
       (error) => {
@@ -79,16 +110,18 @@ function Map() {
       { lat: 45.81617537849029, lng: 15.99113679462288 }, //Hrvatski zavod za transfuzijsku medicinu Zagreb
       //
      ];
-    if (mapRef.current) {
+     const fixedLocationsLayer = L.layerGroup(); // Create a layer group for fixed locations
+    
       fixedLocations.forEach((fixedLocation) => {
         L.circle([fixedLocation.lat, fixedLocation.lng], {
           color:"red",
           fillColor: "#f03",
           fillOpacity: 0.5,
           radius: 100,
-        }).addTo(mapInstance);
+        }).addTo(fixedLocationsLayer);
       });
-    }
+      fixedLocationsLayer.addTo(mapRef.current);
+      
     return () => {
       if (mapRef.current) {
         mapRef.current.remove();
@@ -120,9 +153,9 @@ function Map() {
           olakšati proces darivanja krvi!
         </Typography>
       </Container>
-      <Container style={{ display: "flex" }}>
-        <Box id="leaflet-map" style={{ height: "400px", width: "60%" }}></Box>
-        <Box border={1} borderColor="black" p={2} padding={5} margin={5}>
+      <Container style={{ display: "flex", flexDirection:"row"  }}>
+        <Box id="leaflet-map" style={{ height: "400px", width: "100%" }}></Box>
+        <Box border={1} borderColor="black" p={2} padding={5} margin={5} >
           {" "}
           <Typography variant="h6" gutterBottom color="text.secondary">
             Kalendar nadolazećih akcija darivanja krvi:
