@@ -406,4 +406,23 @@ router.post("/change/:token", async (req, res) => {
   }
 });
 
+router.post("/awards/:token", async (req, res, next) => {
+  const decoded = decode.jwtDecode(req.params.token);
+  try {
+    console.log(req.body);
+    const donor = await db.Donor.findOne({
+      where: {
+        id: decoded.id,
+      },
+    });
+
+    const certificates = await donor.certificates();
+
+    res.json(certificates);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to retrieve certificates" });
+  }
+});
+
 module.exports = router;
