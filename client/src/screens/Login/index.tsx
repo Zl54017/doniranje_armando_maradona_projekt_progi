@@ -73,7 +73,7 @@ export default function Login() {
       localStorageUtility.getAuthToken() !== null &&
       location.pathname === "/login"
     ) {
-      navigate(`/${role}`);
+      navigate(`/${role}/${user.id}`);
       console.log(role);
     }
   }, [user]);

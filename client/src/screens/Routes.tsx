@@ -20,13 +20,13 @@ const appRouter = createBrowserRouter(
     <>
       <Route path="/" element={<Main />} />
       <Route element={<ProtectedRoute roles={[ROLE.Donor]} />}>
-        <Route path="/donor" element={<Donor />} />
+        <Route path='/donor/:id' element={<Donor />} />
       </Route>
       <Route element={<ProtectedRoute roles={[ROLE.BloodBank]} />}>
         <Route path="/bloodbank" element={<BloodBank />} />
       </Route>
       <Route element={<ProtectedRoute roles={[ROLE.Employee]} />}>
-        <Route path="/employee" element={<Employee />} />
+        <Route path='/employee/:id' element={<Employee />} />
       </Route>
       <Route path="/signup" element={<SignUp />} />
 

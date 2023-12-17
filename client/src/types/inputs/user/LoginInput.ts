@@ -7,6 +7,7 @@ interface LoginInput {
   numberOfDonations: string;
   gender: string;
   age: number;
+  id: number;
 }
 
 export default LoginInput;
