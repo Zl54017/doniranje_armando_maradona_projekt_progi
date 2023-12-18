@@ -311,6 +311,45 @@ router.get("/donorsByBloodBank/:bloodBankId", async (req, res, next) => {
   }
 });
 
+// Funkcija za pronalazak zavoda s najmanje tražene krvne grupe kako bi korisnik mogao izabrati taj zavod za darivanje krvi
+router.get("/minBloodGroup/:bloodType", async (req, res, next) => {
+  try {
+    const bloodType = req.params.bloodType;
+
+    const bloodBanks = await db.BloodBank.findAll({
+      attributes: ["id", "name"],
+      include: [
+        {
+          model: db.Donor,
+          as: "donors",
+          where: {
+            bloodType: bloodType,
+          },
+          required: true,
+        },
+      ],
+      group: ["BloodBank.id"],
+      order: db.sequelize.literal("COUNT(`donors`.`bloodType`) ASC"),
+      limit: 1,
+    });
+
+    if (bloodBanks.length > 0) {
+      res.json({
+        bloodType: bloodType,
+        bloodBankWithMinGroup: {
+          id: bloodBanks[0].id,
+          name: bloodBanks[0].name,
+        },
+      });
+    } else {
+      res.status(404).json({ error: `No blood banks with blood type ${bloodType} found.` });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to retrieve blood bank with minimum blood group" });
+  }
+});
+
 /**
  * Handle the POST request to add a donation.
  */
