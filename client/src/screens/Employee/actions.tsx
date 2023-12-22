@@ -24,10 +24,13 @@ const Actions: React.FC = () => {
         setSelectedDate(date);
     }
 
+    // const today = new Date();
+
     const [selectedTime, setSelectedTime] = useState<Date | null>(null);
 
     const handleTimeChange = (time: Date | null) => {
         setSelectedTime(time);
+
     };
 
     return (
@@ -55,7 +58,7 @@ const Actions: React.FC = () => {
                 <Typography variant="body1">
                     {/* Sadržaj za odabrano pitanje */}
                     {/* Prilagodite sadržaj prema potrebama */}
-                    {selectedQuestion === 0 && (
+                    {selectedQuestion !== null && (
                         <>
                             <Container>
                                 <React.Fragment>
@@ -64,26 +67,197 @@ const Actions: React.FC = () => {
                                     </Typography>
                                     <Grid container spacing={3}>
                                         <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                required
-                                                id="grad"
-                                                name="grad"
-                                                label="Grad"
-                                                fullWidth
-                                                autoComplete="given-name"
-                                                variant="standard"
-                                            />
+                                            <label style={{ display: 'block', fontSize: '15px', color: 'grey' }}>
+                                                Grad
+                                            </label>
+                                            {selectedQuestion === 0 && (
+                                                <>
+                                                    <TextField
+                                                        required
+                                                        id="grad"
+                                                        name="grad"
+                                                        fullWidth
+                                                        autoComplete="given-name"
+                                                        variant="standard"
+                                                        value={"Osijek"}
+                                                    />
+                                                </>
+                                            )}
+                                            {selectedQuestion === 1 && (
+                                                <>
+                                                    <TextField
+                                                        required
+                                                        id="grad"
+                                                        name="grad"
+                                                        fullWidth
+                                                        autoComplete="given-name"
+                                                        variant="standard"
+                                                        value={"Rijeka"}
+                                                    />
+                                                </>
+                                            )}
+                                            {selectedQuestion === 2 && (
+                                                <>
+                                                    <TextField
+                                                        required
+                                                        id="grad"
+                                                        name="grad"
+                                                        fullWidth
+                                                        autoComplete="given-name"
+                                                        variant="standard"
+                                                        value={"Split"}
+                                                    />
+                                                </>
+                                            )}
+                                            {selectedQuestion === 3 && (
+                                                <>
+                                                    <TextField
+                                                        required
+                                                        id="grad"
+                                                        name="grad"
+                                                        fullWidth
+                                                        autoComplete="given-name"
+                                                        variant="standard"
+                                                        value={"Dubrovnik"}
+                                                    />
+                                                </>
+                                            )}
+                                            {selectedQuestion === 4 && (
+                                                <>
+                                                    <TextField
+                                                        required
+                                                        id="grad"
+                                                        name="grad"
+                                                        fullWidth
+                                                        autoComplete="given-name"
+                                                        variant="standard"
+                                                        value={"Varaždin"}
+                                                    />
+                                                </>
+                                            )}
+                                            {selectedQuestion === 5 && (
+                                                <>
+                                                    <TextField
+                                                        required
+                                                        id="grad"
+                                                        name="grad"
+                                                        fullWidth
+                                                        autoComplete="given-name"
+                                                        variant="standard"
+                                                        value={"Zadar"}
+                                                    />
+                                                </>
+                                            )}
+                                            {selectedQuestion === 6 && (
+                                                <>
+                                                    <TextField
+                                                        required
+                                                        id="grad"
+                                                        name="grad"
+                                                        fullWidth
+                                                        autoComplete="given-name"
+                                                        variant="standard"
+                                                        value={"Zagreb"}
+                                                    />
+                                                </>
+                                            )}
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                required
-                                                id="adresa"
-                                                name="adresa"
-                                                label="Adresa"
-                                                fullWidth
-                                                autoComplete="family-name"
-                                                variant="standard"
-                                            />
+                                            <label style={{ display: 'block', fontSize: '15px', color: 'grey' }}>
+                                                Adresa zavoda
+                                            </label>
+                                            {selectedQuestion === 0 && (
+                                                <>
+                                                    <TextField
+                                                        required
+                                                        id="adresa"
+                                                        name="adresa"
+                                                        fullWidth
+                                                        autoComplete="family-name"
+                                                        variant="standard"
+                                                        value={"Ulica Josipa Huttlera 4"}
+                                                    />
+                                                </>
+                                            )}
+                                            {selectedQuestion === 1 && (
+                                                <>
+                                                    <TextField
+                                                        required
+                                                        id="adresa"
+                                                        name="adresa"
+                                                        fullWidth
+                                                        autoComplete="family-name"
+                                                        variant="standard"
+                                                        value={"Krešimirova uluca 42"}
+                                                    />
+                                                </>
+                                            )}
+                                            {selectedQuestion === 2 && (
+                                                <>
+                                                    <TextField
+                                                        required
+                                                        id="adresa"
+                                                        name="adresa"
+                                                        fullWidth
+                                                        autoComplete="family-name"
+                                                        variant="standard"
+                                                        value={"Spinčićeva ulica 1"}
+                                                    />
+                                                </>
+                                            )}
+                                            {selectedQuestion === 3 && (
+                                                <>
+                                                    <TextField
+                                                        required
+                                                        id="adresa"
+                                                        name="adresa"
+                                                        fullWidth
+                                                        autoComplete="family-name"
+                                                        variant="standard"
+                                                        value={"Dr. Roka Mišetića 2"}
+                                                    />
+                                                </>
+                                            )}
+                                            {selectedQuestion === 4 && (
+                                                <>
+                                                    <TextField
+                                                        required
+                                                        id="adresa"
+                                                        name="adresa"
+                                                        fullWidth
+                                                        autoComplete="family-name"
+                                                        variant="standard"
+                                                        value={"Ivana Meštrovića 1"}
+                                                    />
+                                                </>
+                                            )}
+                                            {selectedQuestion === 5 && (
+                                                <>
+                                                    <TextField
+                                                        required
+                                                        id="adresa"
+                                                        name="adresa"
+                                                        fullWidth
+                                                        autoComplete="family-name"
+                                                        variant="standard"
+                                                        value={"Ulica Bože Peričića 5"}
+                                                    />
+                                                </>
+                                            )}
+                                            {selectedQuestion === 6 && (
+                                                <>
+                                                    <TextField
+                                                        required
+                                                        id="adresa"
+                                                        name="adresa"
+                                                        fullWidth
+                                                        autoComplete="family-name"
+                                                        variant="standard"
+                                                        value={"Petrova ulica 3"}
+                                                    />
+                                                </>
+                                            )}
+
                                         </Grid>
                                         <Grid item xs={12}>
                                             <TextField
@@ -96,6 +270,18 @@ const Actions: React.FC = () => {
                                                 variant="standard"
                                             />
                                         </Grid>
+                                        {/* <Grid item xs={12}>
+                                            <label htmlFor="datepicker" style={{ display: 'block', fontSize: '15px', color: 'grey' }}>
+                                                Odaberi datum akcije *
+                                            </label>
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                <DatePicker
+                                                    // value={selectedDate}
+                                                    // onChange={handleDateChange}
+                                                    minDate={new Date()} // Postavljanje minimalnog datuma na današnji datum
+                                                />
+                                            </LocalizationProvider>
+                                        </Grid> */}
                                         <Grid item xs={12}>
                                             <label htmlFor="datepicker" style={{ display: 'block', fontSize: '15px', color: 'grey' }}>
                                                 Odaberi datum akcije *
