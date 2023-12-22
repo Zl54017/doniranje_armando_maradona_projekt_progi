@@ -4,10 +4,19 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, StaticTimePicker, TimePicker } from '@mui/x-date-pickers';
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
+import { RootState, useAppDispatch } from "../../redux/store";
+import { useSelector } from 'react-redux';
 //TODO : SPREMANJE SKCIJA KAO GODISNJE ( DA IMAMO PREDLOZAK SKROZ PUN)
 //TODO : VIDIT TRIBA LI NAP OD DO U TRAJANJU AKCIJU
 
 const Actions: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const { user, role } = useSelector((state: RootState) => state.auth);
+    const [bloodBankInfo, setbloodBankInfo] = useState({
+        city: "",
+        adress: "",
+        bloodBank: "",
+    });
     const [selectedQuestion, setSelectedQuestion] = useState<number | ''>('');
 
 
@@ -260,6 +269,7 @@ const Actions: React.FC = () => {
 
                                         </Grid>
                                         <Grid item xs={12}>
+
                                             <TextField
                                                 required
                                                 id="imeZavoda"
