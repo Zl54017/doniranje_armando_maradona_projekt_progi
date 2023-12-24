@@ -6,18 +6,16 @@ import { LocalizationProvider, StaticTimePicker, TimePicker } from '@mui/x-date-
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
 import { RootState, useAppDispatch } from "../../redux/store";
 import { useSelector } from 'react-redux';
+import bloodBankInfo from "../../types/inputs/user/bloodBankInfo";
+import { attemptChange, attemptDelete, retrievePrevActions } from '../../redux/slices/authSlice';
 //TODO : SPREMANJE SKCIJA KAO GODISNJE ( DA IMAMO PREDLOZAK SKROZ PUN)
 //TODO : VIDIT TRIBA LI NAP OD DO U TRAJANJU AKCIJU
 
 const Actions: React.FC = () => {
-    const dispatch = useAppDispatch();
-    const { user, role } = useSelector((state: RootState) => state.auth);
-    const [bloodBankInfo, setbloodBankInfo] = useState({
-        city: "",
-        adress: "",
-        bloodBank: "",
-    });
+
+
     const [selectedQuestion, setSelectedQuestion] = useState<number | ''>('');
+
 
 
     const handleQuestionChange = (event: SelectChangeEvent<number | ''>) => {
@@ -41,7 +39,6 @@ const Actions: React.FC = () => {
         setSelectedTime(time);
 
     };
-
     return (
         <Container>
             <Select
@@ -83,8 +80,8 @@ const Actions: React.FC = () => {
                                                 <>
                                                     <TextField
                                                         required
-                                                        id="grad"
-                                                        name="grad"
+                                                        id="city"
+                                                        name="city"
                                                         fullWidth
                                                         autoComplete="given-name"
                                                         variant="standard"
@@ -96,8 +93,8 @@ const Actions: React.FC = () => {
                                                 <>
                                                     <TextField
                                                         required
-                                                        id="grad"
-                                                        name="grad"
+                                                        id="city"
+                                                        name="city"
                                                         fullWidth
                                                         autoComplete="given-name"
                                                         variant="standard"
@@ -109,8 +106,8 @@ const Actions: React.FC = () => {
                                                 <>
                                                     <TextField
                                                         required
-                                                        id="grad"
-                                                        name="grad"
+                                                        id="city"
+                                                        name="city"
                                                         fullWidth
                                                         autoComplete="given-name"
                                                         variant="standard"
@@ -122,8 +119,8 @@ const Actions: React.FC = () => {
                                                 <>
                                                     <TextField
                                                         required
-                                                        id="grad"
-                                                        name="grad"
+                                                        id="city"
+                                                        name="city"
                                                         fullWidth
                                                         autoComplete="given-name"
                                                         variant="standard"
@@ -135,8 +132,8 @@ const Actions: React.FC = () => {
                                                 <>
                                                     <TextField
                                                         required
-                                                        id="grad"
-                                                        name="grad"
+                                                        id="city"
+                                                        name="city"
                                                         fullWidth
                                                         autoComplete="given-name"
                                                         variant="standard"
@@ -148,8 +145,8 @@ const Actions: React.FC = () => {
                                                 <>
                                                     <TextField
                                                         required
-                                                        id="grad"
-                                                        name="grad"
+                                                        id="city"
+                                                        name="city"
                                                         fullWidth
                                                         autoComplete="given-name"
                                                         variant="standard"
@@ -161,8 +158,8 @@ const Actions: React.FC = () => {
                                                 <>
                                                     <TextField
                                                         required
-                                                        id="grad"
-                                                        name="grad"
+                                                        id="city"
+                                                        name="city"
                                                         fullWidth
                                                         autoComplete="given-name"
                                                         variant="standard"
@@ -179,8 +176,8 @@ const Actions: React.FC = () => {
                                                 <>
                                                     <TextField
                                                         required
-                                                        id="adresa"
-                                                        name="adresa"
+                                                        id="adress"
+                                                        name="adress"
                                                         fullWidth
                                                         autoComplete="family-name"
                                                         variant="standard"
@@ -192,12 +189,12 @@ const Actions: React.FC = () => {
                                                 <>
                                                     <TextField
                                                         required
-                                                        id="adresa"
-                                                        name="adresa"
+                                                        id="adress"
+                                                        name="adress"
                                                         fullWidth
                                                         autoComplete="family-name"
                                                         variant="standard"
-                                                        value={"Krešimirova uluca 42"}
+                                                        value={"Krešimirova ulica 42"}
                                                     />
                                                 </>
                                             )}
@@ -205,8 +202,8 @@ const Actions: React.FC = () => {
                                                 <>
                                                     <TextField
                                                         required
-                                                        id="adresa"
-                                                        name="adresa"
+                                                        id="adress"
+                                                        name="adress"
                                                         fullWidth
                                                         autoComplete="family-name"
                                                         variant="standard"
@@ -218,8 +215,8 @@ const Actions: React.FC = () => {
                                                 <>
                                                     <TextField
                                                         required
-                                                        id="adresa"
-                                                        name="adresa"
+                                                        id="adress"
+                                                        name="adress"
                                                         fullWidth
                                                         autoComplete="family-name"
                                                         variant="standard"
@@ -231,12 +228,12 @@ const Actions: React.FC = () => {
                                                 <>
                                                     <TextField
                                                         required
-                                                        id="adresa"
-                                                        name="adresa"
+                                                        id="adress"
+                                                        name="adress"
                                                         fullWidth
                                                         autoComplete="family-name"
                                                         variant="standard"
-                                                        value={"Ivana Meštrovića 1"}
+                                                        value={"Ulica Ivana Meštrovića 1"}
                                                     />
                                                 </>
                                             )}
@@ -244,8 +241,8 @@ const Actions: React.FC = () => {
                                                 <>
                                                     <TextField
                                                         required
-                                                        id="adresa"
-                                                        name="adresa"
+                                                        id="adress"
+                                                        name="adress"
                                                         fullWidth
                                                         autoComplete="family-name"
                                                         variant="standard"
@@ -257,8 +254,8 @@ const Actions: React.FC = () => {
                                                 <>
                                                     <TextField
                                                         required
-                                                        id="adresa"
-                                                        name="adresa"
+                                                        id="adress"
+                                                        name="adress"
                                                         fullWidth
                                                         autoComplete="family-name"
                                                         variant="standard"
@@ -266,19 +263,102 @@ const Actions: React.FC = () => {
                                                     />
                                                 </>
                                             )}
-
                                         </Grid>
                                         <Grid item xs={12}>
-
-                                            <TextField
-                                                required
-                                                id="imeZavoda"
-                                                name="imeZavoda"
-                                                label="Ime zavoda"
-                                                fullWidth
-                                                autoComplete="shipping address-line1"
-                                                variant="standard"
-                                            />
+                                            <label style={{ display: 'block', fontSize: '15px', color: 'grey' }}>
+                                                Ime zavoda
+                                            </label>
+                                            {selectedQuestion === 0 && (
+                                                <>
+                                                    <TextField
+                                                        required
+                                                        id="transfisionInstitute"
+                                                        name="transfisionInstitute"
+                                                        fullWidth
+                                                        autoComplete="family-name"
+                                                        variant="standard"
+                                                        value={"KBC Osijek"}
+                                                    />
+                                                </>
+                                            )}
+                                            {selectedQuestion === 1 && (
+                                                <>
+                                                    <TextField
+                                                        required
+                                                        id="transfisionInstitute"
+                                                        name="transfisionInstitute"
+                                                        fullWidth
+                                                        autoComplete="family-name"
+                                                        variant="standard"
+                                                        value={"KBC Rijeka"}
+                                                    />
+                                                </>
+                                            )}
+                                            {selectedQuestion === 2 && (
+                                                <>
+                                                    <TextField
+                                                        required
+                                                        id="transfisionInstitute"
+                                                        name="transfisionInstitute"
+                                                        fullWidth
+                                                        autoComplete="family-name"
+                                                        variant="standard"
+                                                        value={"KBC Split"}
+                                                    />
+                                                </>
+                                            )}
+                                            {selectedQuestion === 3 && (
+                                                <>
+                                                    <TextField
+                                                        required
+                                                        id="transfisionInstitute"
+                                                        name="transfisionInstitute"
+                                                        fullWidth
+                                                        autoComplete="family-name"
+                                                        variant="standard"
+                                                        value={"OB Dubovnik"}
+                                                    />
+                                                </>
+                                            )}
+                                            {selectedQuestion === 4 && (
+                                                <>
+                                                    <TextField
+                                                        required
+                                                        id="transfisionInstitute"
+                                                        name="transfisionInstitute"
+                                                        fullWidth
+                                                        autoComplete="family-name"
+                                                        variant="standard"
+                                                        value={"OB Varaždin"}
+                                                    />
+                                                </>
+                                            )}
+                                            {selectedQuestion === 5 && (
+                                                <>
+                                                    <TextField
+                                                        required
+                                                        id="transfisionInstitute"
+                                                        name="transfisionInstitute"
+                                                        fullWidth
+                                                        autoComplete="family-name"
+                                                        variant="standard"
+                                                        value={"OB Zadar"}
+                                                    />
+                                                </>
+                                            )}
+                                            {selectedQuestion === 6 && (
+                                                <>
+                                                    <TextField
+                                                        required
+                                                        id="transfisionInstitute"
+                                                        name="transfisionInstitute"
+                                                        fullWidth
+                                                        autoComplete="family-name"
+                                                        variant="standard"
+                                                        value={"Hrvatski zavod za transfuziju Zagreb"}
+                                                    />
+                                                </>
+                                            )}
                                         </Grid>
                                         {/* <Grid item xs={12}>
                                             <label htmlFor="datepicker" style={{ display: 'block', fontSize: '15px', color: 'grey' }}>

@@ -13,7 +13,7 @@ const Sequelize = require("sequelize");
 const jwt = require("jsonwebtoken");
 const decode = require("jwt-decode");
 
-router.get("/", async (req, res, next) => {});
+router.get("/", async (req, res, next) => { });
 
 /**
  * Handle the POST request to retrieve inventory of blood
@@ -23,6 +23,15 @@ router.post("/inventory/:token", async (req, res, next) => {
   try {
     const bloodBank = await db.BloodBank.findOne({
       where: {
+
+
+
+
+
+
+
+
+
         id: decoded.id,
       },
     });
@@ -273,8 +282,8 @@ router.post("/issueCertificate/:token", async (req, res, next) => {
 //funkcija za kreiranje akcije
 router.post("/createAction", async (req, res, next) => {
   try {
-    const { bloodBankId, date, minNumberOfDonors } = req.body; 
-    const bloodBank = await db.BloodBank.findByPk(bloodBankId); 
+    const { bloodBankId, date, minNumberOfDonors } = req.body;
+    const bloodBank = await db.BloodBank.findByPk(bloodBankId);
 
     if (!bloodBank) {
       return res.status(404).json({ error: "Blood bank not found" });
@@ -282,7 +291,7 @@ router.post("/createAction", async (req, res, next) => {
 
     const newAction = await db.Action.create({
       bloodBankId: bloodBank.id,
-      address: bloodBank.address, 
+      address: bloodBank.address,
       date: date,
       minNumberOfDonors: minNumberOfDonors,
     });
@@ -297,10 +306,10 @@ router.post("/createAction", async (req, res, next) => {
 //funkcija koja na zahtjev korisnika vraca uvid u popis donora pojedinog zavoda
 router.get("/donorsByBloodBank/:bloodBankId", async (req, res, next) => {
   try {
-    const bloodBankId = req.params.bloodBankId; 
+    const bloodBankId = req.params.bloodBankId;
     const donors = await db.Donor.findAll({
       where: {
-        transfusionInstitute: bloodBankId, 
+        transfusionInstitute: bloodBankId,
       },
     });
 
