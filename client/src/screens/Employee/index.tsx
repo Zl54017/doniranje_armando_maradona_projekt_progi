@@ -19,6 +19,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Actions from './actions';
 import Statistics from './statistics';
 import ListOfDonors from './listOfDonors';
+import AddEmployee from './addEmployee';
 import { ReactNode } from "react";
 
 
@@ -58,8 +59,10 @@ function ContentBox({ activeTab }: { activeTab: string }) {
         <ListOfDonors />
       ) : activeTab === 'actions' ? (
         <Actions />
-      ) : (
+      ) : activeTab === 'statistics' ?(
         <Statistics />
+      ) : (
+        <AddEmployee />
       )}
     </div>
   );
@@ -114,6 +117,15 @@ export default function BloodBank() {
               onClick={() => { setActiveTab('actions'); }}
             >
               Akcije
+            </Link>
+            <Link
+              variant="button"
+              color="text.primary"
+              href='#'
+              sx={{ my: 1, mx: 1.5 }}
+              onClick={() => { setActiveTab('addEmployee'); }}
+            >
+              Dodaj Zaposlenika
             </Link>
             <Link
               variant="button"
