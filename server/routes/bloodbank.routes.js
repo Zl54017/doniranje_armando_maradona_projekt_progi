@@ -359,6 +359,100 @@ router.get("/minBloodGroup/:bloodType", async (req, res, next) => {
   }
 });
 
+// Funkcija za filtriranje donora po zavodu (bloodBankId)
+router.get("/donors", async (req, res, next) => {
+  try {
+    const { bloodBankId } = req.query;
+
+    let whereCondition = {};
+
+    if (bloodBankId) {
+      whereCondition.transfusionInstitute = bloodBankId;
+    }
+
+    const donors = await db.Donor.findAll({
+      where: whereCondition,
+    });
+
+    res.json(donors);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to retrieve filtered donors" });
+  }
+});
+
+// Funkcija za filtriranje donora po imenu (name)
+router.get("/donorsByName", async (req, res, next) => {
+  try {
+    const { donorName } = req.query;
+
+    let whereCondition = {};
+
+    if (donorName) {
+      whereCondition.name = { [Sequelize.Op.like]: `%${donorName}%` };
+    }
+
+    const donors = await db.Donor.findAll({
+      where: whereCondition,
+    });
+
+    res.json(donors);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to retrieve filtered donors by name" });
+  }
+});
+
+// Funkcija za filtriranje donora po krvnoj grupi (bloodType)
+router.get("/donorsByBloodType", async (req, res, next) => {
+  try {
+    const { bloodType } = req.query;
+
+    let whereCondition = {};
+
+    if (bloodType) {
+      whereCondition.bloodType = bloodType;
+    }
+
+    const donors = await db.Donor.findAll({
+      where: whereCondition,
+    });
+
+    res.json(donors);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to retrieve filtered donors by blood type" });
+  }
+});
+
+// Funkcija za dodavanje zaposlenika zavoda (Employee)
+router.post("/addEmployee", async (req, res, next) => {
+  try {
+    const { name, email, password, bloodBankId } = req.body;
+
+    const existingEmployee = await db.Employee.findOne({
+      where: { email: email }
+    });
+
+    if (existingEmployee) {
+      return res.status(400).json({ error: "Employee with this email already exists" });
+    }
+
+    // Dodaj novog zaposlenika
+    const newEmployee = await db.Employee.create({
+      name: name,
+      email: email,
+      password: password,
+      bloodBankId: bloodBankId,
+    });
+
+    res.json(newEmployee);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to add employee" });
+  }
+});
+
 /**
  * Handle the POST request to add a donation.
  */
