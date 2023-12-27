@@ -148,15 +148,7 @@ export default function BloodBank() {
         </Toolbar>
       </AppBar>
       {/* Hero unit */}
-      <Container
-        disableGutters
-        maxWidth="sm"
-        component="main"
-        sx={{ pt: 8, pb: 6 }}
-      >
-
-        <ContentBox activeTab={activeTab} />
-      </Container>
+      <ContentBox activeTab={activeTab} />
       {/* End hero unit */}
       {/* Footer */}
       <Container
