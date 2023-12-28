@@ -307,11 +307,20 @@ router.post("/createAction", async (req, res, next) => {
 router.get("/donorsByBloodBank/:bloodBankId", async (req, res, next) => {
   try {
     const bloodBankId = req.params.bloodBankId;
+
+    const bloodBank = await db.BloodBank.findByPk(bloodBankId);
+    if (!bloodBank) {
+      return res.status(404).json({ error: "Blood bank not found" });
+    }
+
+    const bloodBankName = bloodBank.name;
+
     const donors = await db.Donor.findAll({
       where: {
-        transfusionInstitute: bloodBankId,
+        transfusionInstitute: bloodBankName,
       },
     });
+
     res.json(donors);
   } catch (error) {
     console.log(error);
@@ -358,15 +367,35 @@ router.get("/minBloodGroup/:bloodType", async (req, res, next) => {
   }
 });
 
-// Funkcija za filtriranje donora po zavodu (bloodBankId)
-router.get("/donors", async (req, res, next) => {
+//funkcija za filtriranje donora po svim mogucim atributima
+router.get("/filteredDonors", async (req, res, next) => {
   try {
-    const { bloodBankId } = req.query;
+    const { name, donorName, bloodType, gender, minAge, maxAge } = req.query;
 
     let whereCondition = {};
 
-    if (bloodBankId) {
-      whereCondition.transfusionInstitute = bloodBankId;
+    if (name) {
+      whereCondition.transfusionInstitute = name;
+    }
+
+    if (donorName) {
+      whereCondition.name = { [Sequelize.Op.like]: `%${donorName}%` };
+    }
+
+    if (bloodType) {
+      whereCondition.bloodType = bloodType;
+    }
+
+    if (gender) {
+      whereCondition.gender = gender;
+    }
+
+    if (minAge && maxAge) {
+      whereCondition.age = { [Sequelize.Op.between]: [minAge, maxAge] };
+    } else if (minAge) {
+      whereCondition.age = { [Sequelize.Op.gte]: minAge };
+    } else if (maxAge) {
+      whereCondition.age = { [Sequelize.Op.lte]: maxAge };
     }
 
     const donors = await db.Donor.findAll({
@@ -377,50 +406,6 @@ router.get("/donors", async (req, res, next) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Failed to retrieve filtered donors" });
-  }
-});
-
-// Funkcija za filtriranje donora po imenu (name)
-router.get("/donorsByName", async (req, res, next) => {
-  try {
-    const { donorName } = req.query;
-
-    let whereCondition = {};
-
-    if (donorName) {
-      whereCondition.name = { [Sequelize.Op.like]: `%${donorName}%` };
-    }
-
-    const donors = await db.Donor.findAll({
-      where: whereCondition,
-    });
-
-    res.json(donors);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Failed to retrieve filtered donors by name" });
-  }
-});
-
-// Funkcija za filtriranje donora po krvnoj grupi (bloodType)
-router.get("/donorsByBloodType", async (req, res, next) => {
-  try {
-    const { bloodType } = req.query;
-
-    let whereCondition = {};
-
-    if (bloodType) {
-      whereCondition.bloodType = bloodType;
-    }
-
-    const donors = await db.Donor.findAll({
-      where: whereCondition,
-    });
-
-    res.json(donors);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Failed to retrieve filtered donors by blood type" });
   }
 });
 
