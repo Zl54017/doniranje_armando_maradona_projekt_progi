@@ -312,7 +312,6 @@ router.get("/donorsByBloodBank/:bloodBankId", async (req, res, next) => {
         transfusionInstitute: bloodBankId,
       },
     });
-
     res.json(donors);
   } catch (error) {
     console.log(error);

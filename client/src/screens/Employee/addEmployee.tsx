@@ -3,7 +3,7 @@ import { TextField, Button, FormControl, InputLabel, Select, MenuItem, SelectCha
 
 
 
-const MyForm: React.FC = () => {
+function MyForm() {
 
     const [formData, setFormData] = React.useState({
         firstName: '',

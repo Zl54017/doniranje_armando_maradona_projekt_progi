@@ -19,5 +19,6 @@ export default {
   getAction: (jwt: string) => axios.post(`${auth.base}/donor/actions/${jwt}`),
   getPrevAction: (jwt: string) => axios.post(`${auth.base}/donor/donations/${jwt}`),
   getAwards: (jwt: string) => axios.post(`${auth.base}/donor/awards/${jwt}`),
+  getEmployeeDonors: (bloodBankId: string) => axios.get(`${auth.base}/bloodbank/donorsByBloodBank/${"KBC Osijek"}`),
 };
  
