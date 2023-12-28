@@ -8,12 +8,15 @@ const Action = require("../models/action");
 const Certificate = require("../models/certificate");
 const Donation = require("../models/donation");
 const ActionRegistration = require("../models/actionregistration");
+const FAQ = require("../models/faq");
+const News = require("../models/news");
+const Employee = require("../models/employee");
 const Sequelize = require("sequelize");
 
 const jwt = require("jsonwebtoken");
 const decode = require("jwt-decode");
 
-router.get("/", async (req, res, next) => { });
+router.get("/", async (req, res, next) => {});
 
 /**
  * Handle the POST request to retrieve inventory of blood
@@ -23,15 +26,6 @@ router.post("/inventory/:token", async (req, res, next) => {
   try {
     const bloodBank = await db.BloodBank.findOne({
       where: {
-
-
-
-
-
-
-
-
-
         id: decoded.id,
       },
     });
@@ -359,11 +353,15 @@ router.get("/minBloodGroup/:bloodType", async (req, res, next) => {
         },
       });
     } else {
-      res.status(404).json({ error: `No blood banks with blood type ${bloodType} found.` });
+      res
+        .status(404)
+        .json({ error: `No blood banks with blood type ${bloodType} found.` });
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Failed to retrieve blood bank with minimum blood group" });
+    res.status(500).json({
+      error: "Failed to retrieve blood bank with minimum blood group",
+    });
   }
 });
 
@@ -415,11 +413,13 @@ router.post("/addEmployee", async (req, res, next) => {
     const { name, email, password, bloodBankId } = req.body;
 
     const existingEmployee = await db.Employee.findOne({
-      where: { email: email }
+      where: { email: email },
     });
 
     if (existingEmployee) {
-      return res.status(400).json({ error: "Employee with this email already exists" });
+      return res
+        .status(400)
+        .json({ error: "Employee with this email already exists" });
     }
 
     // Dodaj novog zaposlenika
@@ -514,6 +514,111 @@ router.get("/allBloodBanks", async (req, res, next) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Failed to retrieve blood banks" });
+  }
+});
+
+/**
+ * Handle the GET request to retrieve all news.
+ */
+router.get("/news", async (req, res, next) => {
+  try {
+    const news = await db.News.findAll({
+      order: [["createdAt", "DESC"]],
+    });
+
+    res.json(news);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to retrieve news" });
+  }
+});
+
+/**
+ * Handle the GET request to retrieve all faq.
+ */
+router.get("/faq", async (req, res, next) => {
+  try {
+    const faq = await db.FAQ.findAll({
+      order: [["createdAt", "DESC"]],
+    });
+
+    res.json(faq);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to retrieve faq" });
+  }
+});
+
+/**
+ * Handle the POST request to add news.
+ */
+router.post("/addNews/:token", async (req, res, next) => {
+  const decoded = decode.jwtDecode(req.params.token);
+  try {
+    const bloodBank = await db.BloodBank.findOne({
+      where: {
+        id: decoded.id,
+      },
+    });
+
+    const employee = await db.Employee.findOne({
+      where: {
+        id: decoded.id,
+      },
+    });
+
+    if (!bloodBank) {
+      return res.status(404).json({ error: "Blood bank not found" });
+    }
+
+    const { title, text, picture } = req.body;
+
+    const newNews = await db.News.create({
+      title: title,
+      text: text,
+      picture: picture,
+    });
+
+    res.json(newNews.toJSON());
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to add news" });
+  }
+});
+
+/**
+ * Handle the POST request to add FAQ.
+ */
+router.post("/addFAQ/:token", async (req, res, next) => {
+  const decoded = decode.jwtDecode(req.params.token);
+  try {
+    const bloodBank = await db.BloodBank.findOne({
+      where: {
+        id: decoded.id,
+      },
+    });
+
+    const employee = await db.Employee.findOne({
+      where: {
+        id: decoded.id,
+      },
+    });
+
+    if (!bloodBank && !employee) {
+      return res.status(404).json({ error: "Blood bank not found" });
+    }
+
+    const { question, answer } = req.body;
+
+    const newFAQ = await db.FAQ.create({
+      title: question,
+      text: answer,
+    });
+
+    res.json(newFAQ.toJSON());
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to add FAQ" });
   }
 });
 

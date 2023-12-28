@@ -145,6 +145,65 @@ async function inventoryOfBloodType(token) {
   }
 }
 
+//dohvat svih vijesti, od novijih prema starijima
+async function getNews() {
+  const url = `${address}bloodbank/news`;
+
+  try {
+    const response = await axios.get(url);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+//dohvat svih često postavljenih pitanja
+async function getFAQ() {
+  const url = `${address}bloodbank/faq`;
+
+  try {
+    const response = await axios.get(url);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+//dodavanje vijesti
+async function addNews(token, title, text, picture) {
+  const url = `${address}bloodbank/addNews/${token}`;
+
+  const requestBody = {
+    title,
+    text,
+    picture,
+  };
+
+  try {
+    const response = await axios.post(url, requestBody);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+//dodavanje često postavljenih pitanja
+async function addFAQ(token, question, answer) {
+  const url = `${address}bloodbank/addFAQ/${token}`;
+
+  const requestBody = {
+    question,
+    answer,
+  };
+
+  try {
+    const response = await axios.post(url, requestBody);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 //potvrđivanje pozivnica za darivanje
 //biti će implementirano po dogovoru
 
@@ -163,6 +222,20 @@ async function testForFE() {
   await lastDonationDays(token);
   await daysUntilNextDonation(token);
   await actionRegistration(token, 5);
+
+  await getNews();
+  await getFAQ();
+
+  token = await login("ŠimeŠimić@gmail.com", "password");
+
+  await addNews(
+    token,
+    "Proba",
+    "Proba",
+    "https://images.unsplash.com/photo-1524721696987-b9527df9e512?q=80&w=2233&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+  );
+
+  await addFAQ(token, "Proba?", "Proba.");
 }
 
 testForFE();
