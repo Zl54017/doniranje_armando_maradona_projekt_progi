@@ -567,7 +567,7 @@ router.post("/addNews/:token", async (req, res, next) => {
       },
     });
 
-    if (!bloodBank) {
+    if (!bloodBank && !employee) {
       return res.status(404).json({ error: "Blood bank not found" });
     }
 

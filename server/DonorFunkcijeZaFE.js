@@ -212,6 +212,7 @@ async function addFAQ(token, question, answer) {
 
 //pozivanje gornjih funkcija
 async function testForFE() {
+  /** 
   var token = await login("PeroGalić@gmail.com", "password");
   await donations(token);
   await actions(token);
@@ -221,7 +222,7 @@ async function testForFE() {
   //await archiveDonor(token);
   await lastDonationDays(token);
   await daysUntilNextDonation(token);
-  await actionRegistration(token, 5);
+  await actionRegistration(token, 5);*/
 
   await getNews();
   await getFAQ();
