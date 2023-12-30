@@ -7,15 +7,18 @@ import { ROLE } from "../../types/enums/Role";
 import { create } from "domain";
 import RegisterInput from "../../types/inputs/user/RegisterInput";
 import { ListAction } from "@mui/base/useList";
+import bloodBankInfo from "../../types/inputs/user/bloodBankInfo";
 
 interface AuthState {
   user: LoginInput | undefined;
   role: ROLE | undefined;
+  action: bloodBankInfo | undefined;
 }
 
 const initialState: AuthState = {
   user: undefined,
   role: undefined,
+  action: undefined,
 };
 
 const attemptLogin = createAsyncThunk(
@@ -38,10 +41,10 @@ const attemptDelete = createAsyncThunk(
   "auth/deleteStatus",
   async () => {
     const token = localStorageUtility.getAuthToken();
-    if (token){
+    if (token) {
       const response = await authService.delete(token);
       return response.data
-    } 
+    }
   }
 );
 
@@ -49,10 +52,21 @@ const attemptChange = createAsyncThunk(
   "auth/changeStatus",
   async (user: RegisterInput) => {
     const token = localStorageUtility.getAuthToken();
-    if (token){
+    if (token) {
       const response = await authService.change(user, token);
       return response.data
-    } 
+    }
+  }
+);
+
+const attemptNewAction = createAsyncThunk(
+  "auth/newActionStatus",
+  async (action: bloodBankInfo) => {
+    const token = localStorageUtility.getAuthToken();
+    if (token) {
+      const response = await authService.newAction(action, token);
+      return response.data
+    }
   }
 );
 
@@ -60,7 +74,7 @@ const retrieveActions = createAsyncThunk(
   "auth/retrieveActionsStatus",
   async () => {
     const token = localStorageUtility.getAuthToken();
-    if(token){
+    if (token) {
       const response = await authService.getAction(token);
       return response.data;
     }
@@ -71,7 +85,7 @@ const retrievePrevActions = createAsyncThunk(
   "auth/retrievePrevActionsStatus",
   async () => {
     const token = localStorageUtility.getAuthToken();
-    if(token){
+    if (token) {
       const response = await authService.getPrevAction(token);
       return response.data;
     }
@@ -82,16 +96,16 @@ const retrieveAwards = createAsyncThunk(
   "auth/retrieveAwardsStatus",
   async () => {
     const token = localStorageUtility.getAuthToken();
-    if(token){
+    if (token) {
       const response = await authService.getAwards(token);
       return response.data;
-    } 
+    }
   }
 );
 
 const fetchData = createAsyncThunk("auth/fetchDataStatus", async () => {
   const token = localStorageUtility.getAuthToken();
-  if (token!==null){
+  if (token !== null) {
     const response = await authService.getData(token);
     return response.data;
   }
@@ -110,11 +124,11 @@ const attemptLogout = createAsyncThunk("auth/logoutStatus", async () => {
   return response.data;
 });
 
-const attemptGetDonorsForEmployee = createAsyncThunk("auth/getdonorsForEmployeeStatus", 
+const attemptGetDonorsForEmployee = createAsyncThunk("auth/getdonorsForEmployeeStatus",
   async (user: any) => {
     const response = await authService.getEmployeeDonors(user.bloodBankId.toString());
     console.log(response)
-  return response.data;
+    return response.data;
   });
 
 const authSlice = createSlice({
@@ -189,6 +203,6 @@ const authSlice = createSlice({
 
 export const { clearUser } = authSlice.actions;
 
-export { attemptGetDonorsForEmployee, retrieveAwards, retrievePrevActions, retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete };
+export { attemptGetDonorsForEmployee, retrieveAwards, retrievePrevActions, retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete, attemptNewAction };
 
 export default authSlice.reducer;

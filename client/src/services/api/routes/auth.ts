@@ -4,6 +4,7 @@ import { endpoints } from "../endpoints";
 import LoginInput from "../../../types/inputs/user/LoginInput";
 import RegisterInput from "../../../types/inputs/user/RegisterInput";
 import ActionInput from "../../../types/inputs/redcross/ActionInput";
+import bloodBankInfo from "../../../types/inputs/user/bloodBankInfo";
 
 const { auth } = endpoints;
 
@@ -20,5 +21,6 @@ export default {
   getPrevAction: (jwt: string) => axios.post(`${auth.base}/donor/donations/${jwt}`),
   getAwards: (jwt: string) => axios.post(`${auth.base}/donor/awards/${jwt}`),
   getEmployeeDonors: (bloodBankId: string) => axios.get(`${auth.base}/bloodbank/donorsByBloodBank/${"KBC Osijek"}`),
+  newAction: (action: bloodBankInfo, jwt: string) => axios.post(`${auth.base}/actions/newAction/${jwt}`, action)
+  // getPreviousActions: (bloodBankid: string) => axios.get(`${auth.base}/bloodbank/donorsByBloodBank/${"KBC Osijek"}`)
 };
- 

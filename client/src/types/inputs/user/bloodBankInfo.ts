@@ -1,7 +1,10 @@
 interface bloodBankInfo {
+    name: string;
     city: string;
-    adress: string;
-    bloodBank: string;
+    address: string;
+    date: Date;
+    time: string;
+
 }
 
 export default bloodBankInfo;
