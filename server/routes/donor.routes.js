@@ -14,6 +14,10 @@ const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const decode = require("jwt-decode");
 
+const pdf = require('html-pdf');
+const pdfTemplate = require('../documents/index');
+const certificate = require("../models/certificate");
+
 /**
  * Handle the POST request for deleting a donor.
  * Adds the word "archived" to the donor's email.
@@ -36,10 +40,14 @@ router.post("/delete/:token", async (req, res, next) => {
       email: archivedEmail,
     });
 
-    res.json({ message: "Donor successfully archived" });
+    res.json({
+      message: "Donor successfully archived"
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Failed to archive donor" });
+    res.status(500).json({
+      error: "Failed to archive donor"
+    });
   }
 });
 
@@ -62,7 +70,9 @@ router.post("/donations/:token", async (req, res, next) => {
     res.json(donations);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Failed to retrieve donations" });
+    res.status(500).json({
+      error: "Failed to retrieve donations"
+    });
   }
 });
 
@@ -81,15 +91,21 @@ router.post("/lastDonationDays/:token", async (req, res, next) => {
     });
 
     if (!donor) {
-      return res.status(404).json({ error: "Donor not found" });
+      return res.status(404).json({
+        error: "Donor not found"
+      });
     }
 
     const donations = await donor.getDonations({
-      order: [["date", "DESC"]],
+      order: [
+        ["date", "DESC"]
+      ],
     });
 
     if (!donations || donations.length === 0) {
-      return res.json({ daysSinceLastDonation: 0 });
+      return res.json({
+        daysSinceLastDonation: 0
+      });
     }
 
     const today = new Date();
@@ -98,10 +114,14 @@ router.post("/lastDonationDays/:token", async (req, res, next) => {
       (today - lastDonationDate) / (1000 * 60 * 60 * 24)
     );
 
-    res.json({ daysSinceLastDonation });
+    res.json({
+      daysSinceLastDonation
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Failed to retrieve donations" });
+    res.status(500).json({
+      error: "Failed to retrieve donations"
+    });
   }
 });
 
@@ -120,15 +140,21 @@ router.get("/daysUntilNextDonation/:token", async (req, res, next) => {
     });
 
     if (!donor) {
-      return res.status(404).json({ error: "Donor not found" });
+      return res.status(404).json({
+        error: "Donor not found"
+      });
     }
 
     const donations = await donor.getDonations({
-      order: [["date", "DESC"]],
+      order: [
+        ["date", "DESC"]
+      ],
     });
 
     if (!donations || donations.length === 0) {
-      return res.json({ daysUntilNextDonation: 0 });
+      return res.json({
+        daysUntilNextDonation: 0
+      });
     }
 
     const today = new Date();
@@ -149,13 +175,19 @@ router.get("/daysUntilNextDonation/:token", async (req, res, next) => {
         daysUntilNextDonation = 120 - daysSinceLastDonation;
       }
     } else {
-      res.status(500).json({ error: "Failed to retrieve donors gender" });
+      res.status(500).json({
+        error: "Failed to retrieve donors gender"
+      });
     }
 
-    res.json({ daysUntilNextDonation });
+    res.json({
+      daysUntilNextDonation
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Failed to retrieve donation information" });
+    res.status(500).json({
+      error: "Failed to retrieve donation information"
+    });
   }
 });
 
@@ -184,7 +216,9 @@ router.post("/actions/:token", async (req, res, next) => {
     res.json(actions);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Failed to retrieve actions" });
+    res.status(500).json({
+      error: "Failed to retrieve actions"
+    });
   }
 });
 
@@ -205,7 +239,9 @@ router.get("/allActions", async (req, res, next) => {
     res.json(actions);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Failed to retrieve actions" });
+    res.status(500).json({
+      error: "Failed to retrieve actions"
+    });
   }
 });
 
@@ -216,7 +252,9 @@ router.get("/allActions", async (req, res, next) => {
 router.post("/actionRegistration/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);
   try {
-    const { actionId } = req.body;
+    const {
+      actionId
+    } = req.body;
     const newActionRegistration = await db.ActionRegistration.create({
       actionId: actionId,
       donorId: decoded.id,
@@ -229,7 +267,9 @@ router.post("/actionRegistration/:token", async (req, res, next) => {
     console.log(error);
     res
       .status(500)
-      .json({ error: "Failed to create a new Action Registration" });
+      .json({
+        error: "Failed to create a new Action Registration"
+      });
   }
 });
 
@@ -249,13 +289,11 @@ router.post("/bloodBanksInventory/:token", async (req, res, next) => {
           [Sequelize.literal('"donor"."bloodType"'), "bloodType"],
           [Sequelize.literal("0.5 * COUNT(*)"), "donationCount"],
         ],
-        include: [
-          {
-            model: db.Donor,
-            as: "donor",
-            attributes: [],
-          },
-        ],
+        include: [{
+          model: db.Donor,
+          as: "donor",
+          attributes: [],
+        }, ],
         where: {
           used: false,
           warning: "",
@@ -277,7 +315,9 @@ router.post("/bloodBanksInventory/:token", async (req, res, next) => {
     res.json(inventory);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Failed to retrieve inventory" });
+    res.status(500).json({
+      error: "Failed to retrieve inventory"
+    });
   }
 });
 
@@ -303,13 +343,11 @@ router.get("/inventoryOfBloodType/:token", async (req, res, next) => {
           [Sequelize.literal('"donor"."bloodType"'), "bloodType"],
           [Sequelize.literal("0.5 * COUNT(*)"), "donationCount"],
         ],
-        include: [
-          {
-            model: db.Donor,
-            as: "donor",
-            attributes: [],
-          },
-        ],
+        include: [{
+          model: db.Donor,
+          as: "donor",
+          attributes: [],
+        }, ],
         where: {
           used: false,
           warning: "",
@@ -328,7 +366,9 @@ router.get("/inventoryOfBloodType/:token", async (req, res, next) => {
     res.json(inventory);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Failed to retrieve inventory" });
+    res.status(500).json({
+      error: "Failed to retrieve inventory"
+    });
   }
 });
 
@@ -362,7 +402,9 @@ router.post("/change/:token", async (req, res) => {
     if (existingDonor && existingDonor.id !== decoded.id) {
       return res
         .status(401)
-        .json({ message: "Donor with email already exists" });
+        .json({
+          message: "Donor with email already exists"
+        });
     }
 
     const donor = await db.Donor.findOne({
@@ -372,7 +414,9 @@ router.post("/change/:token", async (req, res) => {
     });
 
     if (!donor) {
-      return res.status(404).json({ message: "Donor not found" });
+      return res.status(404).json({
+        message: "Donor not found"
+      });
     }
 
     // Update donor fields
@@ -402,9 +446,12 @@ router.post("/change/:token", async (req, res) => {
     });
   } catch (error) {
     console.error("Error changing donor: ", error);
-    res.status(500).json({ message: "Error changing donor" });
+    res.status(500).json({
+      message: "Error changing donor"
+    });
   }
 });
+
 
 router.post("/awards/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);
@@ -418,11 +465,56 @@ router.post("/awards/:token", async (req, res, next) => {
 
     const certificates = await donor.getCertificates();
 
+
+
     res.json(certificates);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Failed to retrieve certificates" });
+    res.status(500).json({
+      error: "Failed to retrieve certificates"
+    });
   }
 });
+
+// novi dio, izbrisat ako ne bude ni posli radilo
+router.post("/create-pdf/:token", async (req, res) => {
+  const decoded = decode.jwtDecode(req.params.token);
+  try {
+    console.log(req.body);
+    const donor = await db.Donor.findOne({
+      where: {
+        id: decoded.id,
+      },
+    });
+
+    const certificates = await donor.getCertificates();
+
+    await new Promise((resolve, reject) => {
+      pdf.create(pdfTemplate(donor.name, certificates[0].name, certificates[0].benefits, certificates[0].createdAt), {}).toFile('result.pdf', (err) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
+    });
+
+
+    res.send(Promise.resolve());
+
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error: "Failed to retrieve certificates"
+    });
+  }
+
+});
+
+router.get('/fetch-pdf', (req, res) => {
+  res.sendFile(`${__dirname}/result.pdf`)
+  console.log("odi san")
+})
 
 module.exports = router;
