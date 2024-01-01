@@ -437,6 +437,35 @@ router.post("/addEmployee", async (req, res, next) => {
   }
 });
 
+// Funkcija za dohvaćanje prethodnih i sadašnjih akcija nekog zavoda
+router.get("/bloodBankActions/:bloodBankId", async (req, res, next) => {
+  const bloodBankId = req.params.bloodBankId;
+
+  try {
+    const bloodBank = await db.BloodBank.findByPk(bloodBankId, {
+      include: [
+        {
+          model: db.Action,
+          as: "actions",
+          where: {
+            date: { [Sequelize.Op.lte]: new Date() }, // Dohvati akcije čiji je datum manji ili jednak trenutnom datumu
+          },
+          order: [["date", "ASC"]],
+        },
+      ],
+    });
+
+    if (!bloodBank) {
+      return res.status(404).json({ error: "Blood bank not found" });
+    }
+
+    res.json(bloodBank.actions);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to retrieve actions" });
+  }
+});
+
 /**
  * Handle the POST request to add a donation.
  */
