@@ -437,18 +437,19 @@ router.post("/addEmployee", async (req, res, next) => {
   }
 });
 
-// Funkcija za dohvaćanje prethodnih i sadašnjih akcija nekog zavoda
-router.get("/bloodBankActions/:bloodBankId", async (req, res, next) => {
+// Funkcija za dohvaćanje sadašnjih akcija nekog zavoda
+router.get("/bloodBankActiveActions/:bloodBankId", async (req, res, next) => {
   const bloodBankId = req.params.bloodBankId;
 
   try {
+    const currentDate = new Date();
     const bloodBank = await db.BloodBank.findByPk(bloodBankId, {
       include: [
         {
           model: db.Action,
           as: "actions",
           where: {
-            date: { [Sequelize.Op.lte]: new Date() }, // Dohvati akcije čiji je datum manji ili jednak trenutnom datumu
+            date: { [Sequelize.Op.gte]: currentDate }, // Dohvati akcije čiji je datum veći ili jednak trenutnom datumu
           },
           order: [["date", "ASC"]],
         },
@@ -462,7 +463,37 @@ router.get("/bloodBankActions/:bloodBankId", async (req, res, next) => {
     res.json(bloodBank.actions);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Failed to retrieve actions" });
+    res.status(500).json({ error: "Failed to retrieve active actions" });
+  }
+});
+
+// Funkcija za dohvaćanje prethodnih akcija nekog zavoda
+router.get("/bloodBankPastActions/:bloodBankId", async (req, res, next) => {
+  const bloodBankId = req.params.bloodBankId;
+
+  try {
+    const currentDate = new Date();
+    const bloodBank = await db.BloodBank.findByPk(bloodBankId, {
+      include: [
+        {
+          model: db.Action,
+          as: "actions",
+          where: {
+            date: { [Sequelize.Op.lt]: currentDate }, // Dohvati akcije čiji je datum manji od trenutnog datumu
+          },
+          order: [["date", "DESC"]],
+        },
+      ],
+    });
+
+    if (!bloodBank) {
+      return res.status(404).json({ error: "Blood bank not found" });
+    }
+
+    res.json(bloodBank.actions);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to retrieve past actions" });
   }
 });
 
