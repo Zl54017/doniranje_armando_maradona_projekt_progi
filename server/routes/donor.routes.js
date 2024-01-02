@@ -476,45 +476,5 @@ router.post("/awards/:token", async (req, res, next) => {
   }
 });
 
-// novi dio, izbrisat ako ne bude ni posli radilo
-router.post("/create-pdf/:token", async (req, res) => {
-  const decoded = decode.jwtDecode(req.params.token);
-  try {
-    console.log(req.body);
-    const donor = await db.Donor.findOne({
-      where: {
-        id: decoded.id,
-      },
-    });
-
-    const certificates = await donor.getCertificates();
-
-    await new Promise((resolve, reject) => {
-      pdf.create(pdfTemplate(donor.name, certificates[0].name, certificates[0].benefits, certificates[0].createdAt), {}).toFile('result.pdf', (err) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
-      });
-    });
-
-
-    res.send(Promise.resolve());
-
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      error: "Failed to retrieve certificates"
-    });
-  }
-
-});
-
-router.get('/fetch-pdf', (req, res) => {
-  res.sendFile(`${__dirname}/result.pdf`)
-  console.log("odi san")
-})
 
 module.exports = router;
