@@ -6,7 +6,7 @@ import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
 import { RootState, useAppDispatch } from '../../redux/store';
 import { useDispatch, useSelector } from "react-redux";
-import { attemptChange, attemptGetDonorsForEmployee } from '../../redux/slices/authSlice';
+import { attemptChange, attemptGetActiveActions, attemptGetDonorsForEmployee, attemptGetPreviousActions } from '../../redux/slices/authSlice';
 import { attemptNewAction } from "../../redux/slices/authSlice";
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import dayjs from 'dayjs';
@@ -33,7 +33,8 @@ function Actions() {
 
   const handleDateChange = (date: any) => setSelectedDate(date);
   const handleTimeChange = (time: Date | null) => setSelectedTime(time);
-  // const [listOfPrevious, setListOfPrevious] = useState<any[]>([]);
+  const [listOfPrevious, setListOfPrevious] = useState<any[]>([]);
+  const [listOfActive, setListOfActive] = useState<any[]>([]);
   const handleNewAction = () => {
     dispatch(attemptNewAction(actionInfo));
     setShowForm(false);
@@ -54,18 +55,32 @@ function Actions() {
     setDialogContent('Nova akcija');
   };
 
-  // useEffect(() => {
-  //   if (user) {
-  //     dispatch(attemptGetDonorsForEmployee(user))
-  //       .then((response: any) => {
-  //         setListOfPrevious(response.payload || []);
-  //         console.log(response.payload);
-  //       })
-  //       .catch((error: any) => {
-  //         console.error("Error", error);
-  //       });
-  //   }
-  // }, [dispatch]);
+  useEffect(() => {
+    if (user) {
+      dispatch(attemptGetPreviousActions(user))
+        .then((response: any) => {
+          setListOfPrevious(response.payload || []);
+          console.log(response.payload);
+        })
+        .catch((error: any) => {
+          console.error("Error", error);
+        });
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(attemptGetActiveActions(user))
+        .then((response: any) => {
+          setListOfActive(response.payload || []);
+          console.log(response.payload);
+        })
+        .catch((error: any) => {
+          console.error("Error", error);
+        });
+    }
+  }, [dispatch]);
+
 
   return (
     <Container>
@@ -74,21 +89,37 @@ function Actions() {
           <Typography variant="h4" mb={2} color="#b2102f">
             Prijašnje akcije
           </Typography>
-          <ul>
-            <li>Element 1</li>
-            <li>Element 2</li>
-            <li>Element 3</li>
-          </ul>
+          {listOfPrevious.length > 0 ? (
+            <Box style={{ maxHeight: "200px", overflowY: "auto" }}>
+              {listOfPrevious.map((actions: any) => (
+                <Box marginBottom={2} padding={2} border="1px solid #b2102f" borderRadius={5}>
+                  <Typography variant="body1">
+                    Ime akcije: {actions.date}
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
+          ) : (
+            <Typography variant="body1">Nema prijašnjih akcija.</Typography>
+          )}
         </Box>
         <Box style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginRight: '2%', flexGrow: 1 }}>
           <Typography variant="h4" mb={2} color="#b2102f">
             Trenutne akcije
           </Typography>
-          <ul>
-            <li>Element 1</li>
-            <li>Element 2</li>
-            <li>Element 3</li>
-          </ul>
+          {listOfActive.length > 0 ? (
+            <Box style={{ maxHeight: "200px", overflowY: "auto" }}>
+              {listOfActive.map((actions: any) => (
+                <Box marginBottom={2} padding={2} border="1px solid #b2102f" borderRadius={5}>
+                  <Typography variant="body1">
+                    Ime akcije: {actions.date}
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
+          ) : (
+            <Typography variant="body1">Nema trenutnih akcija.</Typography>
+          )}
         </Box>
         <Box style={{ display: 'flex', flexDirection: 'column', marginRight: '5%', flexGrow: 1 }}>
           <Button onClick={handleToggleDialog} variant="contained" style={{ backgroundColor: "#b2102f", color: "white", gap: "10px", fontSize: '0.8rem', width: '200px', height: '30px' }}>

@@ -21,6 +21,7 @@ export default {
   getPrevAction: (jwt: string) => axios.post(`${auth.base}/donor/donations/${jwt}`),
   getAwards: (jwt: string) => axios.post(`${auth.base}/donor/awards/${jwt}`),
   getEmployeeDonors: (bloodBankId: string) => axios.get(`${auth.base}/bloodbank/donorsByBloodBank/${"KBC Osijek"}`),
-  newAction: (action: bloodBankInfo, jwt: string) => axios.post(`${auth.base}/actions/newAction/${jwt}`, action)
-  // getPreviousActions: (bloodBankid: string) => axios.get(`${auth.base}/bloodbank/donorsByBloodBank/${"KBC Osijek"}`)
+  newAction: (action: bloodBankInfo, jwt: string) => axios.post(`${auth.base}/actions//createAction/${jwt}`, action),
+  getPreviousActions: (bloodBankId: number) => axios.get(`${auth.base}/bloodBankPastActions/bloodBankId`),
+  getActiveActions: (bloodBankId: number) => axios.get(`${auth.base}/bloodBankActiveActions/bloodBankId`)
 };

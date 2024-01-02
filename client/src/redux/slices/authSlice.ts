@@ -131,6 +131,24 @@ const attemptGetDonorsForEmployee = createAsyncThunk("auth/getdonorsForEmployeeS
     return response.data;
   });
 
+const attemptGetPreviousActions = createAsyncThunk(
+  "auth/getPreviousActionsStatus",
+  async (user: any) => {
+    const response = await authService.getPreviousActions(user.bloodBankId.toString());
+    console.log(response)
+    return response.data;
+  }
+);
+
+const attemptGetActiveActions = createAsyncThunk(
+  "auth/getActiveActionsStatus",
+  async (user: any) => {
+    const response = await authService.getActiveActions(user.bloodBankId.toString());
+    console.log(response)
+    return response.data;
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -203,6 +221,6 @@ const authSlice = createSlice({
 
 export const { clearUser } = authSlice.actions;
 
-export { attemptGetDonorsForEmployee, retrieveAwards, retrievePrevActions, retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete, attemptNewAction };
+export { attemptGetActiveActions, attemptGetPreviousActions, attemptGetDonorsForEmployee, retrieveAwards, retrievePrevActions, retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete, attemptNewAction };
 
 export default authSlice.reducer;
