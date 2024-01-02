@@ -103,6 +103,7 @@ const retrieveAwards = createAsyncThunk(
   }
 );
 
+
 const fetchData = createAsyncThunk("auth/fetchDataStatus", async () => {
   const token = localStorageUtility.getAuthToken();
   if (token !== null) {
@@ -203,6 +204,6 @@ const authSlice = createSlice({
 
 export const { clearUser } = authSlice.actions;
 
-export { attemptGetDonorsForEmployee, retrieveAwards, retrievePrevActions, retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete, attemptNewAction };
+export { attemptGetDonorsForEmployee, retrieveAwards, retrievePrevActions, retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete, attemptNewAction};
 
 export default authSlice.reducer;

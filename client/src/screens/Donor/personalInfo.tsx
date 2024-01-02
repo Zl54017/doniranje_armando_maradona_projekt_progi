@@ -8,9 +8,14 @@ import MenuItem from "@mui/material/MenuItem";
 import { Container } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../redux/store";
-import { attemptChange, attemptDelete, attemptRegister, fetchData, fetchUser, retrieveAwards, retrievePrevActions } from "../../redux/slices/authSlice";
+import { attemptChange, attemptDelete, attemptRegister, fetchData, fetchUser,  retrieveAwards, retrievePrevActions } from "../../redux/slices/authSlice";
 import RegisterInput from "../../types/inputs/user/RegisterInput";
 import { useForm } from "react-hook-form";
+
+import { BlobProvider } from "@react-pdf/renderer";
+import certificatePDF from "./certificatePdf";
+import donationsPdf from "./donationsPdf";
+
 
 function PersonalInfo() {
   const dispatch = useAppDispatch();
@@ -71,6 +76,10 @@ function PersonalInfo() {
     }
   }, [user]);
 
+  
+  
+  
+
   const handleChange = (key: string, value: any) => {
     setUserInfo({ ...userInfo, [key]: value });
   };
@@ -86,6 +95,8 @@ function PersonalInfo() {
   const handleChangePassword = () => {
     console.log("Brisi pass");
   }
+
+  
 
   return (
     <Container>
@@ -229,12 +240,25 @@ function PersonalInfo() {
               <Box style={{ maxHeight: "200px", overflowY: "auto" }}>
                 {prevActions.map((donation: any, index: number) => (
                   <Box key={index} marginBottom={2} padding={2} border="1px solid #b2102f" borderRadius={5}>
+                   
+
                     <Typography variant="body1">
                       Mjesto donacije: {donation.address}
                     </Typography>
                     <Typography variant="body1">
                       Datum donacije: {new Date(donation.date).toLocaleDateString()}
                     </Typography>
+                    <BlobProvider
+                    document={donationsPdf({
+                      donorName: user?.name,
+                      donation: donation
+                    })}>
+                    {({ url }) => (
+                    <a href={url || undefined} target='_blank'>
+                      <Button>Izvezi u PDF</Button>
+                        </a>
+                      )}
+                    </BlobProvider>
                   </Box>
                 ))}
               </Box>
@@ -250,13 +274,26 @@ function PersonalInfo() {
               <Box style={{ maxHeight: "200px", overflowY: "auto" }}>
                 {awards.map((award: any, index: number) => (
                   <Box key={index} marginBottom={2} padding={2} border="1px solid #b2102f" borderRadius={5}>
+                    {/* <Button onClick={generatePDF} style={{ backgroundColor: "white", color: "black" , display: "flex", flexDirection:"column"}}> */}
                     <Typography variant="body1">
                       Naziv nagrade: {award.name}
                     </Typography>
                     <Typography variant="body1">
                       Datum dodjele: {new Date(award.createdAt).toLocaleDateString()}
                     </Typography>
-                    {/* Add any additional award information you want to display */}
+                    <BlobProvider
+                    document={certificatePDF({
+                      donorName: user?.name,
+                      award: award
+                    })}>
+                    {({ url }) => (
+                    <a href={url || undefined} target='_blank'>
+                      <Button>Izvezi u PDF</Button>
+                        </a>
+                      )}
+                    </BlobProvider>
+                    
+                    {/* </Button> */}
                   </Box>
                 ))}
               </Box>
