@@ -3,13 +3,19 @@ import { format } from 'date-fns';
 import { hr } from 'date-fns/locale';
 
 
+import roboto from '../../assets/fonts/Roboto/Roboto-Regular.ttf';
+import robotoBold from '../../assets/fonts/Roboto/Roboto-Bold.ttf';
+
+Font.register({
+  family: 'Roboto',
+  fonts: [{ src: roboto }, { src: robotoBold }],
+});
 
 
 const styles = StyleSheet.create({
     page: {
-        margin: '20px',
+        fontFamily: 'Roboto',
         padding: '20px',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center', // Center content horizontally
@@ -17,7 +23,7 @@ const styles = StyleSheet.create({
       },
       title: {
         fontSize: '24px',
-        fontWeight: 'bold',
+        fontWeight: 800,
         marginBottom: '15px', // Increase margin between title and other text
         color: '#333',
       },
@@ -28,7 +34,7 @@ const styles = StyleSheet.create({
       },
       award: {
         fontSize: '18px',
-        fontStyle: 'italic',
+        
         color: '#444',
       },
 });

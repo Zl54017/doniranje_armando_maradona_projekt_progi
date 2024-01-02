@@ -118,7 +118,17 @@ export default function Donor() {
               Donori krvi{" "}
             </Link>
           </Typography>
-
+          <Link
+            variant="button"
+            color="text.primary"
+            href="#"
+            sx={{ my: 1, mx: 1.5 }}
+            onClick={() => {
+              setActiveTab("map");
+            }}
+          >
+            Početna
+          </Link>
           <Link
             variant="button"
             color="text.primary"

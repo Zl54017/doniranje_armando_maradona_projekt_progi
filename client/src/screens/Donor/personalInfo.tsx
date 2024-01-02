@@ -255,7 +255,7 @@ function PersonalInfo() {
                     })}>
                     {({ url }) => (
                     <a href={url || undefined} target='_blank'>
-                      <Button>Izvezi u PDF</Button>
+                      <Button style={{ backgroundColor: "white", color: "#b2102f" }}>Izvezi u PDF</Button>
                         </a>
                       )}
                     </BlobProvider>
@@ -288,7 +288,7 @@ function PersonalInfo() {
                     })}>
                     {({ url }) => (
                     <a href={url || undefined} target='_blank'>
-                      <Button>Izvezi u PDF</Button>
+                      <Button style={{ backgroundColor: "white", color: "#b2102f" }}>Izvezi u PDF</Button>
                         </a>
                       )}
                     </BlobProvider>
