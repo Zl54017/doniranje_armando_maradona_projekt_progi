@@ -60,7 +60,6 @@ function Actions() {
       dispatch(attemptGetPreviousActions(user))
         .then((response: any) => {
           setListOfPrevious(response.payload || []);
-          console.log(response.payload);
         })
         .catch((error: any) => {
           console.error("Error", error);
@@ -73,7 +72,6 @@ function Actions() {
       dispatch(attemptGetActiveActions(user))
         .then((response: any) => {
           setListOfActive(response.payload || []);
-          console.log(response.payload);
         })
         .catch((error: any) => {
           console.error("Error", error);

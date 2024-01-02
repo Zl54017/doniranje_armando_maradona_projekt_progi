@@ -74,7 +74,6 @@ export default function Login() {
       location.pathname === "/login"
     ) {
       navigate(`/${role}/${user.id}`);
-      console.log(role);
     }
   }, [user]);
 

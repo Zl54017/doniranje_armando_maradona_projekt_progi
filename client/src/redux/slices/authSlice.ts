@@ -127,16 +127,14 @@ const attemptLogout = createAsyncThunk("auth/logoutStatus", async () => {
 
 const attemptGetDonorsForEmployee = createAsyncThunk("auth/getdonorsForEmployeeStatus",
   async (user: any) => {
-    const response = await authService.getEmployeeDonors(user.bloodBankId.toString());
-    console.log(response)
+    const response = await authService.getEmployeeDonors(user.bloodBankId);
     return response.data;
   });
 
 const attemptGetPreviousActions = createAsyncThunk(
   "auth/getPreviousActionsStatus",
   async (user: any) => {
-    const response = await authService.getPreviousActions(user.bloodBankId.toString());
-    console.log(response)
+    const response = await authService.getPreviousActions(user.bloodBankId);
     return response.data;
   }
 );
@@ -144,8 +142,7 @@ const attemptGetPreviousActions = createAsyncThunk(
 const attemptGetActiveActions = createAsyncThunk(
   "auth/getActiveActionsStatus",
   async (user: any) => {
-    const response = await authService.getActiveActions(user.bloodBankId.toString());
-    console.log(response)
+    const response = await authService.getActiveActions(user.bloodBankId);
     return response.data;
   }
 );

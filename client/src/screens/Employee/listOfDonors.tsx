@@ -51,7 +51,6 @@ function PersonList(){
         dispatch(attemptGetDonorsForEmployee(user))
             .then((response: any) => {
                 setListOfDonors(response.payload || []);
-                console.log(response.payload);
             })
             .catch((error: any) => {
                 console.error("Error", error);

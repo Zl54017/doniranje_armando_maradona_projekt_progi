@@ -20,8 +20,8 @@ export default {
   getAction: (jwt: string) => axios.post(`${auth.base}/donor/actions/${jwt}`),
   getPrevAction: (jwt: string) => axios.post(`${auth.base}/donor/donations/${jwt}`),
   getAwards: (jwt: string) => axios.post(`${auth.base}/donor/awards/${jwt}`),
-  getEmployeeDonors: (bloodBankId: string) => axios.get(`${auth.base}/bloodbank/donorsByBloodBank/${"KBC Osijek"}`),
-  newAction: (action: bloodBankInfo, jwt: string) => axios.post(`${auth.base}/actions//createAction/${jwt}`, action),
-  getPreviousActions: (bloodBankId: number) => axios.get(`${auth.base}/bloodBankPastActions/bloodBankId`),
-  getActiveActions: (bloodBankId: number) => axios.get(`${auth.base}/bloodBankActiveActions/bloodBankId`)
+  getEmployeeDonors: (bloodBankId: string) => axios.get(`${auth.base}/bloodbank/donorsByBloodBank/${bloodBankId}`),
+  newAction: (action: bloodBankInfo, jwt: string) => axios.post(`${auth.base}/bloodbank/actions/createAction/${jwt}`, action),
+  getPreviousActions: (bloodBankId: number) => axios.get(`${auth.base}/bloodbank/bloodBankPastActions/${bloodBankId}`),
+  getActiveActions: (bloodBankId: number) => axios.get(`${auth.base}/bloodbank/bloodBankActiveActions/${bloodBankId}`),
 };
