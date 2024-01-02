@@ -117,25 +117,32 @@ function Map() {
     );
     
     const fixedLocations = [
-      { lat: 45.558042202768455, lng: 18.71365045228026 }, //KBC Osijek
-      { lat: 43.503911289394324, lng: 16.45792246443381 }, //KBC Split
-      { lat: 45.332834054047154, lng: 14.425599994595334 }, //KBC Rijeka
-      { lat: 42.64782497663791, lng: 18.075890982807405 }, // OB Dubrovnik
-      { lat: 46.30263721672062, lng: 16.325257294377536 }, //OB Varaždin
-      { lat: 44.10745411911505, lng: 15.23451962336266 }, //OB Zadar
-      { lat: 45.81617537849029, lng: 15.99113679462288 }, //Hrvatski zavod za transfuzijsku medicinu Zagreb
+      { lat: 45.558042202768455, lng: 18.71365045228026, name: 'KBC Osijek' }, //KBC Osijek
+      { lat: 43.503911289394324, lng: 16.45792246443381 ,name: 'KBC Split'}, //KBC Split
+      { lat: 45.332834054047154, lng: 14.425599994595334,name: 'KBC Rijeka' }, //KBC Rijeka
+      { lat: 42.64782497663791, lng: 18.075890982807405 ,name: 'OB Dubovnik'}, // OB Dubrovnik
+      { lat: 46.30263721672062, lng: 16.325257294377536 ,name: 'OB Varaždin'}, //OB Varaždin
+      { lat: 44.10745411911505, lng: 15.23451962336266 ,name: 'OB Zadar '}, //OB Zadar
+      { lat: 45.81617537849029, lng: 15.99113679462288 ,name: 'Hrvatski zavod za transfuzijsku medicinu Zagreb'}, //Hrvatski zavod za transfuzijsku medicinu Zagreb
       //
      ];
      const fixedLocationsLayer = L.layerGroup(); // Create a layer group for fixed locations
     
-      fixedLocations.forEach((fixedLocation) => {
-        L.circle([fixedLocation.lat, fixedLocation.lng], {
-          color:"red",
-          fillColor: "#f03",
-          fillOpacity: 0.5,
-          radius: 100,
-        }).addTo(fixedLocationsLayer);
+     fixedLocations.forEach((fixedLocation) => {
+      const circle = L.circle([fixedLocation.lat, fixedLocation.lng], {
+        color: "red",
+        fillColor: "#f03",
+        fillOpacity: 0.5,
+        radius: 100,
       });
+    
+      // Add a popup to each circle
+      circle.bindPopup(fixedLocation.name);
+    
+      // Add the circle to the layer group
+      circle.addTo(fixedLocationsLayer);
+    });
+
       fixedLocationsLayer.addTo(mapRef.current);
       
     return () => {
