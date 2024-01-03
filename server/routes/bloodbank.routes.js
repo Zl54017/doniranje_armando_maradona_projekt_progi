@@ -449,7 +449,7 @@ router.get("/bloodBankActiveActions/:bloodBankId", async (req, res, next) => {
           model: db.Action,
           as: "actions",
           where: {
-            date: { [Sequelize.Op.gte]: currentDate }, // Dohvati akcije čiji je datum veći ili jednak trenutnom datumu
+            date: { [Sequelize.Op.gte]: currentDate }, // Dohvati akcije čiji je datum veći ili jednak od trenutnog datuma
           },
           order: [["date", "ASC"]],
         },
@@ -479,7 +479,7 @@ router.get("/bloodBankPastActions/:bloodBankId", async (req, res, next) => {
           model: db.Action,
           as: "actions",
           where: {
-            date: { [Sequelize.Op.lt]: currentDate }, // Dohvati akcije čiji je datum manji od trenutnog datumu
+            date: { [Sequelize.Op.lt]: currentDate }, // Dohvati akcije čiji je datum manji od trenutnog datuma
           },
           order: [["date", "DESC"]],
         },
@@ -490,7 +490,9 @@ router.get("/bloodBankPastActions/:bloodBankId", async (req, res, next) => {
       return res.status(404).json({ error: "Blood bank not found" });
     }
 
-    res.json(bloodBank.actions);
+    let pastActions = bloodBank.actions || []; // Provjera i zamjena ako lista nije definirana ili je prazna
+
+    res.json(pastActions);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Failed to retrieve past actions" });
