@@ -20,6 +20,7 @@ import Actions from './actions';
 import Statistics from './statistics';
 import ListOfDonors from './listOfDonors';
 import AddEmployee from './addEmployee';
+import FaqEmployee from "./faqEmployee";
 import { ReactNode } from "react";
 
 
@@ -52,6 +53,7 @@ type Props = {
   state: ReactNode;
 };
 
+
 function ContentBox({ activeTab }: { activeTab: string }) {
   return (
     <div>
@@ -59,14 +61,16 @@ function ContentBox({ activeTab }: { activeTab: string }) {
         <ListOfDonors />
       ) : activeTab === 'actions' ? (
         <Actions />
-      ) : activeTab === 'statistics' ?(
+      ) : activeTab === 'statistics' ? (
         <Statistics />
+      ) : activeTab === 'faqEmployee' ? (
+        <FaqEmployee />
       ) : (
         <AddEmployee />
       )}
     </div>
   );
-};
+}
 
 export default function BloodBank() {
   const { register, handleSubmit } = useForm();
@@ -135,6 +139,15 @@ export default function BloodBank() {
               onClick={() => { setActiveTab('statistics'); }}
             >
               Statistika
+            </Link>
+            <Link
+              variant="button"
+              color="text.primary"
+              href="#"
+              sx={{ my: 1, mx: 1.5 }}
+              onClick={() => { setActiveTab('faqEmployee'); }}
+            >
+              Uredi FAQ
             </Link>
             <Button
               type="submit"

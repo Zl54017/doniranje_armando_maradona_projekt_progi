@@ -11,14 +11,14 @@ import { RootState, useAppDispatch } from "../../redux/store";
 import RegisterInput from "../../types/inputs/user/RegisterInput";
 
 
-function PersonList(){
+function PersonList() {
     const dispatch = useAppDispatch();
     const { user, role } = useSelector((state: RootState) => state.auth);
     const [expandedPerson, setExpandedPerson] = useState<number | null>(null);
     const [selectedBloodType, setSelectedBloodType] = useState<string | undefined>('');
     const [selectedRhFactor, setSelectedRhFactor] = useState<string | undefined>('');
 
-    
+
 
     const handleExpandClick = (personId: number) => {
         setExpandedPerson((prevId) => (prevId === personId ? null : personId));
@@ -47,16 +47,16 @@ function PersonList(){
     // }
 
     useEffect(() => {
-        if(user){
-        dispatch(attemptGetDonorsForEmployee(user))
-            .then((response: any) => {
-                setListOfDonors(response.payload || []);
-            })
-            .catch((error: any) => {
-                console.error("Error", error);
-            });
+        if (user) {
+            dispatch(attemptGetDonorsForEmployee(user))
+                .then((response: any) => {
+                    setListOfDonors(response.payload || []);
+                })
+                .catch((error: any) => {
+                    console.error("Error", error);
+                });
         }
-      }, [dispatch]);
+    }, [dispatch]);
 
     return (
         <Box>
@@ -91,17 +91,17 @@ function PersonList(){
 
             <h2>Lista donora:</h2>
             {listOfDonors.length > 0 ? (
-              <Box style={{ maxHeight: "200px", overflowY: "auto" }}>
-                {listOfDonors.map((donor: any) => (
-                  <Box marginBottom={2} padding={2} border="1px solid #b2102f" borderRadius={5}>
-                    <Typography variant="body1">
-                      Ime donacije: {donor.name}
-                    </Typography>
-                  </Box>
-                ))}
-              </Box>
+                <Box style={{ maxHeight: "200px", overflowY: "auto" }}>
+                    {listOfDonors.map((donor: any) => (
+                        <Box marginBottom={2} padding={2} border="1px solid #b2102f" borderRadius={5}>
+                            <Typography variant="body1">
+                                Ime donora: {donor.name}
+                            </Typography>
+                        </Box>
+                    ))}
+                </Box>
             ) : (
-              <Typography variant="body1">Nema zabilježenih donacija.</Typography>
+                <Typography variant="body1">Nema zabilježenih donora.</Typography>
             )}
             {/* {filteredPeople.map((person) => (
                 <Box

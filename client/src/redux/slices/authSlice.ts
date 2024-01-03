@@ -147,6 +147,25 @@ const attemptGetActiveActions = createAsyncThunk(
   }
 );
 
+const attemptGetFaq = createAsyncThunk(
+  "auth/getFaqStatus",
+  async () => {
+
+    const response = await authService.getFaq();
+    return response.data;
+  }
+);
+
+const attemptPoatFaq = createAsyncThunk(
+  "auth/postFaqStatus", async () => {
+    const token = localStorageUtility.getAuthToken();
+    if (token !== null) {
+      const response = await authService.postFaq(token);
+      return response.data;
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -219,6 +238,7 @@ const authSlice = createSlice({
 
 export const { clearUser } = authSlice.actions;
 
-export { attemptGetDonorsForEmployee, retrieveAwards, retrievePrevActions, retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete, attemptNewAction,attemptGetActiveActions,attemptGetPreviousActions};
+export { attemptGetFaq, attemptGetDonorsForEmployee, retrieveAwards, retrievePrevActions, retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete, attemptNewAction, attemptGetActiveActions, attemptGetPreviousActions };
 
 export default authSlice.reducer;
+

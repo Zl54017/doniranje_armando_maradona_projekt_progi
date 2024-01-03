@@ -24,4 +24,6 @@ export default {
   newAction: (action: bloodBankInfo, jwt: string) => axios.post(`${auth.base}/bloodbank/actions/createAction/${jwt}`, action),
   getPreviousActions: (bloodBankId: number) => axios.get(`${auth.base}/bloodbank/bloodBankPastActions/${bloodBankId}`),
   getActiveActions: (bloodBankId: number) => axios.get(`${auth.base}/bloodbank/bloodBankActiveActions/${bloodBankId}`),
+  getFaq: () => axios.get(`${auth.base}/bloodbank/faq`),
+  postFaq: (jwt: string) => axios.post(`${auth.base}/bloodbank/addFAQ/${jwt}`),
 };
