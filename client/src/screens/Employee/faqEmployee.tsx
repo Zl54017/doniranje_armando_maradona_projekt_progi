@@ -4,8 +4,9 @@ import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import Typography from "@mui/material/Typography";
 import { Button, Grid } from "@mui/material";
-import { useAppDispatch } from "../../redux/store";
-import { attemptGetFaq } from "../../redux/slices/authSlice";
+import { RootState, useAppDispatch } from "../../redux/store";
+import { attemptGetFaq, attemptPostFaq } from "../../redux/slices/authSlice";
+import { useSelector } from "react-redux";
 
 
 interface Question {
@@ -46,6 +47,8 @@ function FaqEdit() {
 
     // const [questions, setQuestions] = useState<Question[]>(initialQuestions);
     const [questions, setQuestions] = useState<any[]>([]);
+    const [newQuestions, setNewQuestions] = useState<any[]>([]);
+    const { user, role } = useSelector((state: RootState) => state.auth);
 
     const handleQuestionClick = (index: number) => {
         const updatedQuestions = [...questions];
@@ -74,6 +77,17 @@ function FaqEdit() {
             });
     }, [dispatch]);
 
+    useEffect(() => {
+        if (user) {
+            dispatch(attemptPostFaq())
+                .then((response: any) => {
+                    setNewQuestions(response.payload || []);
+                })
+                .catch((error: any) => {
+                    console.error("Error", error);
+                });
+        }
+    }, [dispatch]);
 
     return (
         <Container>

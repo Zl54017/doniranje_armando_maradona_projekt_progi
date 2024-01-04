@@ -156,7 +156,7 @@ const attemptGetFaq = createAsyncThunk(
   }
 );
 
-const attemptPoatFaq = createAsyncThunk(
+const attemptPostFaq = createAsyncThunk(
   "auth/postFaqStatus", async () => {
     const token = localStorageUtility.getAuthToken();
     if (token !== null) {
@@ -238,7 +238,7 @@ const authSlice = createSlice({
 
 export const { clearUser } = authSlice.actions;
 
-export { attemptGetFaq, attemptGetDonorsForEmployee, retrieveAwards, retrievePrevActions, retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete, attemptNewAction, attemptGetActiveActions, attemptGetPreviousActions };
+export { attemptPostFaq, attemptGetFaq, attemptGetDonorsForEmployee, retrieveAwards, retrievePrevActions, retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete, attemptNewAction, attemptGetActiveActions, attemptGetPreviousActions };
 
 export default authSlice.reducer;
 
