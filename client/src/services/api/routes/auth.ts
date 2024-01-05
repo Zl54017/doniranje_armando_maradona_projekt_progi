@@ -20,10 +20,11 @@ export default {
   getAction: (jwt: string) => axios.post(`${auth.base}/donor/actions/${jwt}`),
   getPrevAction: (jwt: string) => axios.post(`${auth.base}/donor/donations/${jwt}`),
   getAwards: (jwt: string) => axios.post(`${auth.base}/donor/awards/${jwt}`),
-  getEmployeeDonors: (bloodBankId: string) => axios.get(`${auth.base}/bloodbank/donorsByBloodBank/${bloodBankId}`),
+  getDonors: (jwt: LoginInput) => axios.get(`${auth.base}/bloodbank/filteredDonors?name=${jwt.transfusionInstitute}&donorName=${jwt.name}&bloodType=${jwt.bloodType}${jwt.password}&gender=${jwt.gender}&minAge=${jwt.age}&maxAge=${jwt.numberOfDonations}`),
   newAction: (action: bloodBankInfo, jwt: string) => axios.post(`${auth.base}/bloodbank/actions/createAction/${jwt}`, action),
   getPreviousActions: (bloodBankId: number) => axios.get(`${auth.base}/bloodbank/bloodBankPastActions/${bloodBankId}`),
   getActiveActions: (bloodBankId: number) => axios.get(`${auth.base}/bloodbank/bloodBankActiveActions/${bloodBankId}`),
   getFaq: () => axios.get(`${auth.base}/bloodbank/faq`),
   postFaq: (jwt: string) => axios.post(`${auth.base}/bloodbank/addFAQ/${jwt}`),
+  getAllBloodBanks: () => axios.get(`${auth.base}/bloodbank/allBloodBanks`),
 };

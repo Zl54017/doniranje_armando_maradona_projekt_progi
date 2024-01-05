@@ -125,9 +125,9 @@ const attemptLogout = createAsyncThunk("auth/logoutStatus", async () => {
   return response.data;
 });
 
-const attemptGetDonorsForEmployee = createAsyncThunk("auth/getdonorsForEmployeeStatus",
+const attemptGetDonors = createAsyncThunk("auth/getDonorsStatus",
   async (user: any) => {
-    const response = await authService.getEmployeeDonors(user.bloodBankId);
+    const response = await authService.getDonors(user);
     return response.data;
   });
 
@@ -163,6 +163,14 @@ const attemptPoatFaq = createAsyncThunk(
       const response = await authService.postFaq(token);
       return response.data;
     }
+  }
+);
+
+const attemptGetAllBloodBanks = createAsyncThunk(
+  "auth/getAllBloodBanksStatus",
+  async () => {
+    const response = await authService.getAllBloodBanks();
+    return response.data;
   }
 );
 
@@ -238,7 +246,7 @@ const authSlice = createSlice({
 
 export const { clearUser } = authSlice.actions;
 
-export { attemptGetFaq, attemptGetDonorsForEmployee, retrieveAwards, retrievePrevActions, retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete, attemptNewAction, attemptGetActiveActions, attemptGetPreviousActions };
+export { attemptGetFaq, attemptGetDonors, retrieveAwards, retrievePrevActions, retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete, attemptNewAction, attemptGetActiveActions, attemptGetPreviousActions, attemptGetAllBloodBanks };
 
 export default authSlice.reducer;
 

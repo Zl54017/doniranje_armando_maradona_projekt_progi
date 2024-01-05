@@ -2,135 +2,218 @@ import * as React from "react";
 import { useEffect, useState } from 'react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { Select, MenuItem, SelectChangeEvent, Box, Typography } from '@mui/material';
+import { Select, MenuItem, SelectChangeEvent, Box, Typography, Slider, TextField, Input } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import { useDispatch, useSelector } from "react-redux";
-import { attemptGetDonorsForEmployee } from "../../redux/slices/authSlice";
+import { attemptGetDonors, attemptGetAllBloodBanks } from "../../redux/slices/authSlice";
 import { RootState, useAppDispatch } from "../../redux/store";
-import RegisterInput from "../../types/inputs/user/RegisterInput";
+import LoginInput from "../../types/inputs/user/LoginInput";
 
 
 function PersonList() {
     const dispatch = useAppDispatch();
     const { user, role } = useSelector((state: RootState) => state.auth);
     const [expandedPerson, setExpandedPerson] = useState<number | null>(null);
-    const [selectedBloodType, setSelectedBloodType] = useState<string | undefined>('');
-    const [selectedRhFactor, setSelectedRhFactor] = useState<string | undefined>('');
-
-
+    const [filters, setFilters] = useState<LoginInput>({
+        name: '',
+        email: '',
+        password: '',
+        bloodType: '',
+        transfusionInstitute: '',
+        numberOfDonations: '100',
+        gender: '',
+        age: 0,
+        id: 0,
+    });
+    const [listOfDonors, setListOfDonors] = useState<any[]>([]);
+    const [listOfBloodBanks, setListOfBloodBanks] = useState<any[]>([]);
+    const [lockBloodBankChange, setLockBloodBankChange] = useState(false);
 
     const handleExpandClick = (personId: number) => {
         setExpandedPerson((prevId) => (prevId === personId ? null : personId));
     };
-    const handleBloodTypeChange = (event: SelectChangeEvent<string>) => {
-        setSelectedBloodType(event.target.value);
+
+    const handleSelectsChange = (event: SelectChangeEvent<string>) => {
+        const { name, value } = event.target;
+        const updatedFilters: LoginInput = { ...filters };
+        updatedFilters[name] = value == "all" ? "" : value;
+        setFilters(updatedFilters);
+
+        dispatch(attemptGetDonors(updatedFilters))
+            .then((response: any) => {
+                setListOfDonors(response.payload || []);
+            })
+            .catch((error: any) => {
+                console.error("Error", error);
+            });
+    };
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target;
+        const updatedFilters: LoginInput = { ...filters };
+        updatedFilters[name] = value == "all" ? "" : value;
+        setFilters(updatedFilters);
+
+        dispatch(attemptGetDonors(updatedFilters))
+            .then((response: any) => {
+                setListOfDonors(response.payload || []);
+            })
+            .catch((error: any) => {
+                console.error("Error", error);
+            });
     };
 
-    const handleRhFactorChange = (event: SelectChangeEvent<string>) => {
-        setSelectedRhFactor(event.target.value);
+    const handleAgeRangeChange = (event: Event, newValue: number | number[]) => {
+        const [minAge, maxAge] = newValue as number[];
+        const updatedFilters: LoginInput = { ...filters };
+        updatedFilters["age"] = minAge;
+        updatedFilters["numberOfDonations"] = maxAge.toString();
+        setFilters(updatedFilters);
+        dispatch(attemptGetDonors(updatedFilters))
+            .then((response: any) => {
+                setListOfDonors(response.payload || []);
+            })
+            .catch((error: any) => {
+                console.error("Error", error);
+            });
     };
-
-    const [listOfDonors, setListOfDonors] = useState<any[]>([]);
-
-    // const filteredPeople = peopleData.filter((person) => {
-    //     const matchBloodType = !selectedBloodType || person.bloodType.startsWith(selectedBloodType);
-    //     const matchRhFactor = !selectedRhFactor || person.bloodType.endsWith(selectedRhFactor);
-    //     return matchBloodType && matchRhFactor;
-    // });
-
-    // const styleOfArrowButton: React.CSSProperties = {
-    //     border: 'none',
-    //     backgroundColor: '#ffffff00',
-    //     cursor: 'pointer',
-    //     outline: 'none',
-    // }
 
     useEffect(() => {
         if (user) {
-            dispatch(attemptGetDonorsForEmployee(user))
+
+            if (role === 'employee') {
+                setLockBloodBankChange(true);
+            }
+
+            dispatch(attemptGetDonors(filters))
                 .then((response: any) => {
                     setListOfDonors(response.payload || []);
                 })
                 .catch((error: any) => {
                     console.error("Error", error);
                 });
+
+            dispatch(attemptGetAllBloodBanks())
+                .then((response: any) => {
+                    setListOfBloodBanks(response.payload || []);
+                })
+                .catch((error: any) => {
+                    console.error("Error", error);
+                });
         }
-    }, [dispatch]);
+    }, [dispatch, user, role]);
 
     return (
-        <Box>
+        <Box padding={'40px'}>
+            <FormControl variant="standard">
+                <InputLabel>Ime donora:</InputLabel>
+                <Input
+                    name="name"
+                    disableUnderline={true}
+                    value={filters.name}
+                    onChange={handleInputChange}
+                />
+            </FormControl>
+            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel id="bloodBank">Institut:</InputLabel>
+                <Select
+                    labelId="bloodBank"
+                    id="bloodBank"
+                    name="transfusionInstitute"
+                    value={filters.transfusionInstitute}
+                    onChange={handleSelectsChange}
+                >
+                    <MenuItem value="all">Svi</MenuItem>
+                    {Object.entries(listOfBloodBanks).map(([bloodBankId, bloodBankData]) => (
+                        <MenuItem value={bloodBankData}>{bloodBankData}</MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
                 <InputLabel id="bloodType">Krvna Grupa:</InputLabel>
                 <Select
                     labelId="bloodType"
                     id="bloodType"
-                    value={selectedBloodType || '' as string}
-                    onChange={handleBloodTypeChange}
+                    value={filters.bloodType}
+                    name="bloodType"
+                    onChange={handleSelectsChange}
                 >
-                    <MenuItem value="">All</MenuItem>
-                    <MenuItem value="A">A</MenuItem>
-                    <MenuItem value="B">B</MenuItem>
-                    <MenuItem value="AB">AB</MenuItem>
-                    <MenuItem value="0">0</MenuItem>
+                    <MenuItem value="all">Sve</MenuItem>
+                    <MenuItem value="A-">A-</MenuItem>
+                    <MenuItem value="A+">A+</MenuItem>
+                    <MenuItem value="B-">B-</MenuItem>
+                    <MenuItem value="B+">B+</MenuItem>
+                    <MenuItem value="AB-">AB-</MenuItem>
+                    <MenuItem value="AB+">AB+</MenuItem>
+                    <MenuItem value="O-">O-</MenuItem>
+                    <MenuItem value="O+">O+</MenuItem>
                 </Select>
             </FormControl>
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel id="rhFactor">Rh:</InputLabel>
+                <InputLabel id="gender">Spol:</InputLabel>
                 <Select
-                    labelId="rhFactor"
-                    id="rhFactor"
-                    value={selectedRhFactor || '' as string}
-                    onChange={handleRhFactorChange}
+                    labelId="gender"
+                    id="gender"
+                    value={filters.gender}
+                    name="gender"
+                    onChange={handleSelectsChange}
                 >
-                    <MenuItem value="">All</MenuItem>
-                    <MenuItem value="+">+</MenuItem>
-                    <MenuItem value="-">-</MenuItem>
+                    <MenuItem value="all">Sve</MenuItem>
+                    <MenuItem value="M">Muško</MenuItem>
+                    <MenuItem value="F">Žensko</MenuItem>
                 </Select>
+            </FormControl>
+            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel id="ageRange">Dob (od - do):</InputLabel>
+                <Slider
+                    value={[filters.age, parseInt(filters.numberOfDonations)] as number[]}
+                    onChange={handleAgeRangeChange}
+                    getAriaLabel={() => 'Temperature range'}
+                    valueLabelDisplay="auto"
+                    size="small"
+                    color="secondary"
+                />
             </FormControl>
 
             <h2>Lista donora:</h2>
             {listOfDonors.length > 0 ? (
-                <Box style={{ maxHeight: "200px", overflowY: "auto" }}>
+                <Box style={{ overflowY: "auto" }}>
                     {listOfDonors.map((donor: any) => (
-                        <Box marginBottom={2} padding={2} border="1px solid #b2102f" borderRadius={5}>
-                            <Typography variant="body1">
-                                Ime donora: {donor.name}
-                            </Typography>
+                        <Box
+                            key={donor.id}
+                            style={{
+                                borderRadius: '6px',
+                                padding: '10px',
+                                marginBottom: '10px',
+                                backgroundColor: '#f5e9e9'
+                            }}
+                            onClick={() => handleExpandClick(donor.id)}
+                        >
+                            <Box style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <Box>
+                                    {donor.name} ({donor.bloodType})
+                                </Box>
+                                <button style={{ border: 0, backgroundColor: 'transparent', }}>
+                                    {expandedPerson === donor.id ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                                </button>
+                            </Box>
+                            {expandedPerson === donor.id && (
+                                <Box>
+                                    <h3>{donor.name}</h3>
+                                    <p>Tip krvi: {donor.bloodType}</p>
+                                    <p>Dob: {donor.age}</p>
+                                    <p>Spol: {donor.gender}</p>
+                                    <p>Primarni institut: {donor.transfusionInstitute}</p>
+                                    <p>Email: {donor.email}</p>
+                                    <p>Broj donacija: {donor.numberOfDonations}</p>
+                                </Box>
+                            )}
                         </Box>
                     ))}
                 </Box>
             ) : (
                 <Typography variant="body1">Nema zabilježenih donora.</Typography>
             )}
-            {/* {filteredPeople.map((person) => (
-                <Box
-                    key={person.id}
-                    style={{
-                        borderRadius: '6px',
-                        padding: '10px',
-                        marginBottom: '10px',
-                        backgroundColor: '#f5f5f5'
-                    }}
-                    onClick={() => handleExpandClick(person.id)}
-                >
-                    <Box style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Box>
-                            {person.name} {person.lastName} ({person.bloodType})
-                        </Box>
-                        <button style={styleOfArrowButton} >
-                            {expandedPerson === person.id ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                        </button>
-                    </Box>
-                    {expandedPerson === person.id && (
-                        <Box>
-                            <h3>Details for {person.name} {person.lastName}</h3>
-                            <p>Blood Type: {person.bloodType}</p>
-                            {/* Add more details as needed
-                        </Box>
-                    )}
-                </Box>
-            ))} */}
         </Box>
     );
 };
