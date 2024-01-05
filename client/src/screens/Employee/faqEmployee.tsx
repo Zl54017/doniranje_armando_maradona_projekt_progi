@@ -3,7 +3,7 @@ import Container from "@mui/material/Container";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import Typography from "@mui/material/Typography";
-import { Button, Grid } from "@mui/material";
+import { Button, Dialog, DialogContent, Grid } from "@mui/material";
 import { RootState, useAppDispatch } from "../../redux/store";
 import { attemptGetFaq, attemptPostFaq } from "../../redux/slices/authSlice";
 import { useSelector } from "react-redux";
@@ -67,6 +67,29 @@ function FaqEdit() {
         updatedQuestions[index].isEditingAnswer = !updatedQuestions[index].isEditingAnswer;
         setQuestions(updatedQuestions);
     };
+
+
+
+    const [showForm, setShowForm] = useState(false);
+    const handleClick = () => setShowForm((prevState) => !prevState);
+    const [dialogContent, setDialogContent] = useState('Izbriši');
+
+    const handleToggleDialog = () => {
+        setShowForm(!showForm);
+        if (showForm) {
+            setDialogContent('Izbriši');
+        } else {
+            setDialogContent('Otkaži');
+        }
+    };
+    const handleCloseDialog = () => {
+        setShowForm(false);
+        setDialogContent('Izbriši');
+    };
+
+
+
+
     useEffect(() => {
         dispatch(attemptGetFaq())
             .then((response: any) => {
@@ -113,6 +136,28 @@ function FaqEdit() {
                             <Button onClick={() => handleEditQuestion(index)} variant="contained" style={{ backgroundColor: "#b2102f", color: "white", gap: "30px" }}>
                                 {item.isEditingQuestion ? 'Spremi' : 'Uredi'}
                             </Button>
+                            <Button onClick={handleToggleDialog} variant="contained" style={{ backgroundColor: "#b2102f", color: "white", gap: "10px", fontSize: '0.8rem', width: '200px', height: '30px' }}>
+                                {showForm ? 'Otkaži' : 'Izbriši'}
+                            </Button>
+                            {showForm && (
+                                <Dialog open={showForm} onClose={handleToggleDialog} fullWidth maxWidth="sm" >
+                                    <DialogContent dividers>
+                                        <Container style={{ maxWidth: '500px', maxHeight: '80vh', overflowY: 'auto', padding: '16px' }}>
+                                            <Typography variant="body1">
+                                                Jeste li sigurni da želite izbrisati stavku?
+                                            </Typography>
+                                            <Grid item xs={12} sm={6}>
+                                                <Button onClick={handleCloseDialog} variant="contained" style={{ backgroundColor: "#b2102f", color: "white", gap: "10px" }}>
+                                                    Izbriši
+                                                </Button>
+                                                <Button onClick={handleCloseDialog} variant="contained" style={{ backgroundColor: "#b2102f", color: "white", gap: "30px" }}>
+                                                    Otkaži
+                                                </Button>
+                                            </Grid>
+                                        </Container>
+                                    </DialogContent>
+                                </Dialog>
+                            )}
                         </ListItemButton>
                         {item.isOpen && (
                             <ListItemButton>
@@ -139,7 +184,6 @@ function FaqEdit() {
             </List>
         </Container>
     );
-
 
 
     {/* <ListItemButton onClick={() => handleQuestionClick(0)}>
