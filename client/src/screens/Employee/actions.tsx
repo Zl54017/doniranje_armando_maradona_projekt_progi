@@ -6,7 +6,7 @@ import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
 import { RootState, useAppDispatch } from '../../redux/store';
 import { useDispatch, useSelector } from "react-redux";
-import { attemptChange, attemptGetActiveActions, attemptGetDonorsForEmployee, attemptGetPreviousActions } from '../../redux/slices/authSlice';
+import { attemptChange, attemptGetActiveActions, attemptGetPreviousActions } from '../../redux/slices/authSlice';
 import { attemptNewAction } from "../../redux/slices/authSlice";
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import dayjs from 'dayjs';
