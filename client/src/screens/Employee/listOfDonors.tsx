@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { attemptGetDonors, attemptGetAllBloodBanks } from "../../redux/slices/authSlice";
 import { RootState, useAppDispatch } from "../../redux/store";
 import LoginInput from "../../types/inputs/user/LoginInput";
+import constructWithOptions from "styled-components/dist/constructors/constructWithOptions";
 
 
 function PersonList() {
@@ -36,7 +37,7 @@ function PersonList() {
 
     const handleSelectsChange = (event: SelectChangeEvent<string>) => {
         const { name, value } = event.target;
-        const updatedFilters: LoginInput = { ...filters };
+        let updatedFilters: LoginInput = { ...filters };
         updatedFilters[name] = value == "all" ? "" : value;
         setFilters(updatedFilters);
 
@@ -50,7 +51,7 @@ function PersonList() {
     };
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
-        const updatedFilters: LoginInput = { ...filters };
+        let updatedFilters: LoginInput = { ...filters };
         updatedFilters[name] = value == "all" ? "" : value;
         setFilters(updatedFilters);
 
@@ -65,7 +66,7 @@ function PersonList() {
 
     const handleAgeRangeChange = (event: Event, newValue: number | number[]) => {
         const [minAge, maxAge] = newValue as number[];
-        const updatedFilters: LoginInput = { ...filters };
+        let updatedFilters: LoginInput = { ...filters };
         updatedFilters["age"] = minAge;
         updatedFilters["numberOfDonations"] = maxAge.toString();
         setFilters(updatedFilters);
@@ -79,29 +80,40 @@ function PersonList() {
     };
 
     useEffect(() => {
-        if (user) {
-
-            if (role === 'employee') {
-                setLockBloodBankChange(true);
+        const fetchData = async () => {
+            try {
+                if (user) {
+                    // Fetch Donors
+                    const donorsResponse = await dispatch(attemptGetDonors(filters));
+                    setListOfDonors(donorsResponse.payload || []);
+    
+                    // Fetch Blood Banks
+                    const bloodBanksResponse = await dispatch(attemptGetAllBloodBanks());
+                    setListOfBloodBanks(bloodBanksResponse.payload || []);
+    
+                    // Adjust filters based on user role
+                    if (role !== 'redCross') {
+                        setLockBloodBankChange(true);
+    
+                        if (role === 'employee') {
+                            setFilters({ ...filters, transfusionInstitute: bloodBanksResponse.payload[user.bloodBankId] });
+                        } else if (role === 'bloodBank') {
+                            setFilters({ ...filters, transfusionInstitute: user.name });
+                        }
+    
+                        // Fetch Donors with updated filters
+                        const updatedDonorsResponse = await dispatch(attemptGetDonors(filters));
+                        setListOfDonors(updatedDonorsResponse.payload || []);
+                    }
+                }
+            } catch (error) {
+                console.error("Error", error);
             }
-
-            dispatch(attemptGetDonors(filters))
-                .then((response: any) => {
-                    setListOfDonors(response.payload || []);
-                })
-                .catch((error: any) => {
-                    console.error("Error", error);
-                });
-
-            dispatch(attemptGetAllBloodBanks())
-                .then((response: any) => {
-                    setListOfBloodBanks(response.payload || []);
-                })
-                .catch((error: any) => {
-                    console.error("Error", error);
-                });
-        }
-    }, [dispatch, user, role]);
+        };
+    
+        fetchData();
+    }, [dispatch]);
+    
 
     return (
         <Box padding={'40px'}>
@@ -122,6 +134,7 @@ function PersonList() {
                     name="transfusionInstitute"
                     value={filters.transfusionInstitute}
                     onChange={handleSelectsChange}
+                    disabled={lockBloodBankChange}
                 >
                     <MenuItem value="all">Svi</MenuItem>
                     {Object.entries(listOfBloodBanks).map(([bloodBankId, bloodBankData]) => (

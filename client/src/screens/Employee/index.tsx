@@ -122,15 +122,17 @@ export default function BloodBank() {
             >
               Akcije
             </Link>
-            <Link
-              variant="button"
-              color="text.primary"
-              href='#'
-              sx={{ my: 1, mx: 1.5 }}
-              onClick={() => { setActiveTab('addEmployee'); }}
-            >
-              Dodaj Zaposlenika
-            </Link>
+            {(role==='redCross' || role==='bloodBank') && (
+              <Link
+                variant="button"
+                color="text.primary"
+                href='#'
+                sx={{ my: 1, mx: 1.5 }}
+                onClick={() => { setActiveTab('addEmployee'); }}
+              >
+                Dodaj Zaposlenika
+              </Link>
+            )}
             <Link
               variant="button"
               color="text.primary"
