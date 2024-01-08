@@ -9,8 +9,41 @@ import { attemptGetFaq, attemptPostFaq } from "../../redux/slices/authSlice";
 import { useSelector } from "react-redux";
 
 
+interface Question {
+    question: string;
+    answer: string;
+    isEditingQuestion: boolean;
+    isEditingAnswer: boolean;
+    isOpen: boolean;
+}
+
 function FaqEdit() {
     const dispatch = useAppDispatch();
+    // const initialQuestions: Question[] = [
+    //     {
+    //         question: 'Prvo pitanje',
+    //         answer: 'Odgovor na prvo pitanje...',
+    //         isEditingQuestion: false,
+    //         isEditingAnswer: false,
+    //         isOpen: false
+    //     },
+    //     {
+    //         question: 'Drugo pitanje',
+    //         answer: 'Odgovor na drugo pitanje...',
+    //         isEditingQuestion: false,
+    //         isEditingAnswer: false,
+    //         isOpen: false
+    //     }
+    //     // Dodaj više pitanja i odgovora po potrebi
+    // ];
+
+    const [initialQuestions, setInitialQuestions] = useState({
+        question: 'Prvo pitanje',
+        answer: 'Odgovor na prvo pitanje...',
+        isEditingQuestion: false,
+        isEditingAnswer: false,
+        isOpen: false
+    })
 
     // const [questions, setQuestions] = useState<Question[]>(initialQuestions);
     const [questions, setQuestions] = useState<any[]>([]);
@@ -92,7 +125,7 @@ function FaqEdit() {
                                 {item.isEditingQuestion ? (
                                     <input
                                         type="text"
-                                        value={item.title}
+                                        value={item.question}
                                         onChange={(e) => {
                                             const updatedQuestions = [...questions];
                                             updatedQuestions[index].question = e.target.value;
@@ -101,7 +134,7 @@ function FaqEdit() {
                                     />
                                 ) : (
                                     <Typography variant="h6" color="#b2102f">
-                                        {item.title}
+                                        {item.question}
                                     </Typography>
                                 )}
                                 <Grid item xs={12} sm={6}>
@@ -150,7 +183,7 @@ function FaqEdit() {
                                     {item.isEditingAnswer ? (
                                         <input
                                             type="text"
-                                            value={item.text}
+                                            value={item.answer}
                                             onChange={(e) => {
                                                 const updatedQuestions = [...questions];
                                                 updatedQuestions[index].answer = e.target.value;
@@ -158,7 +191,7 @@ function FaqEdit() {
                                             }}
                                         />
                                     ) : (
-                                        <p>{item.text}</p>
+                                        <p>{item.answer}</p>
                                     )}
                                     <Button onClick={() => handleEditAnswer(index)} variant="contained" style={{ backgroundColor: "#b2102f", color: "white", gap: "30px" }}>
                                         {item.isEditingAnswer ? 'Spremi' : 'Uredi'}

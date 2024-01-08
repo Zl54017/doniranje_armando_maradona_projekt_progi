@@ -20,6 +20,7 @@ import { RootState, useAppDispatch } from "../../redux/store";
 import { useSelector } from "react-redux";
 import {
   attemptLogout,
+  attemptRegisterForAction,
   clearUser,
   fetchUser,
   retrieveActions,
@@ -154,7 +155,7 @@ function Map() {
   }, []);
 
   function handleDonationClick(action: any): void {
-    console.log("Prijavi se");
+    dispatch(attemptRegisterForAction(action));
   }
 
   return (

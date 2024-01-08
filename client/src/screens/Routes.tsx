@@ -14,6 +14,7 @@ import Donor from "./Donor";
 import BloodBank from "./BloodBank";
 import { Logout } from "@mui/icons-material";
 import Employee from "./Employee";
+import RedCross from "./RedCross";
 
 const appRouter = createBrowserRouter(
   createRoutesFromElements(
@@ -23,10 +24,13 @@ const appRouter = createBrowserRouter(
         <Route path='/donor/:id' element={<Donor />} />
       </Route>
       <Route element={<ProtectedRoute roles={[ROLE.BloodBank]} />}>
-        <Route path="/bloodbank" element={<BloodBank />} />
+        <Route path="/bloodBank/:id" element={<BloodBank />} />
       </Route>
       <Route element={<ProtectedRoute roles={[ROLE.Employee]} />}>
         <Route path='/employee/:id' element={<Employee />} />
+      </Route>
+      <Route element={<ProtectedRoute roles={[ROLE.RedCross]} />}>
+        <Route path='/redCross' element={<RedCross />} />
       </Route>
       <Route path="/signup" element={<SignUp />} />
 

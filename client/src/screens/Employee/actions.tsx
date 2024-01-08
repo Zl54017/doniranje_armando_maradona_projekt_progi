@@ -74,6 +74,7 @@ function Actions() {
       dispatch(attemptGetActiveActions(user))
         .then((response: any) => {
           setListOfActive(response.payload || []);
+          console.log(response.payload);
         })
         .catch((error: any) => {
           console.error("Error", error);
@@ -94,7 +95,10 @@ function Actions() {
               {listOfPrevious.map((actions: any) => (
                 <Box marginBottom={2} padding={2} border="1px solid #b2102f" borderRadius={5}>
                   <Typography variant="body1">
-                    Ime akcije: {actions.date}
+                    Mjesto donacije: {actions.address}
+                  </Typography>
+                  <Typography variant="body1">
+                    Datum donacije: {new Date(actions.date).toLocaleDateString()}
                   </Typography>
                 </Box>
               ))}
@@ -112,7 +116,10 @@ function Actions() {
               {listOfActive.map((actions: any) => (
                 <Box marginBottom={2} padding={2} border="1px solid #b2102f" borderRadius={5}>
                   <Typography variant="body1">
-                    Ime akcije: {actions.date}
+                    Mjesto donacije: {actions.address}
+                  </Typography>
+                  <Typography variant="body1">
+                    Datum donacije: {new Date(actions.date).toLocaleDateString()}
                   </Typography>
                 </Box>
               ))}

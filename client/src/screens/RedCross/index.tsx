@@ -16,8 +16,12 @@ import { useForm } from "react-hook-form";
 import { attemptLogout, clearUser } from "../../redux/slices/authSlice";
 import localStorageUtility from "../../utils/localStorage/auth";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Actions from './actions';
 import { ReactNode } from "react";
+import AddEmployee from "./addEmployee";
+import FaqEmployee from "./faqEmployee";
+import ListOfDonors from "./listOfDonors";
+import Statistics from "./statistics";
+import Actions from "./actions";
 
 
 
@@ -49,19 +53,24 @@ type Props = {
   state: ReactNode;
 };
 
+
 function ContentBox({ activeTab }: { activeTab: string }) {
   return (
     <div>
       {activeTab === 'listOfDonors' ? (
-        <Actions />
+        <ListOfDonors />
       ) : activeTab === 'actions' ? (
         <Actions />
+      ) : activeTab === 'statistics' ? (
+        <Statistics />
+      ) : activeTab === 'faqEmployee' ? (
+        <FaqEmployee />
       ) : (
-        <Actions />
+        <AddEmployee />
       )}
     </div>
   );
-};
+}
 
 export default function BloodBank() {
   const { register, handleSubmit } = useForm();
@@ -113,6 +122,17 @@ export default function BloodBank() {
             >
               Akcije
             </Link>
+            {(role==='redCross' || role==='bloodBank') && (
+              <Link
+                variant="button"
+                color="text.primary"
+                href='#'
+                sx={{ my: 1, mx: 1.5 }}
+                onClick={() => { setActiveTab('addEmployee'); }}
+              >
+                Dodaj Zaposlenika
+              </Link>
+            )}
             <Link
               variant="button"
               color="text.primary"
@@ -121,6 +141,15 @@ export default function BloodBank() {
               onClick={() => { setActiveTab('statistics'); }}
             >
               Statistika
+            </Link>
+            <Link
+              variant="button"
+              color="text.primary"
+              href="#"
+              sx={{ my: 1, mx: 1.5 }}
+              onClick={() => { setActiveTab('faqEmployee'); }}
+            >
+              Uredi FAQ
             </Link>
             <Button
               type="submit"
@@ -134,15 +163,7 @@ export default function BloodBank() {
         </Toolbar>
       </AppBar>
       {/* Hero unit */}
-      <Container
-        disableGutters
-        maxWidth="sm"
-        component="main"
-        sx={{ pt: 8, pb: 6 }}
-      >
-
-        <ContentBox activeTab={activeTab} />
-      </Container>
+      <ContentBox activeTab={activeTab} />
       {/* End hero unit */}
       {/* Footer */}
       <Container
