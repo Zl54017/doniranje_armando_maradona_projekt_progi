@@ -61,12 +61,9 @@ const attemptChange = createAsyncThunk(
 
 const attemptNewAction = createAsyncThunk(
   "auth/newActionStatus",
-  async (action: bloodBankInfo) => {
-    const token = localStorageUtility.getAuthToken();
-    if (token) {
-      const response = await authService.newAction(action, token);
-      return response.data
-    }
+  async (action: any) => {
+    const response = await authService.newAction(action);
+    return response.data
   }
 );
 

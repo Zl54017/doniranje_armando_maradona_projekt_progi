@@ -10,12 +10,13 @@ import { attemptChange, attemptGetActiveActions, attemptGetPreviousActions } fro
 import { attemptNewAction } from "../../redux/slices/authSlice";
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import dayjs from 'dayjs';
+import { time } from 'console';
 
 function Actions() {
   const dispatch = useAppDispatch();
   const { user, role } = useSelector((state: RootState) => state.auth);
   const [selectedQuestion, setSelectedQuestion] = useState<number | ''>('');
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [showForm, setShowForm] = useState(false);
 
@@ -38,7 +39,30 @@ function Actions() {
   const [listOfPrevious, setListOfPrevious] = useState<any[]>([]);
   const [listOfActive, setListOfActive] = useState<any[]>([]);
   const handleNewAction = () => {
-    dispatch(attemptNewAction(actionInfo));
+    let dateTime = new Date();
+    if (selectedDate && selectedTime) {
+      // Combine date and time into a single JavaScript Date object
+      dateTime = new Date(
+        selectedDate.getFullYear(),
+        selectedDate.getMonth(),
+        selectedDate.getDate(),
+        selectedTime.getHours(),
+        selectedTime.getMinutes(),
+        selectedTime.getSeconds()
+      );
+    }
+    let actionInput = {
+      bloodBankId: user?.bloodBankId || "",
+      date: dateTime || null,
+      minNumOfDonors: 150,
+    };
+    dispatch(attemptNewAction(actionInput))
+    .then((response: any) =>{
+      console.log(response.payload);
+    })
+    .catch((error: any) => {
+      console.error("Error", error);
+    });
     setShowForm(false);
   };
 

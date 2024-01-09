@@ -14,6 +14,12 @@ import {
   ListItemText,
   CircularProgress,
   ListItemButton,
+  MenuItem,
+  Select,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
 } from "@mui/material";
 import GlobalStyles from "@mui/material/GlobalStyles";
 import { RootState, useAppDispatch } from "../../redux/store";
@@ -154,9 +160,39 @@ function Map() {
     };
   }, []);
 
-  function handleDonationClick(action: any): void {
-    dispatch(attemptRegisterForAction(action));
-  }
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogContent, setDialogContent] = useState({
+    title: "",
+    message: "",
+  });
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
+  const handleDonationClick = (action: any): void => {
+    dispatch(attemptRegisterForAction(action))
+      .then((response) => {
+        // Handle successful registration
+        setDialogContent({
+          title: "Prijava uspješna!",
+          message: "Uspješno si se prijavio za donaciju krvi!",
+        });
+        setDialogOpen(true);
+      })
+      .catch((error) => {
+        // Handle registration failure
+        setDialogContent({
+          title: "Prijava neuspješna!",
+          message: "Provjerite jeste li se već prijavili za ovu akciju i je li imate pravo prijave na akciju.",
+        });
+        setDialogOpen(true);
+      });
+  };
+
+  const handleChange = (value: any) => {
+    console.log(value);
+  };
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -188,6 +224,27 @@ function Map() {
           <Typography variant="h6" gutterBottom color="text.secondary">
             Kalendar nadolazećih akcija darivanja krvi:
           </Typography>
+          <Box style={{ display: "flex", alignItems: "center" }}>
+              <Typography variant="subtitle1" color="#b2102f" style={{ width: "120px" }}>
+                Zavod:
+              </Typography>
+              <Select
+                id="transfusionInstitute"
+                style={{ minWidth: "200px" }}
+                value = {user?.transfusionInstitute}
+                onChange={(e) => handleChange(e.target.value)}
+              >
+                <MenuItem value="KBC Osijek">KBC Osijek</MenuItem>
+                <MenuItem value="KBC Rijeka">KBC Rijeka</MenuItem>
+                <MenuItem value="KBC Split">KBC Split</MenuItem>
+                <MenuItem value="OB Dubrovnik">OB Dubrovnik</MenuItem>
+                <MenuItem value="OB Varaždin">OB Varaždin</MenuItem>
+                <MenuItem value="OB Zadar">OB Zadar</MenuItem>
+                <MenuItem value="Hrvatski zavod za transfuzijsku medicinu Zagreb">
+                  Hrvatski zavod za transfuzijsku medicinu Zagreb
+                </MenuItem>
+              </Select>
+            </Box>
           {upcomingActions.length > 0 ? (
             <List>
             {upcomingActions.map((action: any) => (
@@ -224,6 +281,13 @@ function Map() {
           )}
         </Box>
       </Container>
+      <Dialog open={dialogOpen} onClose={handleDialogClose}>
+        <DialogTitle>{dialogContent.title}</DialogTitle>
+        <DialogContent>{dialogContent.message}</DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose}>Zatvori</Button>
+        </DialogActions>
+      </Dialog>
     </ThemeProvider>
   );
 }
