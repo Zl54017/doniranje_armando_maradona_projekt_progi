@@ -226,21 +226,38 @@ router.post("/actions/:token", async (req, res, next) => {
  * Handle the GET request to retrieve all actions.
  * Returns a list of actions.
  */
-router.get("/allActions", async (req, res, next) => {
+router.get("/allActions/:bloodBankName", async (req, res, next) => {
+  const { bloodBankName } = req.params;
+
   try {
+    const bloodBank = await db.BloodBank.findOne({
+      where: {
+        name: bloodBankName,
+      },
+    });
+
+    if (!bloodBank) {
+      return res.status(404).json({ error: "Blood bank not found" });
+    }
+
     const currentDateTime = new Date();
+
+    const bloodBankId = bloodBank.id;
+
     const actions = await db.Action.findAll({
       where: {
+        bloodBankId: bloodBankId,
         date: {
-          [db.Sequelize.Op.gt]: currentDateTime, // Use the greater than operator
+          [db.Sequelize.Op.gt]: currentDateTime,
         },
       },
     });
+
     res.json(actions);
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      error: "Failed to retrieve actions"
+      error: "Failed to retrieve actions",
     });
   }
 });
