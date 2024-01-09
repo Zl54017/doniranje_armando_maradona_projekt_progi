@@ -28,4 +28,5 @@ export default {
   postFaq: (jwt: string) => axios.post(`${auth.base}/bloodbank/addFAQ/${jwt}`),
   getAllBloodBanks: () => axios.get(`${auth.base}/bloodbank/allBloodBanks`),
   registerForAction: (jwt: string, action: any) => axios.post(`${auth.base}/donor/actionRegistration/${jwt}`, action.id),
+  getBloodBankActionsForDonor: (bloodBankName: string) => axios.get(`${auth.base}/donor/allActions/${bloodBankName}`),
 };

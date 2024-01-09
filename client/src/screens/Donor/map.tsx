@@ -25,6 +25,7 @@ import GlobalStyles from "@mui/material/GlobalStyles";
 import { RootState, useAppDispatch } from "../../redux/store";
 import { useSelector } from "react-redux";
 import {
+  attemptGetBloodBankActionsForDonor,
   attemptLogout,
   attemptRegisterForAction,
   clearUser,
@@ -47,6 +48,8 @@ function Map() {
   const dispatch = useAppDispatch();
   const mapRef = useRef<L.Map | null>(null);
   const [upcomingActions, setUpcomingActions] = useState<any[]>([]);
+  const [selectedBloodBank, setSelectedBloodBank] = useState<string | null>(user?.transfusionInstitute || null);
+
   useEffect(() => {
     // Fetch actions when component mounts
     dispatch(retrieveActions())
@@ -191,7 +194,14 @@ function Map() {
   };
 
   const handleChange = (value: any) => {
-    console.log(value);
+    setSelectedBloodBank(value);
+    dispatch(attemptGetBloodBankActionsForDonor(value))
+      .then((response) => {
+        setUpcomingActions(response.payload || []);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
   };
 
   return (
@@ -226,12 +236,12 @@ function Map() {
           </Typography>
           <Box style={{ display: "flex", alignItems: "center" }}>
               <Typography variant="subtitle1" color="#b2102f" style={{ width: "120px" }}>
-                Zavod:
+                Zavod: 
               </Typography>
               <Select
                 id="transfusionInstitute"
                 style={{ minWidth: "200px" }}
-                value = {user?.transfusionInstitute}
+                value={selectedBloodBank}
                 onChange={(e) => handleChange(e.target.value)}
               >
                 <MenuItem value="KBC Osijek">KBC Osijek</MenuItem>
