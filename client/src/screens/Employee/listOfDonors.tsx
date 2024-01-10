@@ -86,21 +86,21 @@ function PersonList() {
                     // Fetch Donors
                     const donorsResponse = await dispatch(attemptGetDonors(filters));
                     setListOfDonors(donorsResponse.payload || []);
-    
+
                     // Fetch Blood Banks
                     const bloodBanksResponse = await dispatch(attemptGetAllBloodBanks());
                     setListOfBloodBanks(bloodBanksResponse.payload || []);
-    
+
                     // Adjust filters based on user role
                     if (role !== 'redCross') {
                         setLockBloodBankChange(true);
-    
+
                         if (role === 'employee') {
                             setFilters({ ...filters, transfusionInstitute: bloodBanksResponse.payload[user.bloodBankId] });
                         } else if (role === 'bloodBank') {
                             setFilters({ ...filters, transfusionInstitute: user.name });
                         }
-    
+
                         // Fetch Donors with updated filters
                         const updatedDonorsResponse = await dispatch(attemptGetDonors(filters));
                         setListOfDonors(updatedDonorsResponse.payload || []);
@@ -110,10 +110,14 @@ function PersonList() {
                 console.error("Error", error);
             }
         };
-    
+
         fetchData();
     }, [dispatch]);
-    
+
+
+    function handleDeleteDonorClick(id: any): void {
+        throw new Error("Function not implemented.");
+    }
 
     return (
         <Box padding={'40px'}>
@@ -221,6 +225,12 @@ function PersonList() {
                                     <p>Primarni institut: {donor.transfusionInstitute}</p>
                                     <p>Email: {donor.email}</p>
                                     <p>Broj donacija: {donor.numberOfDonations}</p>
+                                    <button
+                                        onClick={() => handleDeleteDonorClick(donor.id)}
+                                        style={{ border: 0, backgroundColor: 'transparent', }}
+                                    >
+                                        Obriši donora
+                                    </button>
                                 </Box>
                             )}
                         </Box>
