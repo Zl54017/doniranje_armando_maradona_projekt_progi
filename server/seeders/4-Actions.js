@@ -25,18 +25,23 @@ module.exports = {
 
     const actions = [];
 
+    var currentDate = new Date();
+    currentDate.setMonth(currentDate.getMonth() - 8);
+
     for (let i = 0; i < instituteNames.length; i++) {
-        const sixMonthsLater = new Date();
-        sixMonthsLater.setMonth(sixMonthsLater.getMonth() + 6);
+      for (let j = 0; j < 10; j++) {
+        const threeMonthsLater = new Date(currentDate);
+        threeMonthsLater.setMonth(currentDate.getMonth() + 3 * j);
 
         actions.push({
           bloodBankId: i + 1,
           address: address[i],
-          date: sixMonthsLater,
+          date: threeMonthsLater,
           minNumberOfDonors: 5,
           createdAt: new Date(),
           updatedAt: new Date(),
         });
+      }
     }
 
     return queryInterface.bulkInsert("Actions", actions);
