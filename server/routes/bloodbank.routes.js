@@ -499,6 +499,36 @@ router.get("/bloodBankPastActions/:bloodBankId", async (req, res, next) => {
   }
 });
 
+//funkcija za dohvacanje popisa zaposlenika zavoda po imenu zavoda
+router.get("/employeesByBloodBank/:bloodBankName", async (req, res, next) => {
+  try {
+    const bloodBankName = req.params.bloodBankName;
+    const bloodBank = await db.BloodBank.findOne({
+      where: {
+        name: bloodBankName,
+      },
+    });
+
+    if (!bloodBank) {
+      return res.status(404).json({ error: "Blood bank not found" });
+    }
+
+    const bloodBankId = bloodBank.id;
+
+    const employees = await db.Employee.findAll({
+      where: {
+        bloodBankId: bloodBankId,
+      },
+    });
+
+    res.json(employees);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to retrieve employees by blood bank" });
+  }
+});
+
+
 /**
  * Handle the POST request to add a donation.
  */
