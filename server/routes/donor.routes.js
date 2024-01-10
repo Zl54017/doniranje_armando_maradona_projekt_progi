@@ -527,6 +527,56 @@ router.post("/change/:token", async (req, res) => {
   }
 });
 
+/**
+ * Handle the POST request for changing the donor's password.
+ */
+router.post("/changePassword/:token", async (req, res) => {
+  const decoded = decode.jwtDecode(req.params.token);
+  const { oldPassword, newPassword1, newPassword2 } = req.body;
+
+  var hashedPassword = crypto
+    .createHash("sha256")
+    .update(oldPassword)
+    .digest("hex");
+
+  try {
+    const existingDonor = await db.Donor.findOne({
+      where: {
+        id: decoded.id,
+      },
+    });
+
+    if (existingDonor && existingDonor.password !== hashedPassword) {
+      return res.status(401).json({
+        message: "Incorrect password",
+      });
+    }
+
+    if (newPassword1 !== newPassword2) {
+      return res.status(401).json({
+        message: "Passwords do not match",
+      });
+    }
+
+    var newHashedPassword = crypto
+      .createHash("sha256")
+      .update(newPassword1)
+      .digest("hex");
+
+    existingDonor.password = newHashedPassword;
+
+    await existingDonor.save();
+
+    res.json({
+      message: "Password changed",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error changing password" + error,
+    });
+  }
+});
+
 router.post("/awards/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);
   try {
