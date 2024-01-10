@@ -117,6 +117,14 @@ const attemptRegisterForAction = createAsyncThunk("auth/registerForActionStatus"
   }
 });
 
+const attempChangePassword = createAsyncThunk("auth/changePasswordStatus", async (passwords: any) => {
+  const token = localStorageUtility.getAuthToken();
+  if (token !== null) {
+    const response = await authService.changePassword(token, passwords);
+    return response.data;
+  }
+})
+
 const attemptGetBloodBankActionsForDonor = createAsyncThunk("auth/getBloodBankActionsForDonorStatus", async (bloogBankName: string) => {
   const response = await authService.getBloodBankActionsForDonor(bloogBankName);
   return response.data;
@@ -264,7 +272,7 @@ const authSlice = createSlice({
 
 export const { clearUser } = authSlice.actions;
 
-export { attemptGetBloodBankActionsForDonor, attemptGetBloodBankEmployees, attemptRegisterForAction, attemptGetFaq, attemptGetDonors, attemptGetAllBloodBanks, attemptPostFaq, retrieveAwards, retrievePrevActions, retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete, attemptNewAction, attemptGetActiveActions, attemptGetPreviousActions };
+export { attempChangePassword, attemptGetBloodBankActionsForDonor, attemptGetBloodBankEmployees, attemptRegisterForAction, attemptGetFaq, attemptGetDonors, attemptGetAllBloodBanks, attemptPostFaq, retrieveAwards, retrievePrevActions, retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete, attemptNewAction, attemptGetActiveActions, attemptGetPreviousActions };
 
 export default authSlice.reducer;
 

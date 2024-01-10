@@ -8,7 +8,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { Container, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../redux/store";
-import { attemptChange, attemptDelete, attemptRegister, fetchData, fetchUser, retrieveAwards, retrievePrevActions } from "../../redux/slices/authSlice";
+import { attempChangePassword, attemptChange, attemptDelete, attemptRegister, fetchData, fetchUser, retrieveAwards, retrievePrevActions } from "../../redux/slices/authSlice";
 import RegisterInput from "../../types/inputs/user/RegisterInput";
 import { useForm } from "react-hook-form";
 
@@ -39,6 +39,7 @@ function PersonalInfo() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [showPassword, setShowPassword] = useState(true);
+  const [passwordChangeMessage, setPasswordChangeMessage] = useState<string | null>(null);
 
 
   const [prevActions, setPrevActions] = useState<any[]>([]);
@@ -112,12 +113,25 @@ function PersonalInfo() {
   };
 
   const handleChangePassword = () => {
-    // Add your logic to handle the password change
-    console.log("Old Password:", oldPassword);
-    console.log("New Password:", newPassword);
-    console.log("Confirm New Password:", confirmNewPassword);
+    const passwords = {
+      oldPassword: "",
+      newPassword1: "",
+      newPassword2: "",
+    }
+    passwords.oldPassword = oldPassword;
+    passwords.newPassword1 = newPassword;
+    passwords.newPassword2 = confirmNewPassword;
+    dispatch(attempChangePassword(passwords))
+      .then((response: any) => {
+        const message = response.payload.message;
+        setPasswordChangeMessage(message);
+      })
+      .catch((error: any) => {
+        console.error("Error changing password:", error);
+        const message = error.message;
+        setPasswordChangeMessage(message);
+      });
 
-    // Close the dialog after handling the password change
     handleCloseChangePasswordDialog();
   };
 
@@ -255,35 +269,44 @@ function PersonalInfo() {
           </Box>
         </Box>
         <Dialog open={openChangePasswordDialog} onClose={handleCloseChangePasswordDialog}>
-        <DialogTitle>Change Password</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Old Password"
-            type={showPassword ? "text" : "password"}
-            fullWidth
-            value={oldPassword}
-            onChange={(e) => setOldPassword(e.target.value)}
-          />
-          <TextField
-            label="New Password"
-            type={showPassword ? "text" : "password"}
-            fullWidth
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
-          <TextField
-            label="Confirm New Password"
-            type={showPassword ? "text" : "password"}
-            fullWidth
-            value={confirmNewPassword}
-            onChange={(e) => setConfirmNewPassword(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseChangePasswordDialog}>Cancel</Button>
-          <Button onClick={handleChangePassword}>Change Password</Button>
-        </DialogActions>
-      </Dialog>
+          <DialogTitle>Change Password</DialogTitle>
+          <DialogContent>
+            <TextField
+              label="Old Password"
+              type={showPassword ? "text" : "password"}
+              fullWidth
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+            />
+            <TextField
+              label="New Password"
+              type={showPassword ? "text" : "password"}
+              fullWidth
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <TextField
+              label="Confirm New Password"
+              type={showPassword ? "text" : "password"}
+              fullWidth
+              value={confirmNewPassword}
+              onChange={(e) => setConfirmNewPassword(e.target.value)}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseChangePasswordDialog}>Cancel</Button>
+            <Button onClick={handleChangePassword}>Change Password</Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog open={Boolean(passwordChangeMessage)} onClose={() => setPasswordChangeMessage(null)}>
+          <DialogTitle>Password Change Result</DialogTitle>
+          <DialogContent>
+            <Typography>{passwordChangeMessage}</Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setPasswordChangeMessage(null)}>OK</Button>
+          </DialogActions>
+        </Dialog>
         <Box style={{ display: "flex", flexDirection: "column", maxWidth: "1000px" }} >
           <Box ml={30} style={{ display: "flex", flexDirection: "column" }}>
             <Typography variant="h4" mb={2} color="#b2102f">
