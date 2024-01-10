@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { TextField, Button, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, Grid, Box, Dialog, DialogContent, Container, Typography } from '@mui/material';
 import { RootState, useAppDispatch } from "../../redux/store";
-import { attemptGetAllBloodBanks } from "../../redux/slices/authSlice";
+import { attemptGetAllBloodBanks, attemptGetBloodBankEmployees } from "../../redux/slices/authSlice";
 import { useSelector } from 'react-redux';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 
 function MyForm() {
@@ -19,6 +21,12 @@ function MyForm() {
     const [listOfBloodBanks, setListOfBloodBanks] = useState<any[]>([]);
     const [lockBloodBankChange, setLockBloodBankChange] = useState(false);
     const [showForm, setShowForm] = useState(false);
+    const [listOfEmployees, setListOfEmployees] = useState<any[]>([]);
+    const [expandedPerson, setExpandedPerson] = useState<number | null>(null);
+
+    const handleExpandClick = (personId: number) => {
+        setExpandedPerson((prevId) => (prevId === personId ? null : personId));
+    };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [event.target.name]: event.target.value });
@@ -36,13 +44,20 @@ function MyForm() {
     const handleToggleDialog = () => {
         setShowForm(!showForm);
     };
-    const handleCloseDialog = () => {
-        setShowForm(false);
+    const handleSelectsChange = (event: SelectChangeEvent<string>) => {
+        const { name, value } = event.target;
+        dispatch(attemptGetBloodBankEmployees(value))
+            .then((response: any) => {
+                setListOfEmployees(response.payload || []);
+            })
+            .catch((error: any) => {
+                console.error("Error", error);
+            });
     };
 
     useEffect(() => {
         if (user) {
-            if (role === 'bloodBank') {
+            if (role === 'bloodBank' && user.id != 8) {
                 setFormData({ ...formData, ["bloodBank"]: user.id.toString() });
                 setLockBloodBankChange(true)
             }
@@ -50,6 +65,13 @@ function MyForm() {
             //     setFormData({ ...formData, ["bloodBank"]: user.bloodBankId });
             //     setLockBloodBankChange(true)
             // }
+            dispatch(attemptGetBloodBankEmployees(user.name))
+                .then((response: any) => {
+                    setListOfEmployees(response.payload || []);
+                })
+                .catch((error: any) => {
+                    console.error("Error", error);
+                });
         }
         dispatch(attemptGetAllBloodBanks())
             .then((response: any) => {
@@ -59,6 +81,10 @@ function MyForm() {
                 console.error("Error", error);
             });
     }, [dispatch, user, role]);
+
+    function handleDeleteEmployee(event: any): void {
+        console.log('Function not implemented.');
+    }
 
     return (
         <Box paddingX={'200px'} paddingY={'40px'}>
@@ -165,6 +191,59 @@ function MyForm() {
                         </Container>
                     </DialogContent>
                 </Dialog>
+            )}
+            <Box>
+                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                    <InputLabel id="bloodBank">Institut:</InputLabel>
+                    <Select
+                        labelId="bloodBank"
+                        id="bloodBank"
+                        name="transfusionInstitute"
+                        onChange={handleSelectsChange}
+                        value={user ? user.name : "KBC Osijek"}
+                        disabled={lockBloodBankChange}
+                    >
+                        {Object.entries(listOfBloodBanks).map(([bloodBankId, bloodBankData]) => (
+                            <MenuItem value={bloodBankData}>{bloodBankData}</MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+            </Box>
+            {listOfEmployees.length > 0 ? (
+                <Box style={{ overflowY: "auto" }}>
+                    {listOfEmployees.map((employee: any) => (
+                        <Box
+                            key={employee.id}
+                            style={{
+                                borderRadius: '6px',
+                                padding: '10px',
+                                marginBottom: '10px',
+                                backgroundColor: '#f5e9e9'
+                            }}
+                            onClick={() => handleExpandClick(employee.id)}
+                        >
+                            <Box style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <Box>
+                                    {employee.name}
+                                </Box>
+                                <button style={{ border: 0, backgroundColor: 'transparent', }}>
+                                    {expandedPerson === employee.id ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                                </button>
+                            </Box>
+                            {expandedPerson === employee.id && (
+                                <Box>
+                                    <h3>{employee.name}</h3>
+                                    <p>Email: {employee.email}</p>
+                                    <Button onClick={handleDeleteEmployee} variant="contained" style={{ backgroundColor: "#b2102f", color: "white", gap: "10px", fontSize: '0.8rem', width: '200px', height: '30px' }}>
+                                        Obriši zaposlenika
+                                    </Button>
+                                </Box>
+                            )}
+                        </Box>
+                    ))}
+                </Box>
+            ) : (
+                <Typography variant="body1">Nema zabilježenih zaposlenika.</Typography>
             )}
         </Box>
     );

@@ -40,7 +40,6 @@ function PersonList() {
         let updatedFilters: LoginInput = { ...filters };
         updatedFilters[name] = value == "all" ? "" : value;
         setFilters(updatedFilters);
-
         dispatch(attemptGetDonors(updatedFilters))
             .then((response: any) => {
                 setListOfDonors(response.payload || []);
