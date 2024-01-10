@@ -181,22 +181,28 @@ function Map() {
   const handleDonationClick = (action: any): void => {
     dispatch(attemptRegisterForAction(action))
       .then((response) => {
-        // Handle successful registration
-        setDialogContent({
-          title: "Prijava uspješna!",
-          message: "Uspješno si se prijavio za donaciju krvi!",
-        });
+        // Check the response from the backend
+        if (response.payload) {
+          // Handle successful registration
+          setDialogContent({
+            title: response.payload.title,
+            message: response.payload.text,
+          });
+        }
         setDialogOpen(true);
       })
       .catch((error) => {
-        // Handle registration failure
-        setDialogContent({
-          title: "Prijava neuspješna!",
-          message: "Provjerite jeste li se već prijavili za ovu akciju i je li imate pravo prijave na akciju.",
-        });
+        // Check the error response from the backend
+        if (error.payload && error.payload.title && error.payload.text) {
+          // Handle registration failure with specific error message
+          setDialogContent({
+            title: error.payload.title,
+            message: error.payload.text,
+          });
+        }
         setDialogOpen(true);
       });
-  };
+  };  
 
   const handleChange = (value: any) => {
     setSelectedBloodBank(value);
@@ -232,9 +238,9 @@ function Map() {
           olakšati proces darivanja krvi!
         </Typography>
       </Container>
-      <Container style={{ display: "flex", flexDirection:"row"  }}>
-        <Box id="leaflet-map" style={{ height: "400px", width: "100%" }}></Box>
-        <Box border={1} borderColor="black" p={2} padding={5} margin={5} >
+      <Container style={{ display: "flex", flexDirection:"row", maxHeight: "500px", overflowY: "auto"}}>
+        <Box id="leaflet-map" style={{ height: "400px", width: "65%" }}></Box>
+        <Box border={1} borderColor="black" p={2} padding={5} margin={5} style={{ overflowY: "auto", width: "35%" }} >
           {" "}
           <Typography variant="h6" gutterBottom color="text.secondary">
             Kalendar nadolazećih akcija darivanja krvi:
