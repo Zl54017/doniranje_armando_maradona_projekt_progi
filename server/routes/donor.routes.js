@@ -325,7 +325,7 @@ router.post("/actionRegistration/:token", async (req, res, next) => {
     if (existingActionRegistration) {
       return res.json({
         title: "Neuspješna prijava",
-        text: "Već ste prijavljeni na ovu akciju",
+        text: "Već ste prijavljeni na ovu akciju.",
       });
     }
 
@@ -335,7 +335,7 @@ router.post("/actionRegistration/:token", async (req, res, next) => {
     });
     res.json({
       title: "Uspješna prijava",
-      text: "Uspjepšno ste se prijavili na akciju.",
+      text: "Uspješno ste se prijavili na akciju.",
       data: newActionRegistration.toJSON(),
     });
   } catch (error) {
