@@ -5,10 +5,10 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { Container } from "@mui/material";
+import { Container, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../redux/store";
-import { attemptChange, attemptDelete, attemptRegister, fetchData, fetchUser,  retrieveAwards, retrievePrevActions } from "../../redux/slices/authSlice";
+import { attemptChange, attemptDelete, attemptRegister, fetchData, fetchUser, retrieveAwards, retrievePrevActions } from "../../redux/slices/authSlice";
 import RegisterInput from "../../types/inputs/user/RegisterInput";
 import { useForm } from "react-hook-form";
 
@@ -33,6 +33,13 @@ function PersonalInfo() {
     gender: "",
     age: 0,
   });
+
+  const [openChangePasswordDialog, setOpenChangePasswordDialog] = useState(false);
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(true);
+
 
   const [prevActions, setPrevActions] = useState<any[]>([]);
   useEffect(() => {
@@ -76,9 +83,9 @@ function PersonalInfo() {
     }
   }, [user]);
 
-  
-  
-  
+
+
+
 
   const handleChange = (key: string, value: any) => {
     setUserInfo({ ...userInfo, [key]: value });
@@ -92,11 +99,27 @@ function PersonalInfo() {
     dispatch(attemptDelete());
   };
 
-  const handleChangePassword = () => {
-    console.log("Brisi pass");
-  }
+  const handleOpenChangePasswordDialog = () => {
+    setOpenChangePasswordDialog(true);
+  };
 
-  
+  const handleCloseChangePasswordDialog = () => {
+    setOpenChangePasswordDialog(false);
+    // Clear password fields when the dialog is closed
+    setOldPassword("");
+    setNewPassword("");
+    setConfirmNewPassword("");
+  };
+
+  const handleChangePassword = () => {
+    // Add your logic to handle the password change
+    console.log("Old Password:", oldPassword);
+    console.log("New Password:", newPassword);
+    console.log("Confirm New Password:", confirmNewPassword);
+
+    // Close the dialog after handling the password change
+    handleCloseChangePasswordDialog();
+  };
 
   return (
     <Container>
@@ -225,12 +248,42 @@ function PersonalInfo() {
               </Button>
             </Box>
             <Box style={{ display: "flex", gap: "10px" }}>
-              <Button onClick={handleChangePassword} variant="contained" style={{ backgroundColor: "#b2102f", color: "white" }}>
+              <Button onClick={handleOpenChangePasswordDialog} variant="contained" style={{ backgroundColor: "#b2102f", color: "white" }}>
                 Promjeni lozinku
               </Button>
             </Box>
-          </Box> 
+          </Box>
         </Box>
+        <Dialog open={openChangePasswordDialog} onClose={handleCloseChangePasswordDialog}>
+        <DialogTitle>Change Password</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Old Password"
+            type={showPassword ? "text" : "password"}
+            fullWidth
+            value={oldPassword}
+            onChange={(e) => setOldPassword(e.target.value)}
+          />
+          <TextField
+            label="New Password"
+            type={showPassword ? "text" : "password"}
+            fullWidth
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+          <TextField
+            label="Confirm New Password"
+            type={showPassword ? "text" : "password"}
+            fullWidth
+            value={confirmNewPassword}
+            onChange={(e) => setConfirmNewPassword(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseChangePasswordDialog}>Cancel</Button>
+          <Button onClick={handleChangePassword}>Change Password</Button>
+        </DialogActions>
+      </Dialog>
         <Box style={{ display: "flex", flexDirection: "column", maxWidth: "1000px" }} >
           <Box ml={30} style={{ display: "flex", flexDirection: "column" }}>
             <Typography variant="h4" mb={2} color="#b2102f">
@@ -240,7 +293,7 @@ function PersonalInfo() {
               <Box style={{ maxHeight: "200px", overflowY: "auto" }}>
                 {prevActions.map((donation: any, index: number) => (
                   <Box key={index} marginBottom={2} padding={2} border="1px solid #b2102f" borderRadius={5}>
-                   
+
 
                     <Typography variant="body1">
                       Mjesto donacije: {donation.address}
@@ -249,13 +302,13 @@ function PersonalInfo() {
                       Datum donacije: {new Date(donation.date).toLocaleDateString()}
                     </Typography>
                     <BlobProvider
-                    document={donationsPdf({
-                      donorName: user?.name,
-                      donation: donation
-                    })}>
-                    {({ url }) => (
-                    <a href={url || undefined} target='_blank'>
-                      <Button style={{ backgroundColor: "white", color: "#b2102f" }}>Izvezi u PDF</Button>
+                      document={donationsPdf({
+                        donorName: user?.name,
+                        donation: donation
+                      })}>
+                      {({ url }) => (
+                        <a href={url || undefined} target='_blank'>
+                          <Button style={{ backgroundColor: "white", color: "#b2102f" }}>Izvezi u PDF</Button>
                         </a>
                       )}
                     </BlobProvider>
@@ -282,17 +335,17 @@ function PersonalInfo() {
                       Datum dodjele: {new Date(award.createdAt).toLocaleDateString()}
                     </Typography>
                     <BlobProvider
-                    document={certificatePDF({
-                      donorName: user?.name,
-                      award: award
-                    })}>
-                    {({ url }) => (
-                    <a href={url || undefined} target='_blank'>
-                      <Button style={{ backgroundColor: "white", color: "#b2102f" }}>Izvezi u PDF</Button>
+                      document={certificatePDF({
+                        donorName: user?.name,
+                        award: award
+                      })}>
+                      {({ url }) => (
+                        <a href={url || undefined} target='_blank'>
+                          <Button style={{ backgroundColor: "white", color: "#b2102f" }}>Izvezi u PDF</Button>
                         </a>
                       )}
                     </BlobProvider>
-                    
+
                     {/* </Button> */}
                   </Box>
                 ))}
