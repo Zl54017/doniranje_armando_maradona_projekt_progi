@@ -3,62 +3,64 @@ import Container from "@mui/material/Container";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import Typography from "@mui/material/Typography";
-import { Button, Dialog, DialogContent, Grid, Box } from "@mui/material";
+import { Box, Button, Dialog, DialogContent, Grid, TextField } from "@mui/material";
 import { RootState, useAppDispatch } from "../../redux/store";
 import { attemptGetFaq, attemptPostFaq } from "../../redux/slices/authSlice";
 import { useSelector } from "react-redux";
 
+interface Question {
+    id: number;
+    text: string;
+    title: string;
+}
 
 function FaqEdit() {
     const dispatch = useAppDispatch();
+    const [questions, setQuestions] = useState<Question[]>([]);
+    const [selectedQuestionId, setSelectedQuestionId] = useState<number | null>(null);
+    const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [editedTitle, setEditedTitle] = useState("");
+    const [editedText, setEditedText] = useState("");
+    const [isNewFAQ, setIsNewFAQ] = useState(false);
 
-    // const [questions, setQuestions] = useState<Question[]>(initialQuestions);
-    const [questions, setQuestions] = useState<any[]>([]);
-    const [newQuestions, setNewQuestions] = useState<any[]>([]);
-    const { user, role } = useSelector((state: RootState) => state.auth);
-
-    const handleQuestionClick = (index: number) => {
-        const updatedQuestions = [...questions];
-        updatedQuestions[index].isOpen = !updatedQuestions[index].isOpen;
-        setQuestions(updatedQuestions);
+    const handleQuestionClick = (questionId: number) => {
+        setSelectedQuestionId((prev) => (prev === questionId ? null : questionId));
     };
 
-    const handleEditQuestion = (index: number) => {
-        const updatedQuestions = [...questions];
-        updatedQuestions[index].isEditingQuestion = !updatedQuestions[index].isEditingQuestion;
-        setQuestions(updatedQuestions);
+    const handleDeleteClick = (questionId: number) => {
+        // Implement your delete functionality here
+        console.log(`Deleting FAQ with ID ${questionId}`);
     };
 
-    const handleEditAnswer = (index: number) => {
-        const updatedQuestions = [...questions];
-        updatedQuestions[index].isEditingAnswer = !updatedQuestions[index].isEditingAnswer;
-        setQuestions(updatedQuestions);
-    };
-
-
-    const [showForm, setShowForm] = useState(false);
-    const [dialogContent, setDialogContent] = useState('Izbriši');
-
-    const handleToggleDialog = () => {
-        setShowForm(!showForm);
-        if (showForm) {
-            setDialogContent('Izbriši');
-        } else {
-            setDialogContent('Otkaži');
+    const handleEditClick = (questionId: number) => {
+        const selectedQuestion = questions.find((q) => q.id === questionId);
+        if (selectedQuestion) {
+            setEditedTitle(selectedQuestion.title);
+            setEditedText(selectedQuestion.text);
+            setIsNewFAQ(false);
+            setEditDialogOpen(true);
         }
     };
-    const handleCloseDialog = () => {
-        setShowForm(false);
-        setDialogContent('Izbriši');
+
+    const handleNewClick = () => {
+        setEditedTitle("");
+        setEditedText("");
+        setIsNewFAQ(true);
+        setEditDialogOpen(true);
     };
 
-    const handleDeleteItem = (index: number) => {
-        console.log("Index to delete:", index);
-        const updatedQuestions = questions.filter((_, i) => i !== index);
-        setQuestions(updatedQuestions);
-        setShowForm(false);
-    };
+    const handleSaveChanges = () => {
+        if (isNewFAQ) {
+            // Implement your create FAQ functionality here
+            console.log("Creating new FAQ...");
+        } else {
+            // Implement your save changes functionality here
+            console.log("Saving changes...");
+        }
 
+        setEditDialogOpen(false);
+        // Update the state or dispatch an action to update the backend
+    };
 
     useEffect(() => {
         dispatch(attemptGetFaq())
@@ -70,122 +72,81 @@ function FaqEdit() {
             });
     }, [dispatch]);
 
-    useEffect(() => {
-        if (user) {
-            dispatch(attemptPostFaq())
-                .then((response: any) => {
-                    setNewQuestions(response.payload || []);
-                })
-                .catch((error: any) => {
-                    console.error("Error", error);
-                });
-        }
-    }, [dispatch]);
-
     return (
         <Container>
-            <Box mt={5} ml={5} style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                <List>
-                    {questions.map((item, index) => (
-                        <React.Fragment key={index}>
-                            <ListItemButton onClick={() => handleQuestionClick(index)}>
-                                {item.isEditingQuestion ? (
-                                    <input
-                                        type="text"
-                                        value={item.title}
-                                        onChange={(e) => {
-                                            const updatedQuestions = [...questions];
-                                            updatedQuestions[index].question = e.target.value;
-                                            setQuestions(updatedQuestions);
-                                        }}
-                                    />
-                                ) : (
-                                    <Typography variant="h6" color="#b2102f">
-                                        {item.title}
-                                    </Typography>
-                                )}
-                                <Grid item xs={12} sm={6}>
-                                    <Button onClick={() => handleEditQuestion(index)} variant="contained" style={{ backgroundColor: "#b2102f", color: "white", gap: "30px", marginRight: '5px' }}>
-                                        {item.isEditingQuestion ? 'Spremi' : 'Uredi'}
+            <List>
+                {questions.map((question) => (
+                    <React.Fragment key={question.id}>
+                        <ListItemButton onClick={() => handleQuestionClick(question.id)}>
+                            <Typography variant="h6" color="#b2102f">
+                                {question.title}
+                            </Typography>
+                        </ListItemButton>
+                        {selectedQuestionId === question.id && (
+                            <React.Fragment>
+                                <Typography variant="body1">{question.text}</Typography>
+                                <Box display="flex" justifyContent="flex-end">
+                                    <Button
+                                        variant="contained"
+                                        onClick={() => handleDeleteClick(question.id)}
+                                        style={{ marginRight: 8, backgroundColor: "#b2102f", color: "#fff" }}
+                                    >
+                                        Izbriši
                                     </Button>
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <Box style={{ display: 'flex', flexDirection: 'column', marginRight: '5%', flexGrow: 1 }}>
-                                        <Button onClick={handleToggleDialog} variant="contained" style={{ backgroundColor: "#b2102f", color: "white", marginLeft: '5px' }}>
-                                            {showForm ? 'Otkaži' : 'Izbriši'}
-                                        </Button>
-                                        {showForm && (
-                                            <Dialog open={showForm} onClose={handleToggleDialog} fullWidth maxWidth="sm">
-                                                <DialogContent dividers>
-                                                    <Container style={{ maxWidth: '500px', maxHeight: '80vh', overflowY: 'auto', padding: '16px' }}>
-                                                        <Box style={{ display: "flex", flexDirection: "column" }}>
-                                                            <Typography variant="body1" style={{ textAlign: 'center' }}>
-                                                                Jeste li sigurni da želite izbrisati stavku?
-                                                            </Typography>
-                                                            <Grid container spacing={2} justifyContent="center">
-                                                                <Grid item xs={6} sm={6}>
-                                                                    <Button onClick={() => handleDeleteItem(index)} variant="contained" style={{ backgroundColor: "#b2102f", color: "white", width: '200px', marginTop: '15px' }}>
-                                                                        Izbriši
-                                                                    </Button>
-                                                                </Grid>
-                                                                <Grid item xs={6} sm={6}>
-                                                                    <Button onClick={handleCloseDialog} variant="contained" style={{ backgroundColor: "#b2102f", color: "white", width: '200px', marginTop: '15px' }}>
-                                                                        Otkaži
-                                                                    </Button>
-                                                                </Grid>
-                                                            </Grid>
-                                                        </Box>
-                                                    </Container>
-                                                </DialogContent>
-                                            </Dialog>
-                                        )}
-
-                                    </Box>
-                                </Grid>
-
-                            </ListItemButton>
-
-                            {item.isOpen && (
-                                <ListItemButton>
-                                    {item.isEditingAnswer ? (
-                                        <input
-                                            type="text"
-                                            value={item.text}
-                                            onChange={(e) => {
-                                                const updatedQuestions = [...questions];
-                                                updatedQuestions[index].answer = e.target.value;
-                                                setQuestions(updatedQuestions);
-                                            }}
-                                        />
-                                    ) : (
-                                        <p>{item.text}</p>
-                                    )}
-                                    <Button onClick={() => handleEditAnswer(index)} variant="contained" style={{ backgroundColor: "#b2102f", color: "white", gap: "30px" }}>
-                                        {item.isEditingAnswer ? 'Spremi' : 'Uredi'}
+                                    <Button
+                                        variant="contained"
+                                        onClick={() => handleEditClick(question.id)}
+                                        style={{ backgroundColor: "#b2102f", color: "#fff" }}
+                                    >
+                                        Uredi
                                     </Button>
-                                </ListItemButton>
-                            )}
-                        </React.Fragment>
-                    ))}
-                </List>
-            </Box>
+                                </Box>
+                            </React.Fragment>
+                        )}
+                    </React.Fragment>
+                ))}
+            </List>
+            <Button
+                variant="contained"
+                onClick={() => handleNewClick()}
+                style={{ backgroundColor: "#b2102f", color: "#fff" }}
+            >
+                Dodaj FAQ
+            </Button>
+
+            {/* Edit Dialog */}
+            <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
+                <DialogContent>
+                    <Typography variant="h6" color="#b2102f">
+                        {isNewFAQ ? "Stvori FAQ" : "Uredi FAQ"}
+                    </Typography>
+                    <TextField
+                        label="Naslov"
+                        fullWidth
+                        value={editedTitle}
+                        onChange={(e) => setEditedTitle(e.target.value)}
+                        margin="normal"
+                    />
+                    <TextField
+                        label="Odgovor"
+                        fullWidth
+                        multiline
+                        rows={4}
+                        value={editedText}
+                        onChange={(e) => setEditedText(e.target.value)}
+                        margin="normal"
+                    />
+                    <Button
+                        variant="contained"
+                        onClick={handleSaveChanges}
+                        style={{ marginTop: 16, backgroundColor: "#b2102f", color: "#fff" }}
+                    >
+                        {isNewFAQ ? "Stvori FAQ" : "Spremi promjene"}
+                    </Button>
+                </DialogContent>
+            </Dialog>
         </Container>
     );
-
-
-    // );
 }
 
-export default function FaqEmployee(props: any) {
-    return (
-        <FaqEdit />
-    );
-}
-
-function setShowForm(arg0: boolean) {
-    throw new Error("Function not implemented.");
-}
-function setDialogContent(arg0: string) {
-    throw new Error("Function not implemented.");
-}
-
+export default FaqEdit;
