@@ -530,6 +530,137 @@ router.get("/employeesByBloodBank/:bloodBankName", async (req, res, next) => {
   }
 });
 
+// Funkcija za brisanje donora po Id-u
+router.delete("/deleteDonor/:donorId", async (req, res, next) => {
+  try {
+    const donorId = req.params.donorId;
+
+    const donor = await db.Donor.findByPk(donorId);
+
+    if (!donor) {
+      return res.status(404).json({ error: "Donor not found" });
+    }
+
+    donor.email = `${donor.email} (archived)`;
+    await donor.save();
+
+    res.json({ message: "Donor archived successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to delete donor" });
+  }
+});
+
+// Funkcija za brisanje zaposlenika po Id-u
+router.delete("/deleteEmployee/:employeeId", async (req, res, next) => {
+  try {
+    const employeeId = req.params.employeeId;
+
+    const employee = await db.Employee.findByPk(employeeId);
+
+    if (!employee) {
+      return res.status(404).json({ error: "Employee not found" });
+    }
+
+    employee.email = `${employee.email} (archived)`;
+    await employee.save();
+
+    res.json({ message: "Employee archived successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to delete employee" });
+  }
+});
+
+// Funkcija za dodavanje novog zavoda
+router.post("/addBloodBank", async (req, res, next) => {
+  try {
+    const { name, email, password, address, numberOfDonors } = req.body;
+
+    const existingBloodBank = await db.BloodBank.findOne({
+      where: { email: email },
+    });
+
+    if (existingBloodBank) {
+      return res.status(400).json({ error: "Blood bank with this email already exists" });
+    }
+
+    const newBloodBank = await db.BloodBank.create({
+      name: name,
+      email: email,
+      password: password,
+      address: address,
+      numberOfDonors: numberOfDonors || 0,
+    });
+
+    res.json(newBloodBank.toJSON());
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to add Blood Bank" });
+  }
+});
+
+// Funkcija koja vraca popis svih zavoda (imena zavoda)
+router.get("/allBloodBankNames", async (req, res, next) => {
+  try {
+    const bloodbankNames = await db.BloodBank.findAll({
+      attributes: ["name"],
+    });
+
+    const names = bloodbankNames.map((bloodbank) => bloodbank.name);
+
+    res.json(names);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to retrieve Blood Bank names" });
+  }
+});
+
+// Funkcija za brisanje faq-a po Idu
+router.delete("/deleteFAQ/:faqId", async (req, res, next) => {
+  try {
+    const { faqId } = req.params;
+
+    const deletedFAQ = await db.FAQ.destroy({
+      where: {
+        id: faqId,
+      },
+    });
+
+    if (deletedFAQ === 0) {
+      return res.status(404).json({ error: "FAQ not found" });
+    }
+
+    res.json({ message: "FAQ deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to delete FAQ" });
+  }
+});
+
+// Funkcija za brisanje newsa po Idu
+router.delete("/deleteNews/:newsId", async (req, res, next) => {
+  try {
+    const { newsId } = req.params;
+
+    const deletedNews = await db.News.destroy({
+      where: {
+        id: newsId,
+      },
+    });
+
+    if (deletedNews === 0) {
+      return res.status(404).json({ error: "News not found" });
+    }
+
+    res.json({ message: "News deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to delete News" });
+  }
+});
+
+
 /**
  * Handle the POST request to add a donation.
  */
