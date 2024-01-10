@@ -524,10 +524,11 @@ router.get("/employeesByBloodBank/:bloodBankName", async (req, res, next) => {
     res.json(employees);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Failed to retrieve employees by blood bank" });
+    res
+      .status(500)
+      .json({ error: "Failed to retrieve employees by blood bank" });
   }
 });
-
 
 /**
  * Handle the POST request to add a donation.
@@ -665,6 +666,10 @@ router.post("/addNews/:token", async (req, res, next) => {
 
     const { title, text, picture } = req.body;
 
+    if (!title || !text) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
     const newNews = await db.News.create({
       title: title,
       text: text,
@@ -701,6 +706,10 @@ router.post("/addFAQ/:token", async (req, res, next) => {
     }
 
     const { question, answer } = req.body;
+
+    if (!question || !answer) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
 
     const newFAQ = await db.FAQ.create({
       title: question,
