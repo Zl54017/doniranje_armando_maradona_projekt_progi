@@ -74,9 +74,8 @@ function Map() {
   
       return nearestLocation;
     }
-  
     function getDistance(point1: { lat: number; lng: number }, point2: { lat: number; lng: number }): number {
-      const R = 6371; 
+      const R = 6371;
       const dLat = (point2.lat - point1.lat) * (Math.PI / 180);
       const dLon = (point2.lng - point1.lng) * (Math.PI / 180);
       const a =
@@ -96,35 +95,21 @@ function Map() {
       return;
     }
 
-    if (!mapRef.current) {
-      var mapInstance = L.map(container).setView([0, 0], 2);
+    let mapInstance: L.Map | undefined;
 
+    if (!mapRef.current) {
+      mapInstance = L.map(container).setView([0, 0], 2);
+  
       L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,
-        attribution:
-          '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       }).addTo(mapInstance);
-
+  
       mapRef.current = mapInstance;
+    } else {
+      mapInstance = mapRef.current;
     }
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        if (mapRef.current) {
-          mapRef.current.setView([latitude, longitude], 15);
-
-          L.circleMarker([latitude, longitude]).addTo(mapInstance);
-          let nearestFixedLocation = findNearestFixedLocation({ lat: latitude, lng: longitude });
-
-        // Adjust the map view to include both the current and nearest fixed locations
-        let bounds = L.latLngBounds([latitude, longitude], [nearestFixedLocation.lat, nearestFixedLocation.lng]);
-        mapRef.current.fitBounds(bounds);
-        }
-      },
-      (error) => {
-        console.error("Error getting geolocation:", error);
-      }
-    );
+  
     
     const fixedLocations = [
       { lat: 45.558042202768455, lng: 18.71365045228026, name: 'KBC Osijek' }, //KBC Osijek
@@ -136,7 +121,7 @@ function Map() {
       { lat: 45.81617537849029, lng: 15.99113679462288 ,name: 'Hrvatski zavod za transfuzijsku medicinu Zagreb'}, //Hrvatski zavod za transfuzijsku medicinu Zagreb
       //
      ];
-     const fixedLocationsLayer = L.layerGroup(); // Create a layer group for fixed locations
+     const fixedLocationsLayer = L.layerGroup(); 
     
      fixedLocations.forEach((fixedLocation) => {
       const circle = L.circle([fixedLocation.lat, fixedLocation.lng], {
@@ -146,15 +131,35 @@ function Map() {
         radius: 100,
       });
     
-      // Add a popup to each circle
       circle.bindPopup(fixedLocation.name);
     
-      // Add the circle to the layer group
       circle.addTo(fixedLocationsLayer);
     });
 
-      fixedLocationsLayer.addTo(mapRef.current);
-      
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        if (mapRef.current) {
+          mapRef.current.setView([latitude, longitude], 15);
+  
+          L.circleMarker([latitude, longitude]).addTo(mapRef.current);
+          let nearestFixedLocation = findNearestFixedLocation({ lat: latitude, lng: longitude });
+  
+          let bounds = L.latLngBounds([latitude, longitude], [
+            nearestFixedLocation.lat,
+            nearestFixedLocation.lng,
+          ]);
+  
+          mapRef.current.fitBounds(bounds);
+        }
+      },
+      (error) => {
+        console.error("Error getting geolocation:", error);
+      }
+    );
+  
+    fixedLocationsLayer.addTo(mapInstance);
     return () => {
       if (mapRef.current) {
         mapRef.current.remove();
