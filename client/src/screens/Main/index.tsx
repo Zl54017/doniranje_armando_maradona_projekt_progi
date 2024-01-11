@@ -9,6 +9,9 @@ import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import GlobalStyles from "@mui/material/GlobalStyles";
 import Container from "@mui/material/Container";
+import Faq from "../Donor/faq";
+import News from "../Donor/news";
+import Default from "./default";
 
 function Copyright(props: any) {
   return (
@@ -28,10 +31,26 @@ function Copyright(props: any) {
   );
 }
 
+
+function ContentBox({ activeTab }: { activeTab: string }) {
+  return (
+    <div>
+      {activeTab === "faq" ? (
+        <Faq />
+      )  : activeTab==="news" ? (
+        <News />
+      ): (
+        <Default />
+      )}
+    </div>
+  );
+}
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export default function Main() {
+  const [activeTab, setActiveTab] = React.useState("default");
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <GlobalStyles
@@ -51,6 +70,9 @@ export default function Main() {
             color="#b2102f"
             noWrap
             sx={{ flexGrow: 1 }}
+            onClick={()=>{
+              setActiveTab("default");
+            }}
           >
             Donori krvi
           </Typography>
@@ -60,6 +82,9 @@ export default function Main() {
             color="text.primary"
             href="#"
             sx={{ my: 1, mx: 1.5 }}
+            onClick={()=>{
+              setActiveTab("faq");
+            }}
           >
             FAQ
           </Link>
@@ -68,6 +93,9 @@ export default function Main() {
             color="text.primary"
             href="#"
             sx={{ my: 1, mx: 1.5 }}
+            onClick={() => {
+              setActiveTab("news");
+            }}
           >
             Novosti
           </Link>
@@ -81,26 +109,9 @@ export default function Main() {
           </Button>
         </Toolbar>
       </AppBar>
-      {/* Hero unit */}
-      <Container
-        disableGutters
-        maxWidth="sm"
-        component="main"
-        sx={{ pt: 8, pb: 6 }}
-      >
-        <Typography
-          variant="h5"
-          align="center"
-          color="text.secondary"
-          component="p"
-        >
-          Aplikacija koja će Vam dati sve informacije potrebne za dobrovoljno
-          darivanje krvi.
-        </Typography>
-      </Container>
-      {/* End hero unit */}
+      <ContentBox activeTab={activeTab} />
 
-      {/* Footer */}
+      
       <Container
         maxWidth="md"
         component="footer"
