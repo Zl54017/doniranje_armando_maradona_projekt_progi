@@ -42,4 +42,6 @@ export default {
   getNews: () => axios.get(`${auth.base}/bloodbank/news`),
   postNews: (jwt: string, newNews: any) => axios.post(`${auth.base}/bloodbank/addNews/${jwt}`, newNews),
   getBloodTypeInv: (bloodType: string, body: any) => axios.get(`${auth.base}/bloodbank/inventory/${bloodType}`, body),
+  getAllDonors: (jwt: string)=> axios.get(`${auth.base}/bloodbank/allDonors/${jwt}`),
+  getAllInventory: (jwt: string)=> axios.get(`${auth.base}/bloodbank/allInventory/${jwt}`)
 };

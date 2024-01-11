@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { Box, Container, SelectChangeEvent } from "@mui/material";
 import { RootState, useAppDispatch } from "../../redux/store";
-import { attemptGetAllBloodBanks, attemptGetDonors } from "../../redux/slices/authSlice";
+import { attemptGetAllBloodBanks, attemptGetAllDonors, attemptGetAllInventory, attemptGetDonors } from "../../redux/slices/authSlice";
 import LoginInput from "../../types/inputs/user/LoginInput";
 import { useSelector } from "react-redux";
 import { PieChart, blueberryTwilightPaletteLight } from "@mui/x-charts";
@@ -18,8 +18,9 @@ export default function Statistics(props: any) {
     const dispatch = useAppDispatch();
     const { user, role } = useSelector((state: RootState) => state.auth);
     const [listOfDonors, setListOfDonors] = useState<any[]>([]);
+    const [listOfAllDonors, setListOfAllDonors]= useState<any[]>([]);
+    const [listOfAllInventory, setListOfAllInventory] = useState<any[]>([]);    
     const [listOfBloodBanks, setListOfBloodBanks] = useState<any[]>([]);
-    const countByBloodbank : number[]= [];
     const [filters, setFilters] = useState<LoginInput>({
         name: '',
         email: '',
@@ -41,6 +42,25 @@ export default function Statistics(props: any) {
                 console.error("Error", error);
             });
     }, [dispatch, filters]);
+    useEffect(() => {
+      dispatch(attemptGetAllDonors())
+          .then((response: any) => {
+              setListOfAllDonors(response.payload || []);
+          })
+          .catch((error: any) => {
+              console.error("Error", error);
+          });
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(attemptGetAllInventory())
+        .then((response: any) => {
+            setListOfAllInventory(response.payload || []);
+        })
+        .catch((error: any) => {
+            console.error("Error", error);
+        });
+}, [dispatch]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -69,6 +89,13 @@ export default function Statistics(props: any) {
         fetchData();
     }, [dispatch, user, role]);
 
+    const countsByBloodbank: { [bloodbank: string]: number } = {};
+
+  listOfAllDonors.forEach((donor) => {
+    const bloodbank = donor.transfusionInstitute || null;
+    countsByBloodbank[bloodbank] = (countsByBloodbank[bloodbank] || 0) + 1;
+});
+
     const instituteNames = [
       "KBC Osijek",
       "KBC Rijeka",
@@ -79,8 +106,17 @@ export default function Statistics(props: any) {
       "Hrvatski zavod za transfuzijsku medicinu Zagreb",
     ];
     
+    const instituteNamesX = [
+      "KBC Osijek",
+      "KBC Rijeka",
+      "KBC Split",
+      "OB Dubrovnik",
+      "OB Varaždin",
+      "OB Zadar",
+      "HZTM Zagreb",
+    ];
 
-  
+    
     const bloodTypeCounts: Record<string, number> = listOfDonors.reduce(
         (acc, donor) => {
             const { bloodType } = donor;
@@ -100,15 +136,21 @@ export default function Statistics(props: any) {
     const gender= ['M', 'F'];
     const yAxisData1 = bloodTypes.map((type) => bloodTypeCounts[type] || 0);
     const value1= gender.map((gender)=>genderCounts[gender] || 0);
-    
+    const yAxisData2 = instituteNames.map((bloodbank) => countsByBloodbank[bloodbank] || 0);
+    //const yAxisData3= instituteNames.map((bloodbank) => listOfAllInventory[bloodbank] || null);
+      
+    //const dataForSpecificBloodBank = listOfAllInventory[user.name] || null;
+
+  
+      console.log(listOfAllInventory);
     return (
-        <Container >
-        <Box display={"flex"} padding={"100px"}>
+        <Container>
           <Box style={{
             padding: '10px',
             marginBottom: '10px',
             color: '#b2102f',
-          }}> <Typography variant="h5"
+            display: 'flex', flexDirection: 'row', justifyContent: 'space-around'
+          }}><Box> <Typography variant="h5"
           align="center"
           color="text.secondary"
           component="p"> 
@@ -132,11 +174,8 @@ export default function Statistics(props: any) {
   colors={blueberryTwilightPaletteLight}
 />
 </Box>
-<Box style={{
-            padding: '10px',
-            marginBottom: '10px',
-            color: '#b2102f',
-          }}> <Typography variant="h5"
+<Box>
+ <Typography variant="h5"
           align="center"
           color="text.secondary"
           component="p"
@@ -154,6 +193,40 @@ export default function Statistics(props: any) {
   ]}
   width={500}
   height={250}
+/>
+</Box>
+</Box>
+<Box style={{
+            padding: '10px',
+            marginBottom: '10px',
+            color: '#b2102f',
+            display: 'flex', flexDirection: 'column', justifyContent: 'space-around'
+          }}>
+          <Box>
+          <Typography variant="h5"
+          align="center"
+          color="text.secondary"
+          component="p"
+          margin ={"10px"}> 
+          Graf broja donora po zavodima
+          </Typography>
+          
+<BarChart 
+  xAxis={[
+    {
+      id: 'barCategories',
+      data : instituteNamesX,
+      scaleType: 'band',
+    },
+  ]}
+  series={[
+    {
+      data: yAxisData2
+    },
+  ]}
+  width={700}
+  height={300}
+  colors={blueberryTwilightPaletteLight}
 />
 </Box>
 </Box>
