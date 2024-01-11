@@ -889,4 +889,52 @@ router.get("/allDonors/:token", async (req, res, next) => {
   }
 });
 
+/**
+ * Handle the GET request to retrieve inventory of blood from all blood banks.
+ */
+router.get("/allInventory/:token", async (req, res, next) => {
+  const decoded = decode.jwtDecode(req.params.token);
+  try {
+    const bloodBanks = await db.BloodBank.findAll({});
+    const bigTable = {};
+    const temp = [];
+
+    for (const bloodBank of bloodBanks) {
+      const results = await db.Donation.findAll({
+        attributes: [
+          [Sequelize.literal('"donor"."bloodType"'), "bloodType"],
+          [Sequelize.literal("0.5 * COUNT(*)"), "donationCount"],
+        ],
+        include: [
+          {
+            model: db.Donor,
+            as: "donor",
+            attributes: [],
+          },
+        ],
+        where: {
+          used: false,
+          warning: "",
+          bloodBankId: bloodBank.id,
+        },
+        group: ["donor.bloodType"],
+      });
+
+      let table = {};
+      results.forEach((result) => {
+        table[result.dataValues.bloodType] = parseFloat(
+          result.dataValues.donationCount
+        );
+      });
+      temp.push(bloodBank.id);
+
+      bigTable[bloodBank.name] = table;
+    }
+    res.json(bigTable);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to retrieve inventory" });
+  }
+});
+
 module.exports = router;

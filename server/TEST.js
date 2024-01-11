@@ -1,6 +1,7 @@
 const axios = require("axios");
 
-const address = "http://localhost:5000/";
+var address = "https://donationsbe.onrender.com/";
+address = "http://localhost:5000/";
 
 async function login(email, password) {
   const url = address + "login";
@@ -166,6 +167,17 @@ async function inventory(token) {
 
   try {
     const response = await axios.post(url);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function allInventory(token) {
+  const url = `${address}bloodbank/allInventory/${token}`;
+
+  try {
+    const response = await axios.get(url);
     console.log(response.data);
   } catch (error) {
     console.error(error);
@@ -395,7 +407,9 @@ async function temp() {
 
   console.log(token);
 
-  //await allDonors(token);
+  await allDonors(token);
+
+  await allInventory(token);
 }
 
 temp();
