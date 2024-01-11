@@ -22,6 +22,8 @@ function PersonalInfo() {
   const ageOptions = Array.from({ length: 48 }, (_, index) => 18 + index);
   const { user, role } = useSelector((state: RootState) => state.auth);
   const { register, handleSubmit } = useForm<RegisterInput>();
+  const [passwordValidationMessage, setPasswordValidationMessage] = useState<string | null>(null);
+
 
   const [userInfo, setUserInfo] = useState({
     firstName: "",
@@ -48,7 +50,6 @@ function PersonalInfo() {
     dispatch(retrievePrevActions())
       .then((response: any) => {
         setPrevActions(response.payload || []);
-        console.log(prevActions);
       })
       .catch((error: any) => {
         console.error("Error retrieving actions:", error);
@@ -61,7 +62,6 @@ function PersonalInfo() {
     dispatch(retrieveAwards())
       .then((response: any) => {
         setAwards(response.payload || []);
-        console.log(awards);
       })
       .catch((error: any) => {
         console.error("Error retrieving actions:", error);
@@ -112,28 +112,48 @@ function PersonalInfo() {
     setConfirmNewPassword("");
   };
 
-  const handleChangePassword = () => {
-    const passwords = {
-      oldPassword: "",
-      newPassword1: "",
-      newPassword2: "",
+  const validatePassword = (password: string) => {
+    // Add your password validation logic here
+    let message = null;
+  
+    if (password.length < 8) {
+      message = "Password must be at least 8 characters long.";
+    } else if (!/\d/.test(password) || !/[a-zA-Z]/.test(password)) {
+      message = "Password must contain both letters and numbers.";
     }
-    passwords.oldPassword = oldPassword;
-    passwords.newPassword1 = newPassword;
-    passwords.newPassword2 = confirmNewPassword;
-    dispatch(attempChangePassword(passwords))
-      .then((response: any) => {
-        const message = response.payload.message;
-        setPasswordChangeMessage(message);
-      })
-      .catch((error: any) => {
-        console.error("Error changing password:", error);
-        const message = error.message;
-        setPasswordChangeMessage(message);
-      });
-
-    handleCloseChangePasswordDialog();
+  
+    // Update the state with the validation message
+    setPasswordValidationMessage(message);
   };
+
+  const handleChangePassword = () => {
+    // Check if the password is valid
+    if (!passwordValidationMessage) {
+      const passwords = {
+        oldPassword: "",
+        newPassword1: "",
+        newPassword2: "",
+      };
+      passwords.oldPassword = oldPassword;
+      passwords.newPassword1 = newPassword;
+      passwords.newPassword2 = confirmNewPassword;
+  
+      dispatch(attempChangePassword(passwords))
+        .then((response: any) => {
+          console.log(response);
+          const message = response.payload.message;
+          setPasswordChangeMessage(message);
+        })
+        .catch((error: any) => {
+          console.error("Error changing password:", error);
+          const message = error.message;
+          setPasswordChangeMessage(message);
+        });
+  
+      handleCloseChangePasswordDialog();
+    }
+  };
+  
 
   return (
     <Container>
@@ -283,7 +303,14 @@ function PersonalInfo() {
               type={showPassword ? "text" : "password"}
               fullWidth
               value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
+              onChange={(e) => {
+                setNewPassword(e.target.value);
+                // Add password validation logic here
+                validatePassword(e.target.value);
+              }}
+              // Add helper text and error state
+              helperText={passwordValidationMessage}
+              error={Boolean(passwordValidationMessage)}
             />
             <TextField
               label="Confirm New Password"
