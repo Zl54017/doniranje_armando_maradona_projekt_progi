@@ -51,15 +51,17 @@ function MyForm() {
         };
         console.log(employee)
         if (employee.bloodBankId == "") {
-            setAddEmployeeMessage("Neuspjeh")
+            setAddEmployeeMessage("Neuspješno dodavanje zaposlenika")
         } else {
             dispatch(attemptAddEmployee(employee))
                 .then((response: any) => {
-                    setAddEmployeeMessage(response.payload.message? "Uspješno dodan zaposlenik" : "Neuspjeh");
+                    console.log(response)
+                    if (response.error && response.error.message.endsWith("400")) {
+                        setAddEmployeeMessage("Email adresa se već koristi");
+                    } else {
+                        setAddEmployeeMessage(response.payload ? "Uspješno dodan zaposlenik" : "Neuspješno dodavanje zaposlenika");
+                    }
                 })
-                .catch((error: any) => {
-                    setAddEmployeeMessage("Neuspjeh")
-                });
         }
     };
 
