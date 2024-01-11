@@ -6,12 +6,20 @@ import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
 import { RootState, useAppDispatch } from '../../redux/store';
 import { useDispatch, useSelector } from "react-redux";
-import { attemptChange, attemptGetActiveActions, attemptGetBloodBank, attemptGetPreviousActions } from '../../redux/slices/authSlice';
+import { attemptChange, attemptGetActiveActions, attemptGetBloodBank, attemptGetBloodBankDetails, attemptGetPreviousActions } from '../../redux/slices/authSlice';
 import { attemptNewAction } from "../../redux/slices/authSlice";
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import dayjs from 'dayjs';
 import { time } from 'console';
-
+interface bloodBank {
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+  adress: string;
+  city: string;
+  numberOfDonors: number;
+}
 function Actions() {
   const dispatch = useAppDispatch();
   const { user, role } = useSelector((state: RootState) => state.auth);
@@ -19,9 +27,7 @@ function Actions() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [bloodBanks, setbloodBanks] = useState<string | "">('');
-  const [selectedBloodBank, setSelectedBloodBank] = useState<string | null>(user?.bloodBankId)
-  const [selectedCity, setSelectedCity] = useState<string | null>(user?.bloodBankId)
+  const [bloodBank, setBloodBank] = useState<any | null>(null);
 
 
 
@@ -44,35 +50,57 @@ function Actions() {
   const handleTimeChange = (time: Date | null) => setSelectedTime(time);
   const [listOfPrevious, setListOfPrevious] = useState<any[]>([]);
   const [listOfActive, setListOfActive] = useState<any[]>([]);
-  if (user) {
-    dispatch(attemptGetBloodBank())
-      .then((response: any) => {
-        // Assuming response.payload is an array of blood banks
-        setbloodBanks(response.payload[user.bloodBankId]);
-      }
-      )
-      .catch((error: any) => {
-        console.error("Error", error);
-      });
-  }
-  const handleNewAction = () => {
-    let dateTime = new Date();
-    if (selectedDate && selectedTime) {
-      // Combine date and time into a single JavaScript Date object
-      dateTime = new Date(
-        selectedDate.getFullYear(),
-        selectedDate.getMonth(),
-        selectedDate.getDate(),
-        selectedTime.getHours(),
-        selectedTime.getMinutes(),
-        selectedTime.getSeconds()
-      );
+  useEffect(() => {
+    if (user) {
+      dispatch(attemptGetBloodBankDetails())
+        .then((response: any) => {
+          // Assuming response.payload is an array of blood banks
+          setBloodBank(response.payload || []);
+        }
+        )
+        .catch((error: any) => {
+          console.error("Error", error);
+        });
     }
+  })
+  const [minNumOfDonorsError, setMinNumOfDonorsError] = useState<string | null>(null);
+  const [errorMessages, setErrorMessages] = useState<string[]>([]);
+  const handleNewAction = () => {
+    const newErrorMessages: string[] = [];
+
+    if (!actionInfo.minNumOfDonors) {
+      newErrorMessages.push('Unesite minimalni broj donora.');
+    }
+
+    if (!selectedDate) {
+      newErrorMessages.push('Odaberite datum akcije.');
+    }
+
+    if (!selectedTime) {
+      newErrorMessages.push('Odaberite vrijeme akcije.');
+    }
+
+    if (newErrorMessages.length > 0) {
+      setErrorMessages(newErrorMessages);
+      return;
+    }
+
+    // Combine date and time into a single JavaScript Date object
+    let dateTime = selectedDate ? new Date(selectedDate) : null;
+
+    if (selectedTime) {
+      const time = selectedTime.toISOString().split("T")[1];
+      dateTime?.setHours(parseInt(time.split(":")[0], 10));
+      dateTime?.setMinutes(parseInt(time.split(":")[1], 10));
+      dateTime?.setSeconds(parseInt(time.split(":")[2], 10));
+    }
+
     let actionInput = {
       bloodBankId: user?.bloodBankId || "",
       date: dateTime || null,
-      minNumOfDonors: 150,
+      minNumOfDonors: user?.minNumOfDonors || 0,
     };
+
     dispatch(attemptNewAction(actionInput))
       .then((response: any) => {
         console.log(response.payload);
@@ -80,7 +108,9 @@ function Actions() {
       .catch((error: any) => {
         console.error("Error", error);
       });
+
     setShowForm(false);
+    setErrorMessages([]);
   };
 
   const [dialogContent, setDialogContent] = useState('Nova akcija');
@@ -123,6 +153,27 @@ function Actions() {
   }, [dispatch]);
 
 
+
+
+  const handleMinNumOfDonorsChange = (event: any) => {
+    const inputValue = event.target.value;
+    if (!/^\d+$/.test(inputValue)) {
+      setMinNumOfDonorsError('Unesite samo brojeve');
+    } else {
+      setMinNumOfDonorsError(null);
+    }
+    setActionInfo((prevInfo) => ({ ...prevInfo, minNumOfDonors: inputValue }));
+  };
+
+  const [expandedAction, setExpandedAction] = useState<number | null>(null);
+  const [expandedCurrentAction, setExpandedCurrentAction] = useState<number | null>(null);
+
+  const handleExpandAction = (actionId: number) => {
+    setExpandedAction((prevId) => (prevId === actionId ? null : actionId));
+  };
+  const handleExpandCurrentAction = (actionId: number) => {
+    setExpandedCurrentAction((prevId) => (prevId === actionId ? null : actionId));
+  };
   return (
     <Container>
       <Box mt={5} ml={5} style={{ display: 'flex', justifyContent: 'flex-start' }}>
@@ -131,15 +182,42 @@ function Actions() {
             Prijašnje akcije
           </Typography>
           {listOfPrevious.length > 0 ? (
-            <Box style={{ maxHeight: "200px", overflowY: "auto" }}>
-              {listOfPrevious.map((actions: any) => (
-                <Box marginBottom={2} padding={2} border="1px solid #b2102f" borderRadius={5}>
+            <Box style={{ maxHeight: "450px", overflowY: "auto" }}>
+              {listOfPrevious.map((action: any) => (
+                <Box key={action.id} marginBottom={2} padding={2} border="1px solid #b2102f" borderRadius={5}>
                   <Typography variant="body1">
-                    Mjesto donacije: {actions.address}
+                    Mjesto donacije: {action.address}
                   </Typography>
                   <Typography variant="body1">
-                    Datum donacije: {new Date(actions.date).toLocaleDateString()}
+                    Datum donacije: {new Date(action.date).toLocaleDateString()}
                   </Typography>
+                  {expandedAction === action.id && (
+                    <>
+                      <Typography variant="body1" style={{ color: 'green' }}>
+                        Dodatna poruka ili informacije o ovoj akciji...
+                      </Typography>
+                      <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+                        <Button
+                          onClick={() => handleExpandAction(action.id)}
+                          variant="contained"
+                          style={{ backgroundColor: "#b2102f", color: "white" }}
+                        >
+                          Sakrij poruku
+                        </Button>
+                      </Box>
+                    </>
+                  )}
+                  {!expandedAction && (
+                    <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+                      <Button
+                        onClick={() => handleExpandAction(action.id)}
+                        variant="contained"
+                        style={{ backgroundColor: "#b2102f", color: "white" }}
+                      >
+                        Prikaži poruku
+                      </Button>
+                    </Box>
+                  )}
                 </Box>
               ))}
             </Box>
@@ -152,15 +230,42 @@ function Actions() {
             Trenutne akcije
           </Typography>
           {listOfActive.length > 0 ? (
-            <Box style={{ maxHeight: "200px", overflowY: "auto" }}>
-              {listOfActive.map((actions: any) => (
-                <Box marginBottom={2} padding={2} border="1px solid #b2102f" borderRadius={5}>
+            <Box style={{ maxHeight: "450px", overflowY: "auto" }}>
+              {listOfActive.map((action: any) => (
+                <Box key={action.id} marginBottom={2} padding={2} border="1px solid #b2102f" borderRadius={5}>
                   <Typography variant="body1">
-                    Mjesto donacije: {actions.address}
+                    Mjesto donacije: {action.address}
                   </Typography>
                   <Typography variant="body1">
-                    Datum donacije: {new Date(actions.date).toLocaleDateString()}
+                    Datum donacije: {new Date(action.date).toLocaleDateString()}
                   </Typography>
+                  {expandedCurrentAction === action.id && (
+                    <>
+                      <Typography variant="body1" style={{ color: 'green' }}>
+                        Dodatna poruka ili informacije o ovoj trenutnoj akciji...
+                      </Typography>
+                      <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+                        <Button
+                          onClick={() => handleExpandCurrentAction(action.id)}
+                          variant="contained"
+                          style={{ backgroundColor: "#b2102f", color: "white" }}
+                        >
+                          Sakrij poruku
+                        </Button>
+                      </Box>
+                    </>
+                  )}
+                  {!expandedCurrentAction && (
+                    <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+                      <Button
+                        onClick={() => handleExpandCurrentAction(action.id)}
+                        variant="contained"
+                        style={{ backgroundColor: "#b2102f", color: "white" }}
+                      >
+                        Prikaži poruku
+                      </Button>
+                    </Box>
+                  )}
                 </Box>
               ))}
             </Box>
@@ -168,6 +273,7 @@ function Actions() {
             <Typography variant="body1">Nema trenutnih akcija.</Typography>
           )}
         </Box>
+
         <Box style={{ display: 'flex', flexDirection: 'column', marginRight: '5%', flexGrow: 1 }}>
           <Button onClick={handleToggleDialog} variant="contained" style={{ backgroundColor: "#b2102f", color: "white", gap: "10px", fontSize: '0.8rem', width: '200px', height: '30px' }}>
             {showForm ? 'Otkaži' : 'Nova akcija'}
@@ -186,20 +292,38 @@ function Actions() {
                           <Grid container spacing={3}>
                             <Grid item xs={12} sm={6}>
                               <label style={{ display: 'block', fontSize: '15px', color: 'grey' }}>Grad</label>
-                              <TextField required id="city" name="city" fullWidth autoComplete="given-name" variant="standard" value={""} />
+                              <TextField required id="city" name="city" fullWidth autoComplete="given-name" variant="standard" value={bloodBank.address.split(',')[2]} />
                             </Grid>
                             <Grid item xs={12} sm={6}>
                               <label style={{ display: 'block', fontSize: '15px', color: 'grey' }}>Adresa zavoda</label>
-                              <TextField required id="adress" name="adress" fullWidth autoComplete="family-name" variant="standard" value={"Ulica Josipa Huttlera 4"} />
+                              <TextField required id="adress" name="adress" fullWidth autoComplete="family-name" variant="standard" value={bloodBank.address.split(',')[0]} />
                             </Grid>
                             <Grid item xs={12}>
                               <label style={{ display: 'block', fontSize: '15px', color: 'grey' }}>Ime zavoda</label>
-                              <TextField required id="transfisionInstitute" name="transfisionInstitute" fullWidth autoComplete="family-name" variant="standard" value={bloodBanks} />
+                              <TextField required id="transfisionInstitute" name="transfisionInstitute" fullWidth autoComplete="family-name" variant="standard" value={bloodBank.name} />
+                            </Grid>
+                            <Grid item xs={12}>
+                              <label style={{ display: 'block', fontSize: '15px', color: 'grey' }}>Minimalni broj donora*</label>
+                              <TextField
+                                required
+                                id="minNumOfDonors"
+                                name="minNumOfDonors"
+                                fullWidth
+                                autoComplete="family-name"
+                                variant="standard"
+                                inputProps={{
+                                  pattern: '[0-9]*',
+                                  title: 'Unesite samo brojeve',
+                                }}
+                                onChange={handleMinNumOfDonorsChange}
+                                error={!!minNumOfDonorsError}
+                                helperText={minNumOfDonorsError}
+                              />
                             </Grid>
                             <Grid item xs={12}>
                               <label htmlFor="datepicker" style={{ display: 'block', fontSize: '15px', color: 'grey' }}>Odaberi datum akcije *</label>
                               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DatePicker />
+                                <DatePicker value={selectedDate} onChange={handleDateChange} />
                               </LocalizationProvider>
                             </Grid>
                             <Grid item xs={12}>
@@ -207,6 +331,8 @@ function Actions() {
                               <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <TimePicker
                                   label="With Time Clock"
+                                  value={selectedTime}
+                                  onChange={handleTimeChange}
                                   viewRenderers={{
                                     hours: renderTimeViewClock,
                                     minutes: renderTimeViewClock,
@@ -214,6 +340,14 @@ function Actions() {
                                   }}
                                 />
                               </LocalizationProvider>
+                            </Grid>
+
+                            {errorMessages.map((message, index) => (
+                              <Typography key={index} color="error" variant="body2">
+                                {message}
+                              </Typography>
+                            ))}
+                            <Grid item xs={12} sm={6}>
                             </Grid>
                             <Grid item xs={12} sm={6}>
                               <Button onClick={handleNewAction} variant="contained" style={{ backgroundColor: "#b2102f", color: "white", gap: "10px" }}>

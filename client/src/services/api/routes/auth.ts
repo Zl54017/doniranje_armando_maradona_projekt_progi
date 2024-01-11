@@ -36,4 +36,5 @@ export default {
   addEmployee: (user: Employee) => axios.post(`${auth.base}/bloodbank/addEmployee`, user),
   changePassword: (jwt: string, passwords: any) => axios.post(`${auth.base}/donor/changePassword/${jwt}`, { oldPassword: passwords.oldPassword, newPassword1: passwords.newPassword1, newPassword2: passwords.newPassword2 }),
   getBloodBank: () => axios.get(`${auth.base}/bloodbank/allBloodBanks`),
+  getBloodBankDetails: (jwt: string) => axios.get(`${auth.base}/employee/employeeBloodBankDetails/${jwt}`),
 };
