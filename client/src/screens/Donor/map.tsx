@@ -240,7 +240,7 @@ function Map() {
       </Container>
       <Container style={{ display: "flex", flexDirection:"row", maxHeight: "500px", overflowY: "auto"}}>
         <Box id="leaflet-map" style={{ height: "400px", width: "65%" }}></Box>
-        <Box border={1} borderColor="black" p={2} padding={5} margin={5} style={{ overflowY: "auto", width: "35%" }} >
+        <Box border={1} borderColor="black" p={2} padding={5} marginLeft={5} style={{ overflowY: "auto", width: "35%", height: "400px" }} >
           {" "}
           <Typography variant="h6" gutterBottom color="text.secondary">
             Kalendar nadolazećih akcija darivanja krvi:
