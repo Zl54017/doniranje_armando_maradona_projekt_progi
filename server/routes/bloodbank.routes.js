@@ -582,7 +582,9 @@ router.post("/addBloodBank", async (req, res, next) => {
     });
 
     if (existingBloodBank) {
-      return res.status(400).json({ error: "Blood bank with this email already exists" });
+      return res
+        .status(400)
+        .json({ error: "Blood bank with this email already exists" });
     }
 
     const newBloodBank = await db.BloodBank.create({
@@ -678,7 +680,6 @@ router.get("/activeDonorsCount/:bloodBankId", async (req, res, next) => {
     res.status(500).json({ error: "Failed to retrieve active donors count" });
   }
 });
-
 
 /**
  * Handle the POST request to add a donation.
@@ -870,6 +871,21 @@ router.post("/addFAQ/:token", async (req, res, next) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Failed to add FAQ" });
+  }
+});
+
+/**
+ * Handle the GET request to retrieve all donors.
+ */
+router.get("/allDonors/:token", async (req, res, next) => {
+  const decoded = decode.jwtDecode(req.params.token);
+  try {
+    const donors = await db.Donor.findAll({});
+
+    res.json(donors);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to retrieve donors" });
   }
 });
 

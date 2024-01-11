@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-const address = "https://donationsbe.onrender.com/";
+const address = "http://localhost:5000/";
 
 async function login(email, password) {
   const url = address + "login";
@@ -238,6 +238,34 @@ async function inventoryOfBloodType(token) {
   }
 }
 
+async function changePassword(token, oldPassword, newPassword1, newPassword2) {
+  const url = `${address}donor/changePassword/${token}`;
+
+  const requestBody = {
+    oldPassword,
+    newPassword1,
+    newPassword2,
+  };
+
+  try {
+    const response = await axios.post(url, requestBody);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function allDonors(token) {
+  const url = `${address}bloodbank/allDonors/${token}`;
+
+  try {
+    const response = await axios.get(url);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 async function loginTest() {
   var token = await login("RenatoMatić@gmail.com", "password");
 
@@ -360,8 +388,14 @@ async function testForFE() {
 
 async function temp() {
   var token = await login("DinoCiani@gmail.com", "password");
-  await bloodBanksInventory(token);
-  await inventoryOfBloodType(token);
+
+  await changePassword(token, "password1", "password", "password");
+
+  var token = await login("KBCOsijek@gmail.com", "password");
+
+  console.log(token);
+
+  //await allDonors(token);
 }
 
 temp();

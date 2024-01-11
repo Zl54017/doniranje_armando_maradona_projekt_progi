@@ -547,13 +547,13 @@ router.post("/changePassword/:token", async (req, res) => {
     });
 
     if (existingDonor && existingDonor.password !== hashedPassword) {
-      return res.status(401).json({
+      return res.json({
         message: "Incorrect password",
       });
     }
 
     if (newPassword1 !== newPassword2) {
-      return res.status(401).json({
+      return res.json({
         message: "Passwords do not match",
       });
     }
