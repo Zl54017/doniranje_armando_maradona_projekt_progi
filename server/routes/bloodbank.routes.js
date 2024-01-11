@@ -681,6 +681,35 @@ router.get("/activeDonorsCount/:bloodBankId", async (req, res, next) => {
   }
 });
 
+// Funkcija koja vraca listu donora koji su sudjelovali u akciji po primljenom Idu akcije
+router.get("/getDonorsForAction/:actionId", async (req, res, next) => {
+  const { actionId } = req.params;
+
+  try {
+    const registrations = await db.ActionRegistration.findAll({
+      where: { actionId: actionId },
+    });
+
+    if (!registrations || registrations.length === 0) {
+      return res.status(404).json({ error: "No donors found for the specified action" });
+    }
+
+    const donorIds = registrations.map((registration) => registration.donorId);
+
+    const donors = await db.Donor.findAll({
+      attributes: ['id', 'name'],
+      where: { id: donorIds },
+    });
+
+    const donorNames = donors.map((donor) => donor.name);
+
+    res.json(donorNames);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to get donors for the specified action" });
+  }
+});
+
 /**
  * Handle the POST request to add a donation.
  */
@@ -936,5 +965,58 @@ router.get("/allInventory/:token", async (req, res, next) => {
     res.status(500).json({ error: "Failed to retrieve inventory" });
   }
 });
+
+// Funkcija za editat faq po Idu
+router.put("/editFAQ/:faqId", async (req, res, next) => {
+  const { faqId } = req.params;
+
+  try {
+    const faqToUpdate = await db.FAQ.findByPk(faqId);
+
+    if (!faqToUpdate) {
+      return res.status(404).json({ error: "FAQ not found" });
+    }
+
+    const { question, answer } = req.body;
+
+    faqToUpdate.title = question;
+    faqToUpdate.text = answer;
+
+    await faqToUpdate.save();
+
+    res.json(faqToUpdate.toJSON());
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to edit FAQ" });
+  }
+});
+
+// Funkcija za editat news po Idu
+router.put("/editNews/:newsId", async (req, res, next) => {
+  const { newsId } = req.params;
+
+  try {
+    const newsToUpdate = await db.News.findByPk(newsId);
+
+    if (!newsToUpdate) {
+      return res.status(404).json({ error: "News not found" });
+    }
+
+    const { title, text, picture } = req.body;
+
+    newsToUpdate.title = title;
+    newsToUpdate.text = text;
+    newsToUpdate.picture = picture;
+
+    await newsToUpdate.save();
+
+    res.json(newsToUpdate.toJSON());
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to edit news" });
+  }
+});
+
+
 
 module.exports = router;
