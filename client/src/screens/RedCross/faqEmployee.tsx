@@ -5,7 +5,6 @@ import ListItemButton from "@mui/material/ListItemButton";
 import Typography from "@mui/material/Typography";
 import { Button, Dialog, DialogContent, Grid, Box } from "@mui/material";
 import { RootState, useAppDispatch } from "../../redux/store";
-import { attemptGetFaq, attemptPostFaq } from "../../redux/slices/authSlice";
 import { useSelector } from "react-redux";
 
 
@@ -93,27 +92,6 @@ function FaqEdit() {
     };
 
 
-    useEffect(() => {
-        dispatch(attemptGetFaq())
-            .then((response: any) => {
-                setQuestions(response.payload || []);
-            })
-            .catch((error: any) => {
-                console.error("Error", error);
-            });
-    }, [dispatch]);
-
-    useEffect(() => {
-        if (user) {
-            dispatch(attemptPostFaq())
-                .then((response: any) => {
-                    setNewQuestions(response.payload || []);
-                })
-                .catch((error: any) => {
-                    console.error("Error", error);
-                });
-        }
-    }, [dispatch]);
 
     return (
         <Container>

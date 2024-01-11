@@ -1,56 +1,68 @@
-import React, { useState } from "react";
-import Container from "@mui/material/Container";
-import List from "@mui/material/List";
-import ListItemButton from "@mui/material/ListItemButton";
-import Typography from "@mui/material/Typography";
+import React, { useEffect, useState } from "react";
+import { Box, Container, Grid, Typography } from "@mui/material";
+import { useSelector } from "react-redux";
+import { attemptGetNews } from "../../redux/slices/authSlice";
+import { useAppDispatch } from "../../redux/store";
 
-// Dummy data za prikaz
-const newsData = [
-  {
-    id: 1,
-    image: "link-do-slike1.jpg",
-    title: "Naslov vijesti 1",
-    text: "Ovo je tekst prve vijesti...",
-  },
-  {
-    id: 2,
-    image: "link-do-slike2.jpg",
-    title: "Naslov vijesti 2",
-    text: "Ovo je tekst druge vijesti...",
-  },
-  // Dodajte više vijesti prema potrebi
+interface NewsItem {
+    title: "",
+    text: "",
+    picture: "/blood.png",
+}
+function News() {
+  const dispatch = useAppDispatch();
+  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
+  useEffect(() => {
+      dispatch(attemptGetNews())
+      .then((response: any) => {
+          setNewsItems(response.payload);
+      })
+      .catch((error: any) =>{
+          console.log(error);
+      });
+  }, [dispatch]);
+
+const bloodGroups = [
+  { group: "A-", percentage: 30 },
+  { group: "B-", percentage: 20 },
+  { group: "AB-", percentage: 15 },
+  { group: "O-", percentage: 35 },
+  { group: "A+", percentage: 30 },
+  { group: "B+", percentage: 20 },
+  { group: "AB+", percentage: 15 },
+  { group: "O+", percentage: 35 },
 ];
 
-function News() {
-  const [selectedQuestion, setSelectedQuestion] = useState<number | null>(null);
+return (
+  <Container>
+    {/* Blood Groups */}
+    <Box marginTop={2} display="flex" justifyContent="space-between">
+      {bloodGroups.map((groupData) => (
+        <Box key={groupData.group} textAlign="center">
+          <img src={`/blood.png`} alt={groupData.group} width={50} height={50} />
+          {/* Zamijenite s pravim atributima ikonice */}
+          <Typography>{`${groupData.group}: ${groupData.percentage}%`}</Typography>
+        </Box>
+      ))}
+    </Box>
 
-  const handleQuestionClick = (index: number) => {
-    // If the same question is clicked again, close it
-    setSelectedQuestion((prev) => (prev === index ? null : index));
-  };
-
-  return (
-    <Container>
-      <List sx={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-        {newsData.map((news) => (
-          <ListItemButton
-            key={news.id}
-            selected={selectedQuestion === news.id}
-            onClick={() => handleQuestionClick(news.id)}
-            sx={{ width: "200px", height: "200px", display: "flex", flexDirection: "column", alignItems: "center" }}
-          >
-            <img src={news.image} alt={`News ${news.id}`} style={{ width: "100%", height: "120px", objectFit: "cover" }} />
-            <Typography variant="h6" color="primary" sx={{ fontWeight: "bold", marginTop: "5px" }}>
-              {news.title}
-            </Typography>
-            <Typography variant="body2" color="textSecondary" sx={{ marginTop: "5px" }}>
-              {news.text}
-            </Typography>
-          </ListItemButton>
-        ))}
-      </List>
-    </Container>
-  );
+    {/* News */}
+    <Grid mt={10} container spacing={2}>
+      {newsItems.map((news, index) => (
+        <Grid item xs={12} md={6} lg={4} key={index}>
+          <Box position="relative" border="2px solid red" borderRadius={4} maxHeight={350} overflow="hidden">
+            <img src={news.picture} alt={news.title} style={{ width: "100%", height: "auto" }} />
+            <Box position="absolute" top={0} left={0} padding={2} width="100%" bgcolor="rgba(255, 0, 0, 0.7)">
+              <Typography variant="h6" color="white" fontWeight="bold">{news.title}</Typography>
+              <Typography variant="body1" color="white">{news.text}</Typography>
+            </Box>
+          </Box>
+        </Grid>
+      ))}
+    </Grid>
+  </Container>
+);
 }
+
 
 export default News;

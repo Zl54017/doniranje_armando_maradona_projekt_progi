@@ -4,7 +4,7 @@ import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import Typography from "@mui/material/Typography";
 import { Box } from "@mui/material";
-import { attemptGetFaq } from "../../redux/slices/authSlice";
+import { attemptGetFAQ } from "../../redux/slices/authSlice";
 import { useAppDispatch } from "../../redux/store";
 
 
@@ -24,7 +24,7 @@ function Faq() {
   };
 
   useEffect(() => {
-    dispatch(attemptGetFaq())
+    dispatch(attemptGetFAQ())
       .then((response: any) => {
         setQuestions(response.payload || []);
       })

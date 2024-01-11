@@ -181,25 +181,6 @@ const attemptGetActiveActions = createAsyncThunk(
   }
 );
 
-const attemptGetFaq = createAsyncThunk(
-  "auth/getFaqStatus",
-  async () => {
-
-    const response = await authService.getFaq();
-    return response.data;
-  }
-);
-
-const attemptPostFaq = createAsyncThunk(
-  "auth/postFaqStatus", async () => {
-    const token = localStorageUtility.getAuthToken();
-    if (token !== null) {
-      const response = await authService.postFaq(token);
-      return response.data;
-    }
-  }
-);
-
 const attemptGetAllBloodBanks = createAsyncThunk(
   "auth/getAllBloodBanksStatus",
   async () => {
@@ -229,6 +210,54 @@ const attemptDeleteEmployeeById = createAsyncThunk(
     const response = await authService.deleteEmployeeById(id);
     return response.data;
   }
+);
+
+const attemptDeleteFAQ = createAsyncThunk(
+  "auth/deleteFAQStatus", async(faqId: string) => {
+    const response = await authService.deleteFAQ(faqId);
+    return response.data;
+  } 
+);
+
+const attemptGetFAQ = createAsyncThunk(
+  "auth/getFAQStatus", async() => {
+    const response = await authService.getFAQ();
+    return response.data;
+  } 
+);
+
+const attemptPostFAQ = createAsyncThunk(
+  "auth/postFAQStatus", async(question: any) => {
+    const token = localStorageUtility.getAuthToken();
+    if(token !== null){
+      const response = await authService.postFAQ(token, question);
+      return response.data;
+    }
+  } 
+);
+
+const attemptDeleteNews = createAsyncThunk(
+  "auth/deleteNewsStatus", async(newsId: string) => {
+    const response = await authService.deleteFAQ(newsId);
+    return response.data;
+  } 
+);
+
+const attemptGetNews = createAsyncThunk(
+  "auth/getNewsStatus", async() => {
+    const response = await authService.getNews();
+    return response.data;
+  } 
+);
+
+const attemptPostNews = createAsyncThunk(
+  "auth/postNewsStatus", async(newNews: any) => {
+    const token = localStorageUtility.getAuthToken();
+    if(token !== null){
+      const response = await authService.postNews(token, newNews);
+      return response.data;
+    }
+  } 
 );
 
 const authSlice = createSlice({
@@ -303,7 +332,7 @@ const authSlice = createSlice({
 
 export const { clearUser } = authSlice.actions;
 
-export { attemptGetBloodBank, attempChangePassword, attemptAddEmployee, attemptDeleteDonorById, attemptDeleteEmployeeById, attemptGetBloodBankActionsForDonor, attemptGetBloodBankEmployees, attemptRegisterForAction, attemptGetFaq, attemptGetDonors, attemptGetAllBloodBanks, attemptPostFaq, retrieveAwards, retrievePrevActions, retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete, attemptNewAction, attemptGetActiveActions, attemptGetPreviousActions };
+export { attemptGetBloodBank, attempChangePassword, attemptAddEmployee, attemptDeleteDonorById, attemptDeleteEmployeeById, attemptGetBloodBankActionsForDonor, attemptGetBloodBankEmployees, attemptRegisterForAction, attemptGetDonors, attemptGetAllBloodBanks, retrieveAwards, retrievePrevActions, retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete, attemptNewAction, attemptGetActiveActions, attemptGetPreviousActions, attemptDeleteFAQ, attemptDeleteNews, attemptGetFAQ, attemptGetNews, attemptPostFAQ, attemptPostNews };
 
 export default authSlice.reducer;
 

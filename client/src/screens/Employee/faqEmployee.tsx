@@ -5,8 +5,8 @@ import ListItemButton from "@mui/material/ListItemButton";
 import Typography from "@mui/material/Typography";
 import { Box, Button, Dialog, DialogContent, Grid, TextField } from "@mui/material";
 import { RootState, useAppDispatch } from "../../redux/store";
-import { attemptGetFaq, attemptPostFaq } from "../../redux/slices/authSlice";
 import { useSelector } from "react-redux";
+import { attemptDeleteFAQ, attemptGetFAQ, attemptPostFAQ } from "../../redux/slices/authSlice";
 
 interface Question {
     id: number;
@@ -27,9 +27,20 @@ function FaqEdit() {
         setSelectedQuestionId((prev) => (prev === questionId ? null : questionId));
     };
 
-    const handleDeleteClick = (questionId: number) => {
-        // Implement your delete functionality here
-        console.log(`Deleting FAQ with ID ${questionId}`);
+    const handleDeleteClick = (questionId: any) => {
+        dispatch(attemptDeleteFAQ(questionId))
+            .then(() => {
+                dispatch(attemptGetFAQ())
+                .then((response: any) => {
+                    setQuestions(response.payload || []);
+                })
+                .catch((error: any) => {
+                    console.error("Error fetching FAQs", error);
+                });
+            })
+            .catch((error) => {
+                console.error("Failed to delete FAQ", error);
+            });
     };
 
     const handleEditClick = (questionId: number) => {
@@ -51,19 +62,32 @@ function FaqEdit() {
 
     const handleSaveChanges = () => {
         if (isNewFAQ) {
-            // Implement your create FAQ functionality here
-            console.log("Creating new FAQ...");
+            const newQuestion = {
+                question: editedTitle,
+                answer: editedText,
+            };
+            dispatch(attemptPostFAQ(newQuestion))
+                .then((response: any) => {
+                    dispatch(attemptGetFAQ())
+                    .then((response: any) => {
+                        setQuestions(response.payload || []);
+                    })
+                    .catch((error: any) => {
+                        console.error("Error fetching FAQs", error);
+                    });
+                })
+                .catch((error) => {
+                    console.error("Failed to create FAQ", error);
+                });
         } else {
-            // Implement your save changes functionality here
             console.log("Saving changes...");
         }
 
         setEditDialogOpen(false);
-        // Update the state or dispatch an action to update the backend
     };
 
     useEffect(() => {
-        dispatch(attemptGetFaq())
+        dispatch(attemptGetFAQ())
             .then((response: any) => {
                 setQuestions(response.payload || []);
             })

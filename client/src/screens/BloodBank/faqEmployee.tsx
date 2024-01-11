@@ -5,7 +5,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import Typography from "@mui/material/Typography";
 import { Button, Dialog, DialogContent, Grid, Box } from "@mui/material";
 import { RootState, useAppDispatch } from "../../redux/store";
-import { attemptGetFaq, attemptPostFaq } from "../../redux/slices/authSlice";
+import { attemptGetFAQ, attemptPostFAQ } from "../../redux/slices/authSlice";
 import { useSelector } from "react-redux";
 
 
@@ -94,7 +94,7 @@ function FaqEdit() {
 
 
     useEffect(() => {
-        dispatch(attemptGetFaq())
+        dispatch(attemptGetFAQ())
             .then((response: any) => {
                 setQuestions(response.payload || []);
             })
@@ -105,7 +105,7 @@ function FaqEdit() {
 
     useEffect(() => {
         if (user) {
-            dispatch(attemptPostFaq())
+            dispatch(attemptPostFAQ(user))
                 .then((response: any) => {
                     setNewQuestions(response.payload || []);
                 })
