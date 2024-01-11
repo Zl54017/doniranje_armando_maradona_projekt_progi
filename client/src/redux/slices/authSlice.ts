@@ -8,6 +8,7 @@ import { create } from "domain";
 import RegisterInput from "../../types/inputs/user/RegisterInput";
 import { ListAction } from "@mui/base/useList";
 import bloodBankInfo from "../../types/inputs/user/bloodBankInfo";
+import Employee from "../../types/inputs/bloodbank/Employee";
 
 interface AuthState {
   user: LoginInput | undefined;
@@ -33,6 +34,14 @@ const attemptRegister = createAsyncThunk(
   "auth/registerStatus",
   async (user: RegisterInput) => {
     const response = await authService.register(user);
+    return response.data;
+  }
+);
+
+const attemptAddEmployee = createAsyncThunk(
+  "auth/addEmployeeStatus",
+  async (user: Employee) => {
+    const response = await authService.addEmployee(user);
     return response.data;
   }
 );
@@ -200,6 +209,21 @@ const attemptGetBloodBankEmployees = createAsyncThunk(
   }
 );
 
+const attemptDeleteDonorById = createAsyncThunk(
+  "auth/deleteDonorByIdStatus",
+  async (id: string) => {
+    const response = await authService.deleteDonorById(id);
+    return response.data;
+  }
+);
+const attemptDeleteEmployeeById = createAsyncThunk(
+  "auth/deleteEmployeeByIdStatus",
+  async (id: string) => {
+    const response = await authService.deleteEmployeeById(id);
+    return response.data;
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -272,7 +296,7 @@ const authSlice = createSlice({
 
 export const { clearUser } = authSlice.actions;
 
-export { attempChangePassword, attemptGetBloodBankActionsForDonor, attemptGetBloodBankEmployees, attemptRegisterForAction, attemptGetFaq, attemptGetDonors, attemptGetAllBloodBanks, attemptPostFaq, retrieveAwards, retrievePrevActions, retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete, attemptNewAction, attemptGetActiveActions, attemptGetPreviousActions };
+export { attempChangePassword, attemptAddEmployee, attemptDeleteDonorById, attemptDeleteEmployeeById, attemptGetBloodBankActionsForDonor, attemptGetBloodBankEmployees, attemptRegisterForAction, attemptGetFaq, attemptGetDonors, attemptGetAllBloodBanks, attemptPostFaq, retrieveAwards, retrievePrevActions, retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete, attemptNewAction, attemptGetActiveActions, attemptGetPreviousActions };
 
 export default authSlice.reducer;
 

@@ -5,6 +5,7 @@ import LoginInput from "../../../types/inputs/user/LoginInput";
 import RegisterInput from "../../../types/inputs/user/RegisterInput";
 import ActionInput from "../../../types/inputs/redcross/ActionInput";
 import bloodBankInfo from "../../../types/inputs/user/bloodBankInfo";
+import Employee from "../../../types/inputs/bloodbank/Employee";
 
 const { auth } = endpoints;
 
@@ -30,5 +31,8 @@ export default {
   registerForAction: (jwt: string, action: any) => axios.post(`${auth.base}/donor/actionRegistration/${jwt}`, {actionId: action.id}),
   getBloodBankActionsForDonor: (bloodBankName: string) => axios.get(`${auth.base}/donor/allActions/${bloodBankName}`),
   getBloodBankEmployees: (jwt: string) => axios.get(`${auth.base}/bloodbank/employeesByBloodBank/${jwt}`),
+  deleteDonorById: (jwt: string) => axios.delete(`${auth.base}/bloodbank/deleteDonor/${jwt}`),
+  deleteEmployeeById: (jwt: string) => axios.delete(`${auth.base}/bloodbank/deleteEmployee/${jwt}`),
+  addEmployee: (user: Employee) => axios.post(`${auth.base}/bloodbank/addEmployee`, user),
   changePassword: (jwt: string, passwords: any) => axios.post(`${auth.base}/donor/changePassword/${jwt}`, {oldPassword: passwords.oldPassword, newPassword1: passwords.newPassword1, newPassword2: passwords.newPassword2}),
 };

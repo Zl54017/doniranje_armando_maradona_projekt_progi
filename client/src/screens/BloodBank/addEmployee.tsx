@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { TextField, Button, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, Grid, Box, Dialog, DialogContent, Container, Typography } from '@mui/material';
 import { RootState, useAppDispatch } from "../../redux/store";
-import { attemptGetAllBloodBanks, attemptGetBloodBankEmployees } from "../../redux/slices/authSlice";
+import { attemptAddEmployee, attemptDeleteEmployeeById, attemptGetAllBloodBanks, attemptGetBloodBankEmployees } from "../../redux/slices/authSlice";
 import { useSelector } from 'react-redux';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import Employee from "../../types/inputs/bloodbank/Employee";
+
 
 
 function MyForm() {
@@ -16,13 +18,16 @@ function MyForm() {
         email: '',
         password: '',
         bloodBank: '',
-        role: '',
-    });
+    })
     const [listOfBloodBanks, setListOfBloodBanks] = useState<any[]>([]);
     const [lockBloodBankChange, setLockBloodBankChange] = useState(false);
     const [showForm, setShowForm] = useState(false);
     const [listOfEmployees, setListOfEmployees] = useState<any[]>([]);
     const [expandedPerson, setExpandedPerson] = useState<number | null>(null);
+    const [deleteMessage, setDeleteMessage] = useState('');
+    const [addEmployeeMessage, setAddEmployeeMessage] = useState('');
+
+
 
     const handleExpandClick = (personId: number) => {
         setExpandedPerson((prevId) => (prevId === personId ? null : personId));
@@ -38,7 +43,24 @@ function MyForm() {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        console.log('Form submitted:', formData);
+        const employee: Employee = {
+            name: formData["firstName"].trim() + " " + formData["lastName"].trim(),
+            email: formData["email"].trim(),
+            password: formData["password"],
+            bloodBankId: Object.entries(listOfBloodBanks).find(([key, value]) => value === formData["bloodBank"])?.[0] || "",
+        };
+        console.log(employee)
+        if (employee.bloodBankId == "") {
+            setAddEmployeeMessage("Neuspjeh")
+        } else {
+            dispatch(attemptAddEmployee(employee))
+                .then((response: any) => {
+                    setAddEmployeeMessage(response.payload.message? "Uspješno dodan zaposlenik" : "Neuspjeh");
+                })
+                .catch((error: any) => {
+                    setAddEmployeeMessage("Neuspjeh")
+                });
+        }
     };
 
     const handleToggleDialog = () => {
@@ -46,32 +68,41 @@ function MyForm() {
     };
     const handleSelectsChange = (event: SelectChangeEvent<string>) => {
         const { name, value } = event.target;
-        dispatch(attemptGetBloodBankEmployees(value))
+        setFormData({ ...formData, [event.target.name]: value });
+    };
+    useEffect(() => {
+        dispatch(attemptGetBloodBankEmployees(formData["bloodBank"]))
             .then((response: any) => {
                 setListOfEmployees(response.payload || []);
             })
             .catch((error: any) => {
                 console.error("Error", error);
             });
-    };
+    }, [dispatch, formData["bloodBank"]]);
 
     useEffect(() => {
         if (user) {
-            if (role === 'bloodBank' && user.id != 8) {
-                setFormData({ ...formData, ["bloodBank"]: user.id.toString() });
+            if (user.id != 8) {
+                setFormData({ ...formData, ["bloodBank"]: user.name });
+                dispatch(attemptGetBloodBankEmployees(user.name))
+                    .then((response: any) => {
+                        setListOfEmployees(response.payload || []);
+                    })
+                    .catch((error: any) => {
+                        console.error("Error", error);
+                    });
                 setLockBloodBankChange(true)
+            } else {
+                setFormData({ ...formData, ["bloodBank"]: "KBC Osijek" });
+                dispatch(attemptGetBloodBankEmployees("KBC Osijek"))
+                    .then((response: any) => {
+                        setListOfEmployees(response.payload || []);
+                    })
+                    .catch((error: any) => {
+                        console.error("Error", error);
+                    });
             }
-            // if (role === 'employee') {
-            //     setFormData({ ...formData, ["bloodBank"]: user.bloodBankId });
-            //     setLockBloodBankChange(true)
-            // }
-            dispatch(attemptGetBloodBankEmployees(user.name))
-                .then((response: any) => {
-                    setListOfEmployees(response.payload || []);
-                })
-                .catch((error: any) => {
-                    console.error("Error", error);
-                });
+
         }
         dispatch(attemptGetAllBloodBanks())
             .then((response: any) => {
@@ -82,8 +113,20 @@ function MyForm() {
             });
     }, [dispatch, user, role]);
 
-    function handleDeleteEmployee(event: any): void {
-        console.log('Function not implemented.');
+    function handleDeleteEmployee(id: string): void {
+        dispatch(attemptDeleteEmployeeById(id)).then((response: any) => {
+            console.log(response)
+            setDeleteMessage(response.payload.message ? "Uspješno arhiviranje zaposlenika" : 'Neuspjelo arhiviranje zaposlenika');
+            setTimeout(() => {
+                setDeleteMessage('');
+            }, 5000);
+        })
+            .catch((error: any) => {
+                setDeleteMessage('Neuspjelo arhiviranje zaposlenika');
+                setTimeout(() => {
+                    setDeleteMessage('');
+                }, 5000);
+            });
     }
 
     return (
@@ -103,42 +146,22 @@ function MyForm() {
                                             Zaposlenik
                                         </Typography>
                                         <form onSubmit={handleSubmit}>
-                                            <Grid container spacing={2}>
-                                                <Grid item xs={6}>
-                                                    <FormControl style={{ width: '100%' }}>
-                                                        <InputLabel id="bloodBank-label">Zavod</InputLabel>
-                                                        <Select
-                                                            labelId="bloodBank-label"
-                                                            id="bloodBank"
-                                                            name="bloodBank"
-                                                            value={formData.bloodBank}
-                                                            onChange={handleSelectChange}
-                                                            disabled={lockBloodBankChange}
-                                                        >
-                                                            {Object.entries(listOfBloodBanks).map(([bloodBankId, bloodBankData]) => (
-                                                                <MenuItem value={bloodBankId}>{bloodBankData}</MenuItem>
-                                                            ))}
-                                                        </Select>
-                                                    </FormControl>
-                                                </Grid>
-                                                <Grid item xs={6}>
-                                                    <FormControl style={{ width: '100%' }}>
-                                                        <InputLabel id="role-label">Uloga</InputLabel>
-                                                        <Select
-                                                            labelId="role-label"
-                                                            id="role"
-                                                            name="role"
-                                                            value={formData.role}
-                                                            onChange={handleSelectChange}
-                                                        >
-                                                            <MenuItem value="employee">Zaposlenik</MenuItem>
-                                                            <MenuItem value="bloodBank">Zavod</MenuItem>
-                                                            {!lockBloodBankChange && (
-                                                                <MenuItem value="redCross" >Crveni Križ</MenuItem>
-                                                            )}
-                                                        </Select>
-                                                    </FormControl>
-                                                </Grid>
+                                            <Grid item xs={6}>
+                                                <FormControl style={{ width: '100%' }}>
+                                                    <InputLabel id="bloodBank-label">Zavod</InputLabel>
+                                                    <Select
+                                                        labelId="bloodBank-label"
+                                                        id="bloodBank"
+                                                        name="bloodBank"
+                                                        value={formData.bloodBank}
+                                                        onChange={handleSelectChange}
+                                                        disabled={lockBloodBankChange}
+                                                    >
+                                                        {Object.entries(listOfBloodBanks).map(([bloodBankId, bloodBankData]) => (
+                                                            <MenuItem value={bloodBankData}>{bloodBankData}</MenuItem>
+                                                        ))}
+                                                    </Select>
+                                                </FormControl>
                                             </Grid>
                                             <Grid container spacing={2}>
                                                 <Grid item xs={6}>
@@ -183,6 +206,7 @@ function MyForm() {
                                             <Button variant="contained" style={{ backgroundColor: "#b2102f", color: "white", gap: "10px", fontSize: '0.8rem', width: '200px', height: '30px' }} type="submit">
                                                 Dodaj zaposlenika
                                             </Button>
+                                            <Box style={{ color: "#b2102f", gap: "10px", fontSize: '1.5rem', height: "30px", padding: "5px" }}>{addEmployeeMessage}</Box>
                                         </form>
                                     </Box>
                                 </Container>
@@ -198,9 +222,9 @@ function MyForm() {
                     <Select
                         labelId="bloodBank"
                         id="bloodBank"
-                        name="transfusionInstitute"
+                        name="bloodBank"
                         onChange={handleSelectsChange}
-                        value={user ? user.name : "KBC Osijek"}
+                        value={formData.bloodBank}
                         disabled={lockBloodBankChange}
                     >
                         {Object.entries(listOfBloodBanks).map(([bloodBankId, bloodBankData]) => (
@@ -220,9 +244,8 @@ function MyForm() {
                                 marginBottom: '10px',
                                 backgroundColor: '#f5e9e9'
                             }}
-                            onClick={() => handleExpandClick(employee.id)}
                         >
-                            <Box style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <Box style={{ display: 'flex', justifyContent: 'space-between' }} onClick={() => handleExpandClick(employee.id)}>
                                 <Box>
                                     {employee.name}
                                 </Box>
@@ -234,9 +257,10 @@ function MyForm() {
                                 <Box>
                                     <h3>{employee.name}</h3>
                                     <p>Email: {employee.email}</p>
-                                    <Button onClick={handleDeleteEmployee} variant="contained" style={{ backgroundColor: "#b2102f", color: "white", gap: "10px", fontSize: '0.8rem', width: '200px', height: '30px' }}>
-                                        Obriši zaposlenika
+                                    <Button onClick={() => handleDeleteEmployee(employee.id)} variant="contained" style={{ backgroundColor: "#b2102f", color: "white", gap: "10px", fontSize: '0.8rem', width: '200px', height: '30px' }}>
+                                        Arhiviraj zapolenika
                                     </Button>
+                                    <Box style={{ color: "#b2102f", gap: "10px", fontSize: '1.5rem', height: "30px", padding: "5px" }}>{deleteMessage}</Box>
                                 </Box>
                             )}
                         </Box>

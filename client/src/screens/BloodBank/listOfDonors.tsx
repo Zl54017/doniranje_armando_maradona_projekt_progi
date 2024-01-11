@@ -2,11 +2,11 @@ import * as React from "react";
 import { useEffect, useState } from 'react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { Select, MenuItem, SelectChangeEvent, Box, Typography, Slider, TextField, Input } from '@mui/material';
+import { Select, MenuItem, SelectChangeEvent, Box, Typography, Slider, TextField, Input, Button } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import { useDispatch, useSelector } from "react-redux";
-import { attemptGetDonors, attemptGetAllBloodBanks } from "../../redux/slices/authSlice";
+import { attemptGetDonors, attemptGetAllBloodBanks, attemptDeleteDonorById } from "../../redux/slices/authSlice";
 import { RootState, useAppDispatch } from "../../redux/store";
 import LoginInput from "../../types/inputs/user/LoginInput";
 import constructWithOptions from "styled-components/dist/constructors/constructWithOptions";
@@ -30,6 +30,7 @@ function PersonList() {
     const [listOfDonors, setListOfDonors] = useState<any[]>([]);
     const [listOfBloodBanks, setListOfBloodBanks] = useState<any[]>([]);
     const [lockBloodBankChange, setLockBloodBankChange] = useState(false);
+    const [deleteMessage, setDeleteMessage] = useState('');
 
     const handleExpandClick = (personId: number) => {
         setExpandedPerson((prevId) => (prevId === personId ? null : personId));
@@ -40,27 +41,13 @@ function PersonList() {
         let updatedFilters: LoginInput = { ...filters };
         updatedFilters[name] = value == "all" ? "" : value;
         setFilters(updatedFilters);
-        dispatch(attemptGetDonors(updatedFilters))
-            .then((response: any) => {
-                setListOfDonors(response.payload || []);
-            })
-            .catch((error: any) => {
-                console.error("Error", error);
-            });
+
     };
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
         let updatedFilters: LoginInput = { ...filters };
         updatedFilters[name] = value == "all" ? "" : value;
         setFilters(updatedFilters);
-
-        dispatch(attemptGetDonors(updatedFilters))
-            .then((response: any) => {
-                setListOfDonors(response.payload || []);
-            })
-            .catch((error: any) => {
-                console.error("Error", error);
-            });
     };
 
     const handleAgeRangeChange = (event: Event, newValue: number | number[]) => {
@@ -69,50 +56,61 @@ function PersonList() {
         updatedFilters["age"] = minAge;
         updatedFilters["numberOfDonations"] = maxAge.toString();
         setFilters(updatedFilters);
-        dispatch(attemptGetDonors(updatedFilters))
+    };
+    function handleDeleteDonor(id: string): void {
+        dispatch(attemptDeleteDonorById(id)).then((response: any) => {
+            console.log(response)
+            setDeleteMessage(response.payload.message ? 'Uspješno arhiviranje donora' : 'Neuspjelo arhiviranje donora');
+            setTimeout(() => {
+                setDeleteMessage('');
+            }, 5000);
+        })
+            .catch((error: any) => {
+                setDeleteMessage('Neuspjelo arhiviranje donora');
+                setTimeout(() => {
+                    setDeleteMessage('');
+                }, 5000);
+            });
+    }
+
+    useEffect(() => {
+        dispatch(attemptGetDonors(filters))
             .then((response: any) => {
                 setListOfDonors(response.payload || []);
             })
             .catch((error: any) => {
                 console.error("Error", error);
             });
-    };
+    }, [dispatch, filters]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 if (user) {
-                    // Fetch Donors
-                    const donorsResponse = await dispatch(attemptGetDonors(filters));
-                    setListOfDonors(donorsResponse.payload || []);
-    
                     // Fetch Blood Banks
                     const bloodBanksResponse = await dispatch(attemptGetAllBloodBanks());
                     setListOfBloodBanks(bloodBanksResponse.payload || []);
-    
-                    // Adjust filters based on user role
-                    if (role !== 'redCross') {
+                    let updatedFilters: LoginInput = { ...filters };
+                    if (user.name != "Crveni Križ") {
                         setLockBloodBankChange(true);
-    
-                        if (role === 'employee') {
-                            setFilters({ ...filters, transfusionInstitute: bloodBanksResponse.payload[user.bloodBankId] });
-                        } else if (role === 'bloodBank') {
-                            setFilters({ ...filters, transfusionInstitute: user.name });
-                        }
-    
-                        // Fetch Donors with updated filters
-                        const updatedDonorsResponse = await dispatch(attemptGetDonors(filters));
-                        setListOfDonors(updatedDonorsResponse.payload || []);
+                        updatedFilters["transfusionInstitute"] = user.name;
+                        setFilters(updatedFilters);
                     }
+                    dispatch(attemptGetDonors(updatedFilters))
+                        .then((response: any) => {
+                            setListOfDonors(response.payload || []);
+                        })
+                        .catch((error: any) => {
+                            console.error(error)
+                        });
                 }
             } catch (error) {
                 console.error("Error", error);
             }
         };
-    
+
         fetchData();
-    }, [dispatch]);
-    
+    }, [dispatch, user, role]);
 
     return (
         <Box padding={'40px'}>
@@ -201,9 +199,11 @@ function PersonList() {
                                 marginBottom: '10px',
                                 backgroundColor: '#f5e9e9'
                             }}
-                            onClick={() => handleExpandClick(donor.id)}
                         >
-                            <Box style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <Box
+                                style={{ display: 'flex', justifyContent: 'space-between' }}
+                                onClick={() => handleExpandClick(donor.id)}
+                            >
                                 <Box>
                                     {donor.name} ({donor.bloodType})
                                 </Box>
@@ -220,6 +220,10 @@ function PersonList() {
                                     <p>Primarni institut: {donor.transfusionInstitute}</p>
                                     <p>Email: {donor.email}</p>
                                     <p>Broj donacija: {donor.numberOfDonations}</p>
+                                    <Button onClick={() => handleDeleteDonor(donor.id)} variant="contained" style={{ backgroundColor: "#b2102f", color: "white", gap: "10px", fontSize: '0.8rem', width: '200px', height: '30px' }}>
+                                        Arhiviraj donora
+                                    </Button>
+                                    <Box style={{color: "#b2102f", gap: "10px", fontSize: '1.5rem', height:"30px", padding:"5px"}}>{deleteMessage}</Box>
                                 </Box>
                             )}
                         </Box>

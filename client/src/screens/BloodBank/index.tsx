@@ -130,7 +130,7 @@ export default function BloodBank() {
                 sx={{ my: 1, mx: 1.5 }}
                 onClick={() => { setActiveTab('addEmployee'); }}
               >
-                Dodaj Zaposlenika
+                Zaposlenici
               </Link>
             )}
             <Link
