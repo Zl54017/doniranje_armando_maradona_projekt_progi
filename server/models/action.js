@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
   }
   Action.init(
     {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+      },
       bloodBankId: DataTypes.INTEGER,
       address: DataTypes.STRING,
       date: DataTypes.DATE,

@@ -1,7 +1,7 @@
 const axios = require("axios");
 
 var address = "https://donationsbe.onrender.com/";
-address = "http://localhost:5000/";
+//address = "http://localhost:5000/";
 
 async function login(email, password) {
   const url = address + "login";
@@ -399,13 +399,7 @@ async function testForFE() {
 }
 
 async function temp() {
-  var token = await login("DinoCiani@gmail.com", "password");
-
-  await changePassword(token, "password1", "password", "password");
-
   var token = await login("KBCOsijek@gmail.com", "password");
-
-  console.log(token);
 
   await allDonors(token);
 
