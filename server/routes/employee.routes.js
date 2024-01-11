@@ -69,4 +69,32 @@ router.post("/register", async (req, res) => {
   }
 });
 
+// Funkcija za dohvacanje podataka o zavodu za prijavljenog zaposlenika
+router.get("/employeeBloodBankDetails/:token", async (req, res, next) => {
+  const decoded = decode.jwtDecode(req.params.token);
+
+  try {
+    const employee = await db.Employee.findOne({
+      where: {
+        id: decoded.id,
+      },
+    });
+
+    if (!employee) {
+      return res.status(404).json({ error: "Employee not found" });
+    }
+
+    const bloodBank = await db.BloodBank.findByPk(employee.bloodBankId);
+
+    if (!bloodBank) {
+      return res.status(404).json({ error: "Blood bank not found" });
+    }
+
+    res.json(bloodBank.toJSON());
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to retrieve blood bank details" });
+  }
+});
+
 module.exports = router;

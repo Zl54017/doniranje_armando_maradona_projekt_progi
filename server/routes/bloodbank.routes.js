@@ -660,6 +660,25 @@ router.delete("/deleteNews/:newsId", async (req, res, next) => {
   }
 });
 
+// Funkcija koja vraca broj donora za zavod (po Id-u zavoda)
+router.get("/activeDonorsCount/:bloodBankId", async (req, res, next) => {
+  try {
+    const { bloodBankId } = req.params;
+
+    const activeDonorsCount = await db.Donor.count({
+      where: {
+        bloodBankId: bloodBankId,
+        email: { [db.Sequelize.Op.notLike]: "%(archived)" },
+      },
+    });
+
+    res.json({ activeDonorsCount });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to retrieve active donors count" });
+  }
+});
+
 
 /**
  * Handle the POST request to add a donation.
