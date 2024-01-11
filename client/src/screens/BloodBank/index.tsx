@@ -22,6 +22,7 @@ import FaqEmployee from "./faqEmployee";
 import ListOfDonors from "./listOfDonors";
 import Statistics from "./statistics";
 import Actions from "./actions";
+import NewsEmployee from "./newsEmployee";
 
 
 
@@ -65,6 +66,8 @@ function ContentBox({ activeTab }: { activeTab: string }) {
         <Statistics />
       ) : activeTab === 'faqEmployee' ? (
         <FaqEmployee />
+      ) : activeTab === 'newsEmployee' ? (
+        <NewsEmployee />
       ) : (
         <AddEmployee />
       )}
@@ -150,6 +153,15 @@ export default function BloodBank() {
               onClick={() => { setActiveTab('faqEmployee'); }}
             >
               Uredi FAQ
+            </Link>
+            <Link
+              variant="button"
+              color="text.primary"
+              href='#'
+              sx={{ my: 1, mx: 1.5 }}
+              onClick={() => { setActiveTab('newsEmployee'); }}
+            >
+              Uredi Novosti
             </Link>
             <Button
               type="submit"

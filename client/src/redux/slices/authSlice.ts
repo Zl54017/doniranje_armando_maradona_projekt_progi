@@ -199,6 +199,17 @@ const attemptGetAllBloodBanks = createAsyncThunk(
   }
 );
 
+const attemptGetBloodTypeInv = createAsyncThunk(
+  "auth/getBloodTypeInvStatus", async(user: any)=> {
+    const body = {
+      email: user.email,
+      password: user.password,
+    }
+    const response = await authService.getBloodTypeInv("A+", body);
+    return response.data;
+  }
+)
+
 const attemptGetBloodBankEmployees = createAsyncThunk(
   "auth/getBloodBankEmployeesStatus",
   async (name: string) => {
@@ -342,7 +353,7 @@ const authSlice = createSlice({
 
 export const { clearUser } = authSlice.actions;
 
-export { attemptGetBloodBankDetails, attemptGetBloodBank, attempChangePassword, attemptAddEmployee, attemptDeleteDonorById, attemptDeleteEmployeeById, attemptGetBloodBankActionsForDonor, attemptGetBloodBankEmployees, attemptRegisterForAction, attemptGetDonors, attemptGetAllBloodBanks, retrieveAwards, retrievePrevActions, retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete, attemptNewAction, attemptGetActiveActions, attemptGetPreviousActions, attemptDeleteFAQ, attemptDeleteNews, attemptGetFAQ, attemptGetNews, attemptPostFAQ, attemptPostNews };
+export { attemptGetBloodTypeInv, attemptGetBloodBankDetails, attemptGetBloodBank, attempChangePassword, attemptAddEmployee, attemptDeleteDonorById, attemptDeleteEmployeeById, attemptGetBloodBankActionsForDonor, attemptGetBloodBankEmployees, attemptRegisterForAction, attemptGetDonors, attemptGetAllBloodBanks, retrieveAwards, retrievePrevActions, retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete, attemptNewAction, attemptGetActiveActions, attemptGetPreviousActions, attemptDeleteFAQ, attemptDeleteNews, attemptGetFAQ, attemptGetNews, attemptPostFAQ, attemptPostNews };
 
 export default authSlice.reducer;
 

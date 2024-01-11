@@ -41,4 +41,5 @@ export default {
   deleteNews: (newsId: string) => axios.delete(`${auth.base}/bloodbank/deleteNews/${newsId}`),
   getNews: () => axios.get(`${auth.base}/bloodbank/news`),
   postNews: (jwt: string, newNews: any) => axios.post(`${auth.base}/bloodbank/addNews/${jwt}`, newNews),
+  getBloodTypeInv: (bloodType: string, body: any) => axios.get(`${auth.base}/bloodbank/inventory/${bloodType}`, body),
 };

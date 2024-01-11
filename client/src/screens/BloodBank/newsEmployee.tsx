@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Box, Container, Grid, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";
 import { useSelector } from "react-redux";
-import { attemptDeleteNews, attemptGetBloodTypeInv, attemptGetNews, attemptPostNews } from "../../redux/slices/authSlice";
-import { RootState, useAppDispatch } from "../../redux/store";
+import { attemptDeleteNews, attemptGetNews, attemptPostNews } from "../../redux/slices/authSlice";
+import { useAppDispatch } from "../../redux/store";
 
 interface NewsItem {
     id: "",
     title: "",
     text: "",
-    picture: "/blood.png",
+    picture: "/red-blood-cells.png",
 }
 
 function NewsEdit() {
     const dispatch = useAppDispatch();
-    const { user, role } = useSelector((state: RootState) => state.auth);
     const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
     const [newNews, setNewNews] = useState({ title: "", text: "", picture: "/blood.png" });
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -71,43 +70,17 @@ function NewsEdit() {
             });
     };
 
-    const [bloodGroups, setBloodGroups] = useState([
-        { group: "A-", percentage: 0 },
-        { group: "B-", percentage: 0 },
-        { group: "AB-", percentage: 0 },
-        { group: "O-", percentage: 0 },
-        { group: "A+", percentage: 0 },
-        { group: "B+", percentage: 0 },
-        { group: "AB+", percentage: 0 },
-        { group: "O+", percentage: 0 },
-    ]);
+    const bloodGroups = [
+        { group: "A-", percentage: 30 },
+        { group: "B-", percentage: 20 },
+        { group: "AB-", percentage: 15 },
+        { group: "O-", percentage: 35 },
+        { group: "A+", percentage: 30 },
+        { group: "B+", percentage: 20 },
+        { group: "AB+", percentage: 15 },
+        { group: "O+", percentage: 35 },
+    ];
 
-    const fetchBloodTypeInventory = async () => {
-        const updatedBloodGroups = [...bloodGroups];
-      
-        for (const bloodGroupObj of updatedBloodGroups) {
-          const { group } = bloodGroupObj;
-      
-          try {
-            const response = await dispatch(attemptGetBloodTypeInv(user));
-            const percentage = response.payload;
-      
-            // Ažuriranje percentage u varijabli updatedBloodGroups
-            const index = updatedBloodGroups.findIndex((obj) => obj.group === group);
-            updatedBloodGroups[index] = { ...updatedBloodGroups[index], percentage };
-          } catch (error: any) {
-            // Postavljanje defaultne vrijednosti ili rukovanje greškom
-            console.error(`Error fetching blood type inventory for ${group}: ${error.message}`);
-          }
-        }
-      
-        // Ažuriranje state-a s novim podacima
-        setBloodGroups(updatedBloodGroups);
-      };
-      
-      // Pozivanje funkcije
-      fetchBloodTypeInventory();
-          
     return (
         <Container>
             {/* Blood Groups */}
