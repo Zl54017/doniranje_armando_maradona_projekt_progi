@@ -6,7 +6,7 @@ import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
 import { RootState, useAppDispatch } from '../../redux/store';
 import { useDispatch, useSelector } from "react-redux";
-import { attemptChange, attemptGetActiveActions, attemptGetPreviousActions } from '../../redux/slices/authSlice';
+import { attemptChange, attemptGetActiveActions, attemptGetBloodBank, attemptGetPreviousActions } from '../../redux/slices/authSlice';
 import { attemptNewAction } from "../../redux/slices/authSlice";
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import dayjs from 'dayjs';
@@ -19,6 +19,11 @@ function Actions() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [bloodBanks, setbloodBanks] = useState<string | "">('');
+  const [selectedBloodBank, setSelectedBloodBank] = useState<string | null>(user?.bloodBankId)
+  const [selectedCity, setSelectedCity] = useState<string | null>(user?.bloodBankId)
+
+
 
 
   const handleClick = () => setShowForm((prevState) => !prevState);
@@ -26,6 +31,7 @@ function Actions() {
     name: "",
     city: "",
     address: "",
+    minNumOfDonors: 0,
     date: new Date(),
     time: "",
   });
@@ -38,6 +44,17 @@ function Actions() {
   const handleTimeChange = (time: Date | null) => setSelectedTime(time);
   const [listOfPrevious, setListOfPrevious] = useState<any[]>([]);
   const [listOfActive, setListOfActive] = useState<any[]>([]);
+  if (user) {
+    dispatch(attemptGetBloodBank())
+      .then((response: any) => {
+        // Assuming response.payload is an array of blood banks
+        setbloodBanks(response.payload[user.bloodBankId]);
+      }
+      )
+      .catch((error: any) => {
+        console.error("Error", error);
+      });
+  }
   const handleNewAction = () => {
     let dateTime = new Date();
     if (selectedDate && selectedTime) {
@@ -57,12 +74,12 @@ function Actions() {
       minNumOfDonors: 150,
     };
     dispatch(attemptNewAction(actionInput))
-    .then((response: any) =>{
-      console.log(response.payload);
-    })
-    .catch((error: any) => {
-      console.error("Error", error);
-    });
+      .then((response: any) => {
+        console.log(response.payload);
+      })
+      .catch((error: any) => {
+        console.error("Error", error);
+      });
     setShowForm(false);
   };
 
@@ -98,7 +115,6 @@ function Actions() {
       dispatch(attemptGetActiveActions(user))
         .then((response: any) => {
           setListOfActive(response.payload || []);
-          console.log(response.payload);
         })
         .catch((error: any) => {
           console.error("Error", error);
@@ -170,7 +186,7 @@ function Actions() {
                           <Grid container spacing={3}>
                             <Grid item xs={12} sm={6}>
                               <label style={{ display: 'block', fontSize: '15px', color: 'grey' }}>Grad</label>
-                              <TextField required id="city" name="city" fullWidth autoComplete="given-name" variant="standard" value={"Osijek"} />
+                              <TextField required id="city" name="city" fullWidth autoComplete="given-name" variant="standard" value={""} />
                             </Grid>
                             <Grid item xs={12} sm={6}>
                               <label style={{ display: 'block', fontSize: '15px', color: 'grey' }}>Adresa zavoda</label>
@@ -178,7 +194,7 @@ function Actions() {
                             </Grid>
                             <Grid item xs={12}>
                               <label style={{ display: 'block', fontSize: '15px', color: 'grey' }}>Ime zavoda</label>
-                              <TextField required id="transfisionInstitute" name="transfisionInstitute" fullWidth autoComplete="family-name" variant="standard" value={"KBC Osijek"} />
+                              <TextField required id="transfisionInstitute" name="transfisionInstitute" fullWidth autoComplete="family-name" variant="standard" value={bloodBanks} />
                             </Grid>
                             <Grid item xs={12}>
                               <label htmlFor="datepicker" style={{ display: 'block', fontSize: '15px', color: 'grey' }}>Odaberi datum akcije *</label>

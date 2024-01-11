@@ -27,8 +27,9 @@ export default {
   getFaq: () => axios.get(`${auth.base}/bloodbank/faq`),
   postFaq: (jwt: string) => axios.post(`${auth.base}/bloodbank/addFAQ/${jwt}`),
   getAllBloodBanks: () => axios.get(`${auth.base}/bloodbank/allBloodBanks`),
-  registerForAction: (jwt: string, action: any) => axios.post(`${auth.base}/donor/actionRegistration/${jwt}`, {actionId: action.id}),
+  registerForAction: (jwt: string, action: any) => axios.post(`${auth.base}/donor/actionRegistration/${jwt}`, { actionId: action.id }),
   getBloodBankActionsForDonor: (bloodBankName: string) => axios.get(`${auth.base}/donor/allActions/${bloodBankName}`),
   getBloodBankEmployees: (jwt: string) => axios.get(`${auth.base}/bloodbank/employeesByBloodBank/${jwt}`),
-  changePassword: (jwt: string, passwords: any) => axios.post(`${auth.base}/donor/changePassword/${jwt}`, {oldPassword: passwords.oldPassword, newPassword1: passwords.newPassword1, newPassword2: passwords.newPassword2}),
+  changePassword: (jwt: string, passwords: any) => axios.post(`${auth.base}/donor/changePassword/${jwt}`, { oldPassword: passwords.oldPassword, newPassword1: passwords.newPassword1, newPassword2: passwords.newPassword2 }),
+  getBloodBank: () => axios.get(`${auth.base}/bloodbank/allBloodBanks`),
 };
