@@ -449,6 +449,10 @@ router.get("/inventoryOfBloodType/:token", async (req, res, next) => {
   }
 });
 
+/**
+ * Handle the POST request to change the donor's information.
+ * Returns the updated donor.
+ */
 router.post("/change/:token", async (req, res) => {
   const decoded = decode.jwtDecode(req.params.token);
   const {
@@ -577,6 +581,9 @@ router.post("/changePassword/:token", async (req, res) => {
   }
 });
 
+/**
+ * Handle the POST for retrieving the donor's certificates.
+ */
 router.post("/awards/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);
   try {
