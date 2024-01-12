@@ -65,7 +65,7 @@ export default function Statistics(props: any) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                if (user) {
+                if (user && role === "bloodBank") {
                     const bloodBanksResponse = await dispatch(attemptGetAllBloodBanks());
                     setListOfBloodBanks(bloodBanksResponse.payload || []);
                     let updatedFilters: LoginInput = { ...filters };
@@ -80,6 +80,20 @@ export default function Statistics(props: any) {
                         .catch((error: any) => {
                             console.error(error)
                         });
+                }
+                else if (user && role === "employee"){
+                  const bloodBanksResponse = await dispatch(attemptGetAllBloodBanks());
+                  setListOfBloodBanks(bloodBanksResponse.payload || []);
+                  let updatedFilters: LoginInput = { ...filters };
+                  updatedFilters["transfusionInstitute"] = bloodBanksResponse.payload[user.bloodBankId];
+                  setFilters(updatedFilters);
+                  dispatch(attemptGetDonors(updatedFilters))
+                      .then((response: any) => {
+                          setListOfDonors(response.payload || []);
+                      })
+                      .catch((error: any) => {
+                          console.error(error)
+                      });
                 }
             } catch (error) {
                 console.error("Error", error);
@@ -141,11 +155,14 @@ export default function Statistics(props: any) {
     const yAxisData2 = instituteNames.map((bloodbank) => countsByBloodbank[bloodbank] || 0);
       var currentBloodBankInventory: Record<string, number>={};
       Object.keys(listOfAllInventory).forEach((key)=>{
-        if (user && key=== user.name){
+        if (user && role === "bloodBank" && key=== user.name){
               currentBloodBankInventory = listOfAllInventory[key as keyof typeof listOfAllInventory]
         }
-      })
+        else if (user && role === "employee" && key=== listOfDonors[0].transfusionInstitute){
+          currentBloodBankInventory = listOfAllInventory[key as keyof typeof listOfAllInventory]
 
+        }
+      })
       const yAxisData3 = bloodTypes.map(bloodType => currentBloodBankInventory[bloodType]);      
   
     return (

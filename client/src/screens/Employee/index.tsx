@@ -17,7 +17,7 @@ import { attemptLogout, clearUser } from "../../redux/slices/authSlice";
 import localStorageUtility from "../../utils/localStorage/auth";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Actions from './actions';
-import Statistics from './statistics';
+import Statistics from '../BloodBank/statistics';
 import ListOfDonors from './listOfDonors';
 import FaqEmployee from "./faqEmployee";
 import { ReactNode } from "react";
