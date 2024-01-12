@@ -8,7 +8,7 @@ import { RootState, useAppDispatch } from "../../redux/store";
 import { attemptGetAllBloodBanks, attemptGetAllDonors, attemptGetAllInventory, attemptGetDonors } from "../../redux/slices/authSlice";
 import LoginInput from "../../types/inputs/user/LoginInput";
 import { useSelector } from "react-redux";
-import { PieChart, blueberryTwilightPaletteLight } from "@mui/x-charts";
+import { PieChart, blueberryTwilightPalette, blueberryTwilightPaletteLight } from "@mui/x-charts";
 import { Console } from "console";
 
 
@@ -96,6 +96,8 @@ export default function Statistics(props: any) {
     countsByBloodbank[bloodbank] = (countsByBloodbank[bloodbank] || 0) + 1;
 });
 
+  
+
     const instituteNames = [
       "KBC Osijek",
       "KBC Rijeka",
@@ -137,12 +139,15 @@ export default function Statistics(props: any) {
     const yAxisData1 = bloodTypes.map((type) => bloodTypeCounts[type] || 0);
     const value1= gender.map((gender)=>genderCounts[gender] || 0);
     const yAxisData2 = instituteNames.map((bloodbank) => countsByBloodbank[bloodbank] || 0);
-    //const yAxisData3= instituteNames.map((bloodbank) => listOfAllInventory[bloodbank] || null);
-      
-    //const dataForSpecificBloodBank = listOfAllInventory[user.name] || null;
+      var currentBloodBankInventory: Record<string, number>={};
+      Object.keys(listOfAllInventory).forEach((key)=>{
+        if (user && key=== user.name){
+              currentBloodBankInventory = listOfAllInventory[key as keyof typeof listOfAllInventory]
+        }
+      })
 
+      const yAxisData3 = bloodTypes.map(bloodType => currentBloodBankInventory[bloodType]);      
   
-      console.log(listOfAllInventory);
     return (
         <Container>
           <Box style={{
@@ -154,7 +159,7 @@ export default function Statistics(props: any) {
           align="center"
           color="text.secondary"
           component="p"> 
-          Graf broja donora po tipu krvi
+          Graf broja donora u zavodu po tipu krvi
           </Typography>
         <BarChart 
   xAxis={[
@@ -171,7 +176,7 @@ export default function Statistics(props: any) {
   ]}
   width={500}
   height={300}
-  colors={blueberryTwilightPaletteLight}
+  colors={blueberryTwilightPalette}
 />
 </Box>
 <Box>
@@ -180,7 +185,7 @@ export default function Statistics(props: any) {
           color="text.secondary"
           component="p"
           margin ={"10px"}> 
-          Omjer spola
+          Omjer spola donora u zavodu
           </Typography>
 <PieChart
   series={[
@@ -200,7 +205,7 @@ export default function Statistics(props: any) {
             padding: '10px',
             marginBottom: '10px',
             color: '#b2102f',
-            display: 'flex', flexDirection: 'column', justifyContent: 'space-around'
+            display: 'flex', flexDirection: 'row', justifyContent: 'space-around'
           }}>
           <Box>
           <Typography variant="h5"
@@ -225,6 +230,30 @@ export default function Statistics(props: any) {
     },
   ]}
   width={700}
+  height={300}
+  colors={blueberryTwilightPaletteLight}
+/>
+</Box>
+<Box> <Typography variant="h5"
+          align="center"
+          color="text.secondary"
+          component="p"> 
+          Graf količine krvi po zavodu u litrama
+          </Typography>
+        <BarChart 
+  xAxis={[
+    {
+      id: 'barCategories',
+      data : bloodTypes,
+      scaleType: 'band',
+    },
+  ]}
+  series={[
+    {
+      data: yAxisData3
+    },
+  ]}
+  width={500}
   height={300}
   colors={blueberryTwilightPaletteLight}
 />
