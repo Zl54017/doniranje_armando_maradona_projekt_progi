@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Box, Container, Grid, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";
 import { useSelector } from "react-redux";
-import { attemptDeleteNews, attemptGetBloodTypeInv, attemptGetNews, attemptPostNews } from "../../redux/slices/authSlice";
+import { attemptDeleteNews, attemptGetAllBloodBanks, attemptGetAllInventory, attemptGetBloodTypeInv, attemptGetDonors, attemptGetNews, attemptPostNews } from "../../redux/slices/authSlice";
 import { RootState, useAppDispatch } from "../../redux/store";
+import LoginInput from "../../types/inputs/user/LoginInput";
 
 interface NewsItem {
     id: "",
@@ -17,7 +18,77 @@ function NewsEdit() {
     const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
     const [newNews, setNewNews] = useState({ title: "", text: "", picture: "/blood.png" });
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [listOfAllInventory, setListOfAllInventory] = useState<any[]>([]);    
+    const [listOfDonors, setListOfDonors] = useState<any[]>([]);
+    const [filters, setFilters] = useState<LoginInput>({name: '',
+    email: '',
+    password: '',
+    bloodType: '',
+    transfusionInstitute: '',
+    numberOfDonations: '100',
+    gender: '',
+    age: 0,
+    id: 0,
+});
 
+
+    useEffect(() => {
+        dispatch(attemptGetDonors(filters))
+            .then((response: any) => {
+                setListOfDonors(response.payload || []);
+            })
+            .catch((error: any) => {
+                console.error("Error", error);
+            });
+    }, [dispatch, filters]);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                if (user && role === "bloodBank") {
+                    const bloodBanksResponse = await dispatch(attemptGetAllBloodBanks());
+                    let updatedFilters: LoginInput = { ...filters };
+                    if (user.name != "Crveni Križ") {
+                            updatedFilters["transfusionInstitute"] = user.name;
+                        setFilters(updatedFilters);
+                    }
+                    dispatch(attemptGetDonors(updatedFilters))
+                        .then((response: any) => {
+                            setListOfDonors(response.payload || []);
+                        })
+                        .catch((error: any) => {
+                            console.error(error)
+                        });
+                }
+                else if (user && role === "employee"){
+                  const bloodBanksResponse = await dispatch(attemptGetAllBloodBanks());
+                  let updatedFilters: LoginInput = { ...filters };
+                  updatedFilters["transfusionInstitute"] = bloodBanksResponse.payload[user.bloodBankId];
+                  setFilters(updatedFilters);
+                  dispatch(attemptGetDonors(updatedFilters))
+                      .then((response: any) => {
+                          setListOfDonors(response.payload || []);
+                      })
+                      .catch((error: any) => {
+                          console.error(error)
+                      });
+                }
+            } catch (error) {
+                console.error("Error", error);
+            }
+        };
+
+        fetchData();
+    }, [dispatch, user, role]);
+
+    useEffect(() => {
+        dispatch(attemptGetAllInventory())
+            .then((response: any) => {
+                setListOfAllInventory(response.payload || []);
+            })
+            .catch((error: any) => {
+                console.error("Error", error);
+            });
+    }, [dispatch]);
 
     useEffect(() => {
         dispatch(attemptGetNews())
@@ -82,7 +153,18 @@ function NewsEdit() {
         { group: "O+", percentage: 0 },
     ]);
 
-    const fetchBloodTypeInventory = async () => {
+    var currentBloodBankInventory: Record<string, number>={};
+    Object.keys(listOfAllInventory).forEach((key)=>{
+        if (user && role === "bloodBank" && key=== user.name){
+              currentBloodBankInventory = listOfAllInventory[key as keyof typeof listOfAllInventory]
+        }
+        else if (user && role === "employee" && key=== listOfDonors[0].transfusionInstitute){
+          currentBloodBankInventory = listOfAllInventory[key as keyof typeof listOfAllInventory]
+
+        }
+      })
+      console.log("trenutno", currentBloodBankInventory);
+   /* const fetchBloodTypeInventory = async () => {
         const updatedBloodGroups = [...bloodGroups];
       
         for (const bloodGroupObj of updatedBloodGroups) {
@@ -106,20 +188,20 @@ function NewsEdit() {
       };
       
       // Pozivanje funkcije
-      fetchBloodTypeInventory();
-          
+      //fetchBloodTypeInventory();*/
+     
     return (
         <Container>
             {/* Blood Groups */}
             <Box marginTop={2} display="flex" justifyContent="space-between">
-                {bloodGroups.map((groupData) => (
-                    <Box key={groupData.group} textAlign="center">
-                        <img src={`/blood.png`} alt={groupData.group} width={50} height={50} />
-                        {/* Zamijenite s pravim atributima ikonice */}
-                        <Typography>{`${groupData.group}: ${groupData.percentage}%`}</Typography>
-                    </Box>
-                ))}
-            </Box>
+  {Object.keys(currentBloodBankInventory).map((key) => (
+    <Box key={key} textAlign="center">
+      <img src={`/blood.png`} alt={key} width={50} height={50} />
+      <Typography>{`${key}: ${currentBloodBankInventory[key as keyof typeof currentBloodBankInventory]}L`}</Typography>
+    </Box>
+  ))}
+</Box>
+
 
             {/* News */}
             <Grid mt={10} container spacing={2}>

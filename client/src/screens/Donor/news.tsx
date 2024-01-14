@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Box, Container, Grid, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
-import { attemptGetNews } from "../../redux/slices/authSlice";
-import { useAppDispatch } from "../../redux/store";
+import { attemptGetAllInventory, attemptGetNews } from "../../redux/slices/authSlice";
+import { RootState, useAppDispatch } from "../../redux/store";
+import { useAsyncError } from "react-router-dom";
 
 interface NewsItem {
   title: "",
@@ -11,7 +12,21 @@ interface NewsItem {
 }
 function News() {
   const dispatch = useAppDispatch();
+  const { user, role } = useSelector((state: RootState) => state.auth);
+
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
+  const [listOfAllInventory, setListOfAllInventory] = useState<any[]>([]);    
+
+  useEffect(() => {
+    dispatch(attemptGetAllInventory())
+        .then((response: any) => {
+            setListOfAllInventory(response.payload || []);
+        })
+        .catch((error: any) => {
+            console.error("Error", error);
+        });
+}, [dispatch]); 
+
   useEffect(() => {
     dispatch(attemptGetNews())
       .then((response: any) => {
@@ -22,29 +37,27 @@ function News() {
       });
   }, [dispatch]);
 
-  const bloodGroups = [
-    { group: "A-", percentage: 30 },
-    { group: "B-", percentage: 20 },
-    { group: "AB-", percentage: 15 },
-    { group: "O-", percentage: 35 },
-    { group: "A+", percentage: 30 },
-    { group: "B+", percentage: 20 },
-    { group: "AB+", percentage: 15 },
-    { group: "O+", percentage: 35 },
-  ];
+
+  var currentBloodBankInventory: Record<string, number>={};
+  Object.keys(listOfAllInventory).forEach((key)=>{
+    if (user && key=== user.transfusionInstitute){
+          currentBloodBankInventory = listOfAllInventory[key as keyof typeof listOfAllInventory]
+    }
+  })
 
   return (
+    
     <Container>
       {/* Blood Groups */}
+     {user &&(
       <Box marginTop={2} display="flex" justifyContent="space-between">
-        {bloodGroups.map((groupData) => (
-          <Box key={groupData.group} textAlign="center">
-            <img src={`/blood.png`} alt={groupData.group} width={50} height={50} />
-            {/* Zamijenite s pravim atributima ikonice */}
-            <Typography>{`${groupData.group}: ${groupData.percentage}%`}</Typography>
-          </Box>
-        ))}
-      </Box>
+  {Object.keys(currentBloodBankInventory).map((key) => (
+    <Box key={key} textAlign="center">
+      <img src={`/blood.png`} alt={key} width={50} height={50} />
+      <Typography style={{ fontWeight: key === user?.bloodType ? 'bold' : 'normal' }}>{`${key}: ${currentBloodBankInventory[key as keyof typeof currentBloodBankInventory]}L`}</Typography>
+    </Box>
+  ))}
+</Box>)}
 
       {/* News */}
       <Grid mt={10} container spacing={2}>

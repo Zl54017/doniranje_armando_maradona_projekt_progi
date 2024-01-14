@@ -22,7 +22,7 @@ import FaqEmployee from "./faqEmployee";
 import ListOfDonors from "./listOfDonors";
 import Statistics from "./statistics";
 import Actions from "./actions";
-import NewsEmployee from "./newsEmployee";
+import NewsEmployee from "../Employee/newsEmployee";
 
 
 
