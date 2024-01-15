@@ -76,6 +76,14 @@ const attemptNewAction = createAsyncThunk(
   }
 );
 
+const attemptRegistered = createAsyncThunk(
+  "auth/registeredStatus",
+  async (actionRegistration: any) => {
+    const response = await authService.getRegistered(actionRegistration);
+    return response.data
+  }
+);
+
 const retrieveActions = createAsyncThunk(
   "auth/retrieveActionsStatus",
   async () => {
@@ -200,7 +208,7 @@ const attemptGetAllBloodBanks = createAsyncThunk(
 );
 
 const attemptGetBloodTypeInv = createAsyncThunk(
-  "auth/getBloodTypeInvStatus", async(user: any)=> {
+  "auth/getBloodTypeInvStatus", async (user: any) => {
     const body = {
       email: user.email,
       password: user.password,
@@ -374,7 +382,7 @@ const authSlice = createSlice({
 
 export const { clearUser } = authSlice.actions;
 
-export { attemptGetBloodTypeInv, attemptGetBloodBankDetails, attemptGetBloodBank, attempChangePassword, attemptAddEmployee, attemptDeleteDonorById, attemptDeleteEmployeeById, attemptGetBloodBankActionsForDonor, attemptGetBloodBankEmployees, attemptRegisterForAction, attemptGetDonors, attemptGetAllBloodBanks, retrieveAwards, retrievePrevActions, retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete, attemptNewAction, attemptGetActiveActions, attemptGetPreviousActions, attemptDeleteFAQ, attemptDeleteNews, attemptGetFAQ, attemptGetNews, attemptPostFAQ, attemptPostNews, attemptGetAllDonors, attemptGetAllInventory};
+export { attemptRegistered, attemptGetBloodTypeInv, attemptGetBloodBankDetails, attemptGetBloodBank, attempChangePassword, attemptAddEmployee, attemptDeleteDonorById, attemptDeleteEmployeeById, attemptGetBloodBankActionsForDonor, attemptGetBloodBankEmployees, attemptRegisterForAction, attemptGetDonors, attemptGetAllBloodBanks, retrieveAwards, retrievePrevActions, retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete, attemptNewAction, attemptGetActiveActions, attemptGetPreviousActions, attemptDeleteFAQ, attemptDeleteNews, attemptGetFAQ, attemptGetNews, attemptPostFAQ, attemptPostNews, attemptGetAllDonors, attemptGetAllInventory };
 
 export default authSlice.reducer;
 

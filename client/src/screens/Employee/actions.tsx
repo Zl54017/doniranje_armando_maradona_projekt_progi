@@ -6,11 +6,11 @@ import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
 import { RootState, useAppDispatch } from '../../redux/store';
 import { useDispatch, useSelector } from "react-redux";
-import { attemptChange, attemptGetActiveActions, attemptGetBloodBank, attemptGetBloodBankDetails, attemptGetPreviousActions } from '../../redux/slices/authSlice';
+import { attemptChange, attemptGetActiveActions, attemptGetBloodBank, attemptGetBloodBankDetails, attemptGetPreviousActions, attemptRegistered } from '../../redux/slices/authSlice';
 import { attemptNewAction } from "../../redux/slices/authSlice";
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-import dayjs from 'dayjs';
-import { time } from 'console';
+// import dayjs from 'dayjs';
+// import { time } from 'console';
 interface bloodBank {
   id: number;
   name: string;
@@ -20,6 +20,7 @@ interface bloodBank {
   city: string;
   numberOfDonors: number;
 }
+
 function Actions() {
   const dispatch = useAppDispatch();
   const { user, role } = useSelector((state: RootState) => state.auth);
@@ -84,8 +85,6 @@ function Actions() {
       setErrorMessages(newErrorMessages);
       return;
     }
-
-    // Combine date and time into a single JavaScript Date object
     let dateTime = selectedDate ? new Date(selectedDate) : null;
 
     if (selectedTime) {
@@ -98,21 +97,27 @@ function Actions() {
     let actionInput = {
       bloodBankId: user?.bloodBankId || "",
       date: dateTime || null,
-      minNumOfDonors: user?.minNumOfDonors || 0,
+      minNumOfDonors: actionInfo.minNumOfDonors || 0,
     };
 
     dispatch(attemptNewAction(actionInput))
       .then((response: any) => {
-        console.log(response.payload);
+        console.log("New action saved:", response.payload);
+
+        // Dodajte novu akciju iz odgovora u listu trenutnih akcija
+        setListOfActive((prevList) => [...prevList, response.payload]);
+
+        // Opcionalno, možete ovdje rukovati uspjehom
+
+        // Zatvorite dijalog i resetirajte poruke o pogrešci
+        setShowForm(false);
+        setErrorMessages([]);
       })
       .catch((error: any) => {
-        console.error("Error", error);
+        console.error("Error saving new action:", error);
+        // Opcionalno, možete ovdje rukovati greškama
       });
-
-    setShowForm(false);
-    setErrorMessages([]);
   };
-
   const [dialogContent, setDialogContent] = useState('Nova akcija');
 
   const handleToggleDialog = () => {
@@ -168,8 +173,67 @@ function Actions() {
   const [expandedAction, setExpandedAction] = useState<number | null>(null);
   const [expandedCurrentAction, setExpandedCurrentAction] = useState<number | null>(null);
 
-  const handleExpandAction = (actionId: number) => {
-    setExpandedAction((prevId) => (prevId === actionId ? null : actionId));
+  const [donorList, setDonorList] = useState<string[]>([]);
+
+  const handleExpandAction = async (actionId: number) => {
+    // let actionInput = {
+    //   bloodBankId: user?.bloodBankId || "",
+    //   date: dateTime || null,
+    //   minNumOfDonors: actionInfo.minNumOfDonors || 0,
+    // };
+
+    // dispatch(attemptNewAction(actionInput))
+    //   .then((response: any) => {
+    //     console.log("New action saved:", response.payload);
+
+    //     // Dodajte novu akciju iz odgovora u listu trenutnih akcija
+    //     setListOfActive((prevList) => [...prevList, response.payload]);
+
+    //     // Opcionalno, možete ovdje rukovati uspjehom
+
+    //     // Zatvorite dijalog i resetirajte poruke o pogrešci
+    //     setShowForm(false);
+    //     setErrorMessages([]);
+    //   })
+    //   .catch((error: any) => {
+    //     console.error("Error saving new action:", error);
+    //     // Opcionalno, možete ovdje rukovati greškama
+    //   });
+
+    let donor = {
+      id: user?.id || 0,
+      name: user?.name || "",
+      email: user?.email || "",
+      password: user?.password || "",
+      bloodType: user?.bloodType || "",
+      transfusionInstitute: user?.transfusionInstitute || "",
+      numberOfDonations: user?.numberOfDonations || 0,
+      age: user?.age || 0,
+      gender: user?.gender || "",
+    }
+    let actionRegistration = {
+      id: user?.id || 0,
+      actionId: user?.actionId || 0,
+      donorId: user?.donorId || 0,
+    }
+    dispatch(attemptRegistered(actionRegistration))
+      .then((response: any) => {
+        setDonorList((listOfPrevious) => [...listOfPrevious, response.payload])
+      })
+
+    // try {
+    //   const response = await dispatch(attemptRegistered(actionId));
+    //   const actionId= { Action.actionId };
+    //   console.log("Response from attemptRegistered:", response);
+
+    //   // Assuming response.payload is an array of donor names
+    //   setDonorList(response.payload);
+
+    //   // Toggle the expanded state
+    //   setExpandedAction((prevId) => (prevId === actionId ? null : actionId));
+    // } catch (error) {
+    //   console.error("Error handling expanded action:", error);
+    // }
   };
   const handleExpandCurrentAction = (actionId: number) => {
     setExpandedCurrentAction((prevId) => (prevId === actionId ? null : actionId));
@@ -195,6 +259,10 @@ function Actions() {
                     <>
                       <Typography variant="body1" style={{ color: 'green' }}>
                         Dodatna poruka ili informacije o ovoj akciji...
+                      </Typography>
+                      {/* Log the donorList to the console */}
+                      <Typography variant="body1">
+                        Donori: {JSON.stringify(donorList)}
                       </Typography>
                       <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
                         <Button
