@@ -55,12 +55,18 @@ function MyForm() {
         } else {
             dispatch(attemptAddEmployee(employee))
                 .then((response: any) => {
-                    console.log(response)
                     if (response.error && response.error.message.endsWith("400")) {
                         setAddEmployeeMessage("Email adresa se već koristi");
                     } else {
                         setAddEmployeeMessage(response.payload ? "Uspješno dodan zaposlenik" : "Neuspješno dodavanje zaposlenika");
                     }
+                    dispatch(attemptGetBloodBankEmployees(formData["bloodBank"]))
+                        .then((response: any) => {
+                            setListOfEmployees(response.payload || []);
+                        })
+                        .catch((error: any) => {
+                            console.error("Error", error);
+                        });
                 })
         }
     };
@@ -159,9 +165,13 @@ function MyForm() {
                                                         onChange={handleSelectChange}
                                                         disabled={lockBloodBankChange}
                                                     >
-                                                        {Object.entries(listOfBloodBanks).map(([bloodBankId, bloodBankData]) => (
-                                                            <MenuItem value={bloodBankData}>{bloodBankData}</MenuItem>
-                                                        ))}
+                                                        {Object.entries(listOfBloodBanks)
+                                                            .filter(([bloodBankId, bloodBankData]) => bloodBankData !== 'Crveni Križ') // Exclude "Crveni Križ"
+                                                            .map(([bloodBankId, bloodBankData]) => (
+                                                                <MenuItem key={bloodBankId} value={bloodBankData}>
+                                                                    {bloodBankData}
+                                                                </MenuItem>
+                                                            ))}
                                                     </Select>
                                                 </FormControl>
                                             </Grid>
@@ -229,9 +239,13 @@ function MyForm() {
                         value={formData.bloodBank}
                         disabled={lockBloodBankChange}
                     >
-                        {Object.entries(listOfBloodBanks).map(([bloodBankId, bloodBankData]) => (
-                            <MenuItem value={bloodBankData}>{bloodBankData}</MenuItem>
-                        ))}
+                        {Object.entries(listOfBloodBanks)
+                            .filter(([bloodBankId, bloodBankData]) => bloodBankData !== 'Crveni Križ') // Exclude "Crveni Križ"
+                            .map(([bloodBankId, bloodBankData]) => (
+                                <MenuItem key={bloodBankId} value={bloodBankData}>
+                                    {bloodBankData}
+                                </MenuItem>
+                            ))}
                     </Select>
                 </FormControl>
             </Box>

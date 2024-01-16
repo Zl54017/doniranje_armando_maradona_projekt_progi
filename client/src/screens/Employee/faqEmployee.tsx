@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import { Box, Button, Dialog, DialogContent, Grid, TextField } from "@mui/material";
 import { RootState, useAppDispatch } from "../../redux/store";
 import { useSelector } from "react-redux";
-import { attemptDeleteFAQ, attemptGetFAQ, attemptPostFAQ } from "../../redux/slices/authSlice";
+import { attemptDeleteFAQ, attemptEditedFAQ, attemptGetFAQ, attemptPostFAQ } from "../../redux/slices/authSlice";
 
 interface Question {
     id: number;
@@ -31,12 +31,12 @@ function FaqEdit() {
         dispatch(attemptDeleteFAQ(questionId))
             .then(() => {
                 dispatch(attemptGetFAQ())
-                .then((response: any) => {
-                    setQuestions(response.payload || []);
-                })
-                .catch((error: any) => {
-                    console.error("Error fetching FAQs", error);
-                });
+                    .then((response: any) => {
+                        setQuestions(response.payload || []);
+                    })
+                    .catch((error: any) => {
+                        console.error("Error fetching FAQs", error);
+                    });
             })
             .catch((error) => {
                 console.error("Failed to delete FAQ", error);
@@ -60,32 +60,49 @@ function FaqEdit() {
         setEditDialogOpen(true);
     };
 
-    const handleSaveChanges = () => {
-        if (isNewFAQ) {
-            const newQuestion = {
-                question: editedTitle,
-                answer: editedText,
-            };
-            dispatch(attemptPostFAQ(newQuestion))
-                .then((response: any) => {
-                    dispatch(attemptGetFAQ())
+    const handleSaveChangesNew = () => {
+        const newQuestion = {
+            question: editedTitle,
+            answer: editedText,
+        };
+        dispatch(attemptPostFAQ(newQuestion))
+            .then((response: any) => {
+                dispatch(attemptGetFAQ())
                     .then((response: any) => {
                         setQuestions(response.payload || []);
                     })
                     .catch((error: any) => {
                         console.error("Error fetching FAQs", error);
                     });
-                })
-                .catch((error) => {
-                    console.error("Failed to create FAQ", error);
-                });
-        } else {
-            console.log("Saving changes...");
-        }
-
+            })
+            .catch((error) => {
+                console.error("Failed to create FAQ", error);
+            });
+        setEditDialogOpen(false);
+    }
+    const handleSaveChangesEdit = () => {
+        const editedQuestion = {
+            question: editedTitle,
+            answer: editedText,
+            id: selectedQuestionId, 
+        };
+    
+        dispatch(attemptEditedFAQ(editedQuestion))
+            .then((response: any) => {
+                dispatch(attemptGetFAQ())
+                    .then((response: any) => {
+                        setQuestions(response.payload || []);
+                    })
+                    .catch((error: any) => {
+                        console.error("Error fetching FAQs", error);
+                    });
+            })
+            .catch((error) => {
+                console.error("Failed to edit FAQ", error);
+            });
         setEditDialogOpen(false);
     };
-
+    
     useEffect(() => {
         dispatch(attemptGetFAQ())
             .then((response: any) => {
@@ -162,7 +179,7 @@ function FaqEdit() {
                     />
                     <Button
                         variant="contained"
-                        onClick={handleSaveChanges}
+                        onClick={isNewFAQ ? handleSaveChangesNew : handleSaveChangesEdit}
                         style={{ marginTop: 16, backgroundColor: "#b2102f", color: "#fff" }}
                     >
                         {isNewFAQ ? "Stvori FAQ" : "Spremi promjene"}

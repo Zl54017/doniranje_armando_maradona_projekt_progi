@@ -78,9 +78,9 @@ const attemptNewAction = createAsyncThunk(
 
 const attemptRegistered = createAsyncThunk(
   "auth/registeredStatus",
-  async (actionRegistration: any) => {
-    const response = await authService.getRegistered(actionRegistration);
-    return response.data
+  async (actionId: any) => {
+    const response = await authService.getRegistered(actionId);
+    return response.data;
   }
 );
 
@@ -168,8 +168,8 @@ const attemptGetDonors = createAsyncThunk("auth/getDonorsStatus",
 
 const attemptGetPreviousActions = createAsyncThunk(
   "auth/getPreviousActionsStatus",
-  async (user: any) => {
-    const response = await authService.getPreviousActions(user.bloodBankId);
+  async (bloodbankId: any) => {
+    const response = await authService.getPreviousActions(bloodbankId);
     return response.data;
   }
 );
@@ -184,6 +184,14 @@ const attemptGetBloodBankDetails = createAsyncThunk(
   }
 );
 
+const attemptGetBloodBank2 = createAsyncThunk(
+  "auth/getBloodBankStatus",
+  async () => {
+    const response = await authService.getBloodBank2();
+    return response.data;
+  }
+);
+
 const attemptGetBloodBank = createAsyncThunk(
   "auth/getBloodBankStatus",
   async () => {
@@ -193,8 +201,8 @@ const attemptGetBloodBank = createAsyncThunk(
 );
 const attemptGetActiveActions = createAsyncThunk(
   "auth/getActiveActionsStatus",
-  async (user: any) => {
-    const response = await authService.getActiveActions(user.bloodBankId);
+  async (bloodbankId: any) => {
+    const response = await authService.getActiveActions(bloodbankId);
     return response.data;
   }
 );
@@ -264,6 +272,18 @@ const attemptPostFAQ = createAsyncThunk(
     }
   }
 );
+
+const attemptEditedFAQ = createAsyncThunk(
+  "auth/editFAQStatus", async (question: any) => {
+    const faq = {
+      question: question.question,
+      answer: question.answer,
+    }
+    const response = await authService.editFAQ(question.id, faq);
+    return response.data;
+  }
+);
+
 
 const attemptDeleteNews = createAsyncThunk(
   "auth/deleteNewsStatus", async (newsId: string) => {
@@ -382,7 +402,7 @@ const authSlice = createSlice({
 
 export const { clearUser } = authSlice.actions;
 
-export { attemptRegistered, attemptGetBloodTypeInv, attemptGetBloodBankDetails, attemptGetBloodBank, attempChangePassword, attemptAddEmployee, attemptDeleteDonorById, attemptDeleteEmployeeById, attemptGetBloodBankActionsForDonor, attemptGetBloodBankEmployees, attemptRegisterForAction, attemptGetDonors, attemptGetAllBloodBanks, retrieveAwards, retrievePrevActions, retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete, attemptNewAction, attemptGetActiveActions, attemptGetPreviousActions, attemptDeleteFAQ, attemptDeleteNews, attemptGetFAQ, attemptGetNews, attemptPostFAQ, attemptPostNews, attemptGetAllDonors, attemptGetAllInventory };
+export { attemptGetBloodBank2, attemptRegistered, attemptGetBloodTypeInv, attemptGetBloodBankDetails, attemptGetBloodBank, attempChangePassword, attemptAddEmployee, attemptDeleteDonorById, attemptDeleteEmployeeById, attemptGetBloodBankActionsForDonor, attemptGetBloodBankEmployees, attemptRegisterForAction, attemptGetDonors, attemptGetAllBloodBanks, retrieveAwards, retrievePrevActions, retrieveActions, attemptChange, attemptLogin, fetchUser, attemptLogout, attemptRegister, fetchData, attemptDelete, attemptNewAction, attemptGetActiveActions, attemptGetPreviousActions, attemptDeleteFAQ, attemptDeleteNews, attemptGetFAQ, attemptGetNews, attemptPostFAQ, attemptEditedFAQ, attemptPostNews, attemptGetAllDonors, attemptGetAllInventory };
 
 export default authSlice.reducer;
 

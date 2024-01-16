@@ -18,7 +18,7 @@ import localStorageUtility from "../../utils/localStorage/auth";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { ReactNode } from "react";
 import AddEmployee from "./addEmployee";
-import FaqEmployee from "./faqEmployee";
+import FaqEmployee from "../Employee/faqEmployee";
 import ListOfDonors from "./listOfDonors";
 import Statistics from "./statistics";
 import Actions from "./actions";

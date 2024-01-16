@@ -9,17 +9,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { attemptChange, attemptGetActiveActions, attemptGetBloodBank, attemptGetBloodBankDetails, attemptGetPreviousActions, attemptRegistered } from '../../redux/slices/authSlice';
 import { attemptNewAction } from "../../redux/slices/authSlice";
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-// import dayjs from 'dayjs';
-// import { time } from 'console';
-interface bloodBank {
-  id: number;
-  name: string;
-  email: string;
-  password: string;
-  adress: string;
-  city: string;
-  numberOfDonors: number;
-}
+
+
 
 function Actions() {
   const dispatch = useAppDispatch();
@@ -29,11 +20,6 @@ function Actions() {
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [bloodBank, setBloodBank] = useState<any | null>(null);
-
-
-
-
-  const handleClick = () => setShowForm((prevState) => !prevState);
   const [actionInfo, setActionInfo] = useState({
     name: "",
     city: "",
@@ -42,20 +28,24 @@ function Actions() {
     date: new Date(),
     time: "",
   });
-
-
-
-  useEffect(() => setSelectedDate(null), []);
-
   const handleDateChange = (date: any) => setSelectedDate(date);
   const handleTimeChange = (time: Date | null) => setSelectedTime(time);
   const [listOfPrevious, setListOfPrevious] = useState<any[]>([]);
   const [listOfActive, setListOfActive] = useState<any[]>([]);
+  const [expandedAction, setExpandedAction] = useState<number | null>(null);
+  const [selectedAction, setSelectedAction] = useState<number | null>(null);
+  const [donorList, setDonorList] = useState<any[]>([]);
+  const [minNumOfDonorsError, setMinNumOfDonorsError] = useState<string | null>(null);
+  const [errorMessages, setErrorMessages] = useState<string[]>([]);
+  const [dialogContent, setDialogContent] = useState('Nova akcija');
+  const [donorsVisible, setDonorsVisible] = useState<boolean>(false);
+
+  useEffect(() => setSelectedDate(null), []);
+
   useEffect(() => {
     if (user) {
       dispatch(attemptGetBloodBankDetails())
         .then((response: any) => {
-          // Assuming response.payload is an array of blood banks
           setBloodBank(response.payload || []);
         }
         )
@@ -64,8 +54,7 @@ function Actions() {
         });
     }
   })
-  const [minNumOfDonorsError, setMinNumOfDonorsError] = useState<string | null>(null);
-  const [errorMessages, setErrorMessages] = useState<string[]>([]);
+
   const handleNewAction = () => {
     const newErrorMessages: string[] = [];
 
@@ -102,23 +91,15 @@ function Actions() {
 
     dispatch(attemptNewAction(actionInput))
       .then((response: any) => {
-        console.log("New action saved:", response.payload);
-
-        // Dodajte novu akciju iz odgovora u listu trenutnih akcija
         setListOfActive((prevList) => [...prevList, response.payload]);
 
-        // Opcionalno, možete ovdje rukovati uspjehom
-
-        // Zatvorite dijalog i resetirajte poruke o pogrešci
         setShowForm(false);
         setErrorMessages([]);
       })
       .catch((error: any) => {
         console.error("Error saving new action:", error);
-        // Opcionalno, možete ovdje rukovati greškama
       });
   };
-  const [dialogContent, setDialogContent] = useState('Nova akcija');
 
   const handleToggleDialog = () => {
     setShowForm(!showForm);
@@ -135,7 +116,7 @@ function Actions() {
 
   useEffect(() => {
     if (user) {
-      dispatch(attemptGetPreviousActions(user))
+      dispatch(attemptGetPreviousActions(user.bloodBankId))
         .then((response: any) => {
           setListOfPrevious(response.payload || []);
         })
@@ -147,7 +128,7 @@ function Actions() {
 
   useEffect(() => {
     if (user) {
-      dispatch(attemptGetActiveActions(user))
+      dispatch(attemptGetActiveActions(user.bloodBankId))
         .then((response: any) => {
           setListOfActive(response.payload || []);
         })
@@ -156,9 +137,6 @@ function Actions() {
         });
     }
   }, [dispatch]);
-
-
-
 
   const handleMinNumOfDonorsChange = (event: any) => {
     const inputValue = event.target.value;
@@ -170,74 +148,23 @@ function Actions() {
     setActionInfo((prevInfo) => ({ ...prevInfo, minNumOfDonors: inputValue }));
   };
 
-  const [expandedAction, setExpandedAction] = useState<number | null>(null);
-  const [expandedCurrentAction, setExpandedCurrentAction] = useState<number | null>(null);
-
-  const [donorList, setDonorList] = useState<string[]>([]);
-
-  const handleExpandAction = async (actionId: number) => {
-    // let actionInput = {
-    //   bloodBankId: user?.bloodBankId || "",
-    //   date: dateTime || null,
-    //   minNumOfDonors: actionInfo.minNumOfDonors || 0,
-    // };
-
-    // dispatch(attemptNewAction(actionInput))
-    //   .then((response: any) => {
-    //     console.log("New action saved:", response.payload);
-
-    //     // Dodajte novu akciju iz odgovora u listu trenutnih akcija
-    //     setListOfActive((prevList) => [...prevList, response.payload]);
-
-    //     // Opcionalno, možete ovdje rukovati uspjehom
-
-    //     // Zatvorite dijalog i resetirajte poruke o pogrešci
-    //     setShowForm(false);
-    //     setErrorMessages([]);
-    //   })
-    //   .catch((error: any) => {
-    //     console.error("Error saving new action:", error);
-    //     // Opcionalno, možete ovdje rukovati greškama
-    //   });
-
-    let donor = {
-      id: user?.id || 0,
-      name: user?.name || "",
-      email: user?.email || "",
-      password: user?.password || "",
-      bloodType: user?.bloodType || "",
-      transfusionInstitute: user?.transfusionInstitute || "",
-      numberOfDonations: user?.numberOfDonations || 0,
-      age: user?.age || 0,
-      gender: user?.gender || "",
+  const handleExpandAction = async (actionId: any) => {
+    if (expandedAction === actionId) {
+      setExpandedAction(null); // Ako je već proširena, zatvori proširenje
+      setSelectedAction(null);
+      setDonorsVisible(false); // Resetirajte stanje prilikom zatvaranja
+    } else {
+      dispatch(attemptRegistered(actionId))
+        .then((response: any) => {
+          setDonorList(response.payload);
+          setExpandedAction(actionId);
+          setSelectedAction(actionId);
+          setDonorsVisible(true); // Postavite stanje na true kada donori budu prikazani
+          console.log(response);
+        })
     }
-    let actionRegistration = {
-      id: user?.id || 0,
-      actionId: user?.actionId || 0,
-      donorId: user?.donorId || 0,
-    }
-    dispatch(attemptRegistered(actionRegistration))
-      .then((response: any) => {
-        setDonorList((listOfPrevious) => [...listOfPrevious, response.payload])
-      })
-
-    // try {
-    //   const response = await dispatch(attemptRegistered(actionId));
-    //   const actionId= { Action.actionId };
-    //   console.log("Response from attemptRegistered:", response);
-
-    //   // Assuming response.payload is an array of donor names
-    //   setDonorList(response.payload);
-
-    //   // Toggle the expanded state
-    //   setExpandedAction((prevId) => (prevId === actionId ? null : actionId));
-    // } catch (error) {
-    //   console.error("Error handling expanded action:", error);
-    // }
   };
-  const handleExpandCurrentAction = (actionId: number) => {
-    setExpandedCurrentAction((prevId) => (prevId === actionId ? null : actionId));
-  };
+
   return (
     <Container>
       <Box mt={5} ml={5} style={{ display: 'flex', justifyContent: 'flex-start' }}>
@@ -255,34 +182,26 @@ function Actions() {
                   <Typography variant="body1">
                     Datum donacije: {new Date(action.date).toLocaleDateString()}
                   </Typography>
-                  {expandedAction === action.id && (
+                  {expandedAction === action.id && donorList && donorList.length > 0 ? (
                     <>
-                      <Typography variant="body1" style={{ color: 'green' }}>
-                        Dodatna poruka ili informacije o ovoj akciji...
-                      </Typography>
-                      {/* Log the donorList to the console */}
-                      <Typography variant="body1">
-                        Donori: {JSON.stringify(donorList)}
-                      </Typography>
-                      <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-                        <Button
-                          onClick={() => handleExpandAction(action.id)}
-                          variant="contained"
-                          style={{ backgroundColor: "#b2102f", color: "white" }}
-                        >
-                          Sakrij poruku
-                        </Button>
-                      </Box>
+                      <Typography variant="body1">Donori:</Typography>
+                      {donorList.map((donor: any) => (
+                        <Box key={donor.id} marginBottom={2} padding={2} border="1px solid #b2102f" borderRadius={5}>
+                          <Typography variant="body1" align='center'>{donor}</Typography>
+                        </Box>
+                      ))}
                     </>
+                  ) : (
+                    selectedAction === action.id && <Typography variant="body1">Nitko nije bio prijavljen.</Typography>
                   )}
-                  {!expandedAction && (
+                  {(
                     <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
                       <Button
                         onClick={() => handleExpandAction(action.id)}
                         variant="contained"
                         style={{ backgroundColor: "#b2102f", color: "white" }}
                       >
-                        Prikaži poruku
+                        {expandedAction === action.id && donorsVisible ? 'Sakrij donore' : 'Prikaži donore'}
                       </Button>
                     </Box>
                   )}
@@ -307,30 +226,26 @@ function Actions() {
                   <Typography variant="body1">
                     Datum donacije: {new Date(action.date).toLocaleDateString()}
                   </Typography>
-                  {expandedCurrentAction === action.id && (
+                  {expandedAction === action.id && donorList && donorList.length > 0 ? (
                     <>
-                      <Typography variant="body1" style={{ color: 'green' }}>
-                        Dodatna poruka ili informacije o ovoj trenutnoj akciji...
-                      </Typography>
-                      <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-                        <Button
-                          onClick={() => handleExpandCurrentAction(action.id)}
-                          variant="contained"
-                          style={{ backgroundColor: "#b2102f", color: "white" }}
-                        >
-                          Sakrij poruku
-                        </Button>
-                      </Box>
+                      <Typography variant="body1">Donori:</Typography>
+                      {donorList.map((donor: any) => (
+                        <Box key={donor.id} marginBottom={2} padding={2} border="1px solid #b2102f" borderRadius={5}>
+                          <Typography variant="body1" align='center'>{donor}</Typography>
+                        </Box>
+                      ))}
                     </>
+                  ) : (
+                    selectedAction === action.id && <Typography variant="body1">Nitko nije bio prijavljen.</Typography>
                   )}
-                  {!expandedCurrentAction && (
+                  {(
                     <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
                       <Button
-                        onClick={() => handleExpandCurrentAction(action.id)}
+                        onClick={() => handleExpandAction(action.id)}
                         variant="contained"
                         style={{ backgroundColor: "#b2102f", color: "white" }}
                       >
-                        Prikaži poruku
+                        {expandedAction === action.id && donorsVisible ? 'Sakrij donore' : 'Prikaži donore'}
                       </Button>
                     </Box>
                   )}

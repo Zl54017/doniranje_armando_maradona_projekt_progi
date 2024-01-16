@@ -9,7 +9,7 @@ interface NewsItem {
     id: "",
     title: "",
     text: "",
-    picture: "/blood.png",
+    picture: "/red-blood-cells.png",
 }
 
 function NewsEdit() {
@@ -142,17 +142,6 @@ function NewsEdit() {
             });
     };
 
-    const [bloodGroups, setBloodGroups] = useState([
-        { group: "A-", percentage: 0 },
-        { group: "B-", percentage: 0 },
-        { group: "AB-", percentage: 0 },
-        { group: "O-", percentage: 0 },
-        { group: "A+", percentage: 0 },
-        { group: "B+", percentage: 0 },
-        { group: "AB+", percentage: 0 },
-        { group: "O+", percentage: 0 },
-    ]);
-
     var currentBloodBankInventory: Record<string, number>={};
     Object.keys(listOfAllInventory).forEach((key)=>{
         if (user && role === "bloodBank" && key=== user.name){
@@ -163,32 +152,6 @@ function NewsEdit() {
 
         }
       })
-      console.log("trenutno", currentBloodBankInventory);
-   /* const fetchBloodTypeInventory = async () => {
-        const updatedBloodGroups = [...bloodGroups];
-      
-        for (const bloodGroupObj of updatedBloodGroups) {
-          const { group } = bloodGroupObj;
-      
-          try {
-            const response = await dispatch(attemptGetBloodTypeInv(user));
-            const percentage = response.payload;
-      
-            // Ažuriranje percentage u varijabli updatedBloodGroups
-            const index = updatedBloodGroups.findIndex((obj) => obj.group === group);
-            updatedBloodGroups[index] = { ...updatedBloodGroups[index], percentage };
-          } catch (error: any) {
-            // Postavljanje defaultne vrijednosti ili rukovanje greškom
-            console.error(`Error fetching blood type inventory for ${group}: ${error.message}`);
-          }
-        }
-      
-        // Ažuriranje state-a s novim podacima
-        setBloodGroups(updatedBloodGroups);
-      };
-      
-      // Pozivanje funkcije
-      //fetchBloodTypeInventory();*/
      
     return (
         <Container>

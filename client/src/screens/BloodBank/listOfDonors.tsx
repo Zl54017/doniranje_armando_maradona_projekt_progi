@@ -60,7 +60,7 @@ function PersonList() {
     function handleDeleteDonor(id: string): void {
         dispatch(attemptDeleteDonorById(id)).then((response: any) => {
             console.log(response)
-            setDeleteMessage(response.payload.message ? 'Uspješno arhiviranje donora' : 'Neuspjelo arhiviranje donora');
+            setDeleteMessage(response.payload.message || 'Neuspjelo arhiviranje donora');
             setTimeout(() => {
                 setDeleteMessage('');
             }, 5000);

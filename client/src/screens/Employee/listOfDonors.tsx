@@ -59,7 +59,7 @@ function PersonList() {
     function handleDeleteDonor(id: string): void {
         dispatch(attemptDeleteDonorById(id)).then((response: any) => {
             console.log(response)
-            setDeleteMessage(response.payload || 'Neuspjelo arhiviranje donora');
+            setDeleteMessage(response.payload.message || 'Neuspjelo arhiviranje donora');
             setTimeout(() => {
                 setDeleteMessage('');
             }, 5000);
@@ -222,7 +222,10 @@ function PersonList() {
                                     <Button onClick={() => handleDeleteDonor(donor.id)} variant="contained" style={{ backgroundColor: "#b2102f", color: "white", gap: "10px", fontSize: '0.8rem', width: '200px', height: '30px' }}>
                                         Arhiviraj donora
                                     </Button>
-                                    <Box style={{color: "#b2102f", gap: "10px", fontSize: '1.5rem', height:"30px", padding:"5px"}}>{deleteMessage}</Box>
+                                    <Box style={{ color: "#b2102f", gap: "10px", fontSize: '1.5rem', height: "30px", padding: "5px" }}>
+                                        {typeof deleteMessage === 'string' ? deleteMessage : ''}
+                                    </Box>
+
                                 </Box>
                             )}
 

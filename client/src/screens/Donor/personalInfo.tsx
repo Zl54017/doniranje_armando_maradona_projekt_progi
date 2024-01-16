@@ -117,9 +117,9 @@ function PersonalInfo() {
     let message = null;
   
     if (password.length < 8) {
-      message = "Password must be at least 8 characters long.";
+      message = "Zaporka mora imati najmanje 8 znakova.";
     } else if (!/\d/.test(password) || !/[a-zA-Z]/.test(password)) {
-      message = "Password must contain both letters and numbers.";
+      message = "Zaporka mora sadržavati kombinaciju slova i brojeva.";
     }
   
     // Update the state with the validation message
@@ -140,7 +140,6 @@ function PersonalInfo() {
   
       dispatch(attempChangePassword(passwords))
         .then((response: any) => {
-          console.log(response);
           const message = response.payload.message;
           setPasswordChangeMessage(message);
         })
@@ -289,17 +288,17 @@ function PersonalInfo() {
           </Box>
         </Box>
         <Dialog open={openChangePasswordDialog} onClose={handleCloseChangePasswordDialog}>
-          <DialogTitle>Change Password</DialogTitle>
+          <DialogTitle>Promjeni lozinku</DialogTitle>
           <DialogContent>
             <TextField
-              label="Old Password"
+              label="Stara lozinka"
               type={showPassword ? "text" : "password"}
               fullWidth
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
             />
             <TextField
-              label="New Password"
+              label="Nova lozinka"
               type={showPassword ? "text" : "password"}
               fullWidth
               value={newPassword}
@@ -313,7 +312,7 @@ function PersonalInfo() {
               error={Boolean(passwordValidationMessage)}
             />
             <TextField
-              label="Confirm New Password"
+              label="Potvrdi novu lozinku"
               type={showPassword ? "text" : "password"}
               fullWidth
               value={confirmNewPassword}
@@ -321,12 +320,12 @@ function PersonalInfo() {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseChangePasswordDialog}>Cancel</Button>
-            <Button onClick={handleChangePassword}>Change Password</Button>
+            <Button onClick={handleCloseChangePasswordDialog}>Odustani</Button>
+            <Button onClick={handleChangePassword}>Promjeni lozinku</Button>
           </DialogActions>
         </Dialog>
         <Dialog open={Boolean(passwordChangeMessage)} onClose={() => setPasswordChangeMessage(null)}>
-          <DialogTitle>Password Change Result</DialogTitle>
+          <DialogTitle>Promjena lozinke</DialogTitle>
           <DialogContent>
             <Typography>{passwordChangeMessage}</Typography>
           </DialogContent>
