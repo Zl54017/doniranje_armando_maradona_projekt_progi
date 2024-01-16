@@ -775,11 +775,14 @@ router.post("/registrations", async (req, res, next) => {
 router.get("/allBloodBanks", async (req, res, next) => {
   try {
     const bloodbanks = await db.BloodBank.findAll({
-      attributes: ["id", "name"],
+      attributes: ["id", "name", "address"],
     });
 
     const bloodbankDictionary = bloodbanks.reduce((acc, bloodbank) => {
-      acc[bloodbank.id] = bloodbank.name;
+      acc[bloodbank.id] = {
+        name: bloodbank.name,
+        address: bloodbank.address,
+      };
       return acc;
     }, {});
 
@@ -789,6 +792,7 @@ router.get("/allBloodBanks", async (req, res, next) => {
     res.status(500).json({ error: "Failed to retrieve blood banks" });
   }
 });
+
 
 /**
  * Handle the GET request to retrieve all news.
