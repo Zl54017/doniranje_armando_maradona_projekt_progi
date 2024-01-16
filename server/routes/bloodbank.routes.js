@@ -779,17 +779,15 @@ router.get("/allBloodBanks", async (req, res, next) => {
     });
 
     const bloodbankDictionary = bloodbanks.reduce((acc, bloodbank) => {
-      acc[bloodbank.id] = {
-        name: bloodbank.name,
-      };
+      acc[bloodbank.id] = bloodbank.name;
       return acc;
     }, {});
 
     res.json(bloodbankDictionary);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Failed to retrieve blood banks" });
-  }
+    res.status(500).json({ error: "Failed to retrieve blood banks" });
+  }
 });
 
 router.get("/allBloodBankz", async (req, res, next) => {
