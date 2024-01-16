@@ -552,13 +552,13 @@ router.post("/changePassword/:token", async (req, res) => {
 
     if (existingDonor && existingDonor.password !== hashedPassword) {
       return res.json({
-        message: "Incorrect password",
+        message: "Neispravna lozinka",
       });
     }
 
     if (newPassword1 !== newPassword2) {
       return res.json({
-        message: "Passwords do not match",
+        message: "Nove lozinke se ne podudaraju",
       });
     }
 
@@ -572,7 +572,7 @@ router.post("/changePassword/:token", async (req, res) => {
     await existingDonor.save();
 
     res.json({
-      message: "Password changed",
+      message: "Lozinka uspješno promjenjena",
     });
   } catch (error) {
     res.status(500).json({

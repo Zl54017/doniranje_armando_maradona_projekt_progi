@@ -775,6 +775,26 @@ router.post("/registrations", async (req, res, next) => {
 router.get("/allBloodBanks", async (req, res, next) => {
   try {
     const bloodbanks = await db.BloodBank.findAll({
+      attributes: ["id", "name"],
+    });
+
+    const bloodbankDictionary = bloodbanks.reduce((acc, bloodbank) => {
+      acc[bloodbank.id] = {
+        name: bloodbank.name,
+      };
+      return acc;
+    }, {});
+
+    res.json(bloodbankDictionary);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to retrieve blood banks" });
+  }
+});
+
+router.get("/allBloodBankz", async (req, res, next) => {
+  try {
+    const bloodbanks = await db.BloodBank.findAll({
       attributes: ["id", "name", "address"],
     });
 
