@@ -297,7 +297,7 @@ router.post("/createAction", async (req, res, next) => {
   }
 });
 
-//funkcija koja na zahtjev korisnika vraca uvid u popis donora pojedinog zavoda
+// Funkcija koja na zahtjev korisnika vraća uvid u popis donora pojedinog zavoda
 router.get("/donorsByBloodBank/:bloodBankId", async (req, res, next) => {
   try {
     const bloodBankId = req.params.bloodBankId;
@@ -312,6 +312,7 @@ router.get("/donorsByBloodBank/:bloodBankId", async (req, res, next) => {
     const donors = await db.Donor.findAll({
       where: {
         transfusionInstitute: bloodBankName,
+        email: { [Sequelize.Op.notLike]: "%(archived)" },
       },
     });
 
@@ -365,7 +366,7 @@ router.get("/minBloodGroup/:bloodType", async (req, res, next) => {
   }
 });
 
-//funkcija za filtriranje donora po svim mogucim atributima
+// Funkcija za filtriranje donora po svim mogućim atributima
 router.get("/filteredDonors", async (req, res, next) => {
   try {
     const { name, donorName, bloodType, gender, minAge, maxAge } = req.query;
@@ -396,6 +397,8 @@ router.get("/filteredDonors", async (req, res, next) => {
       whereCondition.age = { [Sequelize.Op.lte]: maxAge };
     }
 
+    whereCondition.email = { [Sequelize.Op.notLike]: "%(archived)" };
+
     const donors = await db.Donor.findAll({
       where: whereCondition,
     });
@@ -406,6 +409,7 @@ router.get("/filteredDonors", async (req, res, next) => {
     res.status(500).json({ error: "Failed to retrieve filtered donors" });
   }
 });
+
 
 // Funkcija za dodavanje zaposlenika zavoda (Employee)
 router.post("/addEmployee", async (req, res, next) => {
@@ -442,25 +446,27 @@ router.get("/bloodBankActiveActions/:bloodBankId", async (req, res, next) => {
   const bloodBankId = req.params.bloodBankId;
 
   try {
-    const currentDate = new Date();
-    const bloodBank = await db.BloodBank.findByPk(bloodBankId, {
-      include: [
-        {
-          model: db.Action,
-          as: "actions",
-          where: {
-            date: { [Sequelize.Op.gte]: currentDate }, // Dohvati akcije čiji je datum veći ili jednak od trenutnog datuma
-          },
-          order: [["date", "ASC"]],
-        },
-      ],
-    });
+    const bloodBank = await db.BloodBank.findByPk(bloodBankId);
 
     if (!bloodBank) {
       return res.status(404).json({ error: "Blood bank not found" });
     }
 
-    res.json(bloodBank.actions);
+    let currentDate = new Date();
+    let whereCondition = {
+      date: { [Sequelize.Op.gte]: currentDate },
+    };
+
+    if (bloodBank.name !== "Crveni Križ") {
+      whereCondition.bloodBankId = bloodBankId;
+    }
+
+    const actions = await db.Action.findAll({
+      where: whereCondition,
+      order: [["date", "ASC"]],
+    });
+
+    res.json(actions);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Failed to retrieve active actions" });
@@ -472,34 +478,35 @@ router.get("/bloodBankPastActions/:bloodBankId", async (req, res, next) => {
   const bloodBankId = req.params.bloodBankId;
 
   try {
-    const currentDate = new Date();
-    const bloodBank = await db.BloodBank.findByPk(bloodBankId, {
-      include: [
-        {
-          model: db.Action,
-          as: "actions",
-          where: {
-            date: { [Sequelize.Op.lt]: currentDate }, // Dohvati akcije čiji je datum manji od trenutnog datuma
-          },
-          order: [["date", "DESC"]],
-        },
-      ],
-    });
+    const bloodBank = await db.BloodBank.findByPk(bloodBankId);
 
     if (!bloodBank) {
       return res.status(404).json({ error: "Blood bank not found" });
     }
 
-    let pastActions = bloodBank.actions || []; // Provjera i zamjena ako lista nije definirana ili je prazna
+    let currentDate = new Date();
+    let whereCondition = {
+      date: { [Sequelize.Op.lt]: currentDate },
+    };
 
-    res.json(pastActions);
+    if (bloodBank.name !== "Crveni Križ") {
+      whereCondition.bloodBankId = bloodBankId;
+    }
+
+    const actions = await db.Action.findAll({
+      where: whereCondition,
+      order: [["date", "DESC"]],
+    });
+
+    res.json(actions);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Failed to retrieve past actions" });
   }
 });
 
-//funkcija za dohvacanje popisa zaposlenika zavoda po imenu zavoda
+
+// Funkcija za dohvaćanje popisa zaposlenika zavoda po imenu zavoda
 router.get("/employeesByBloodBank/:bloodBankName", async (req, res, next) => {
   try {
     const bloodBankName = req.params.bloodBankName;
@@ -518,6 +525,7 @@ router.get("/employeesByBloodBank/:bloodBankName", async (req, res, next) => {
     const employees = await db.Employee.findAll({
       where: {
         bloodBankId: bloodBankId,
+        email: { [Sequelize.Op.notLike]: "%(archived)" }, 
       },
     });
 
@@ -530,6 +538,7 @@ router.get("/employeesByBloodBank/:bloodBankName", async (req, res, next) => {
   }
 });
 
+
 // Funkcija za brisanje donora po Id-u
 router.delete("/deleteDonor/:donorId", async (req, res, next) => {
   try {
@@ -539,6 +548,10 @@ router.delete("/deleteDonor/:donorId", async (req, res, next) => {
 
     if (!donor) {
       return res.status(404).json({ error: "Donor not found" });
+    }
+
+    if (donor.email.includes("(archived)")) {
+      return res.status(400).json({ error: "Donor is already archived" });
     }
 
     donor.email = `${donor.email} (archived)`;
@@ -560,6 +573,10 @@ router.delete("/deleteEmployee/:employeeId", async (req, res, next) => {
 
     if (!employee) {
       return res.status(404).json({ error: "Employee not found" });
+    }
+
+    if (employee.email.includes("(archived)")) {
+      return res.status(400).json({ error: "Employee is already archived" });
     }
 
     employee.email = `${employee.email} (archived)`;
