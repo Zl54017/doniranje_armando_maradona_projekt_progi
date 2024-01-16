@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { attemptDeleteNews, attemptGetAllBloodBanks, attemptGetAllInventory, attemptGetBloodTypeInv, attemptGetDonors, attemptGetNews, attemptPostNews } from "../../redux/slices/authSlice";
 import { RootState, useAppDispatch } from "../../redux/store";
 import LoginInput from "../../types/inputs/user/LoginInput";
+import AddIcon from "@mui/icons-material/Add";
 
 interface NewsItem {
     id: "",
@@ -18,18 +19,19 @@ function NewsEdit() {
     const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
     const [newNews, setNewNews] = useState({ title: "", text: "", picture: "/blood.png" });
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [listOfAllInventory, setListOfAllInventory] = useState<any[]>([]);    
+    const [listOfAllInventory, setListOfAllInventory] = useState<any[]>([]);
     const [listOfDonors, setListOfDonors] = useState<any[]>([]);
-    const [filters, setFilters] = useState<LoginInput>({name: '',
-    email: '',
-    password: '',
-    bloodType: '',
-    transfusionInstitute: '',
-    numberOfDonations: '100',
-    gender: '',
-    age: 0,
-    id: 0,
-});
+    const [filters, setFilters] = useState<LoginInput>({
+        name: '',
+        email: '',
+        password: '',
+        bloodType: '',
+        transfusionInstitute: '',
+        numberOfDonations: '100',
+        gender: '',
+        age: 0,
+        id: 0,
+    });
 
 
     useEffect(() => {
@@ -48,7 +50,7 @@ function NewsEdit() {
                     const bloodBanksResponse = await dispatch(attemptGetAllBloodBanks());
                     let updatedFilters: LoginInput = { ...filters };
                     if (user.name != "Crveni Križ") {
-                            updatedFilters["transfusionInstitute"] = user.name;
+                        updatedFilters["transfusionInstitute"] = user.name;
                         setFilters(updatedFilters);
                     }
                     dispatch(attemptGetDonors(updatedFilters))
@@ -59,18 +61,18 @@ function NewsEdit() {
                             console.error(error)
                         });
                 }
-                else if (user && role === "employee"){
-                  const bloodBanksResponse = await dispatch(attemptGetAllBloodBanks());
-                  let updatedFilters: LoginInput = { ...filters };
-                  updatedFilters["transfusionInstitute"] = bloodBanksResponse.payload[user.bloodBankId];
-                  setFilters(updatedFilters);
-                  dispatch(attemptGetDonors(updatedFilters))
-                      .then((response: any) => {
-                          setListOfDonors(response.payload || []);
-                      })
-                      .catch((error: any) => {
-                          console.error(error)
-                      });
+                else if (user && role === "employee") {
+                    const bloodBanksResponse = await dispatch(attemptGetAllBloodBanks());
+                    let updatedFilters: LoginInput = { ...filters };
+                    updatedFilters["transfusionInstitute"] = bloodBanksResponse.payload[user.bloodBankId];
+                    setFilters(updatedFilters);
+                    dispatch(attemptGetDonors(updatedFilters))
+                        .then((response: any) => {
+                            setListOfDonors(response.payload || []);
+                        })
+                        .catch((error: any) => {
+                            console.error(error)
+                        });
                 }
             } catch (error) {
                 console.error("Error", error);
@@ -142,28 +144,44 @@ function NewsEdit() {
             });
     };
 
-    var currentBloodBankInventory: Record<string, number>={};
-    Object.keys(listOfAllInventory).forEach((key)=>{
-        if (user && role === "bloodBank" && key=== user.name){
-              currentBloodBankInventory = listOfAllInventory[key as keyof typeof listOfAllInventory]
+    const handleShortageNews = (bloodType: any) => {
+        setNewNews({
+            title: `Hitna potreba za krvnom grupom ${bloodType}!`,
+            text: `Hitno nam je potrebna vaša pomoć! Primjetili smo nedostatak krvne grupe ${bloodType}. Molimo sve dobrovoljne darivatelje s tom krvnom grupom da se jave i doniraju krv kako bismo pomogli onima kojima je to najpotrebnije.`,
+            picture: "/blood.png",
+        });
+        setIsDialogOpen(true);
+    };
+
+    var currentBloodBankInventory: Record<string, number> = {};
+    Object.keys(listOfAllInventory).forEach((key) => {
+        if (user && role === "bloodBank" && key === user.name) {
+            currentBloodBankInventory = listOfAllInventory[key as keyof typeof listOfAllInventory]
         }
-        else if (user && role === "employee" && key=== listOfDonors[0].transfusionInstitute){
-          currentBloodBankInventory = listOfAllInventory[key as keyof typeof listOfAllInventory]
+        else if (user && role === "employee" && key === listOfDonors[0].transfusionInstitute) {
+            currentBloodBankInventory = listOfAllInventory[key as keyof typeof listOfAllInventory]
 
         }
-      })
-     
+    })
+
     return (
         <Container>
             {/* Blood Groups */}
             <Box marginTop={2} display="flex" justifyContent="space-between">
-  {Object.keys(currentBloodBankInventory).map((key) => (
-    <Box key={key} textAlign="center">
-      <img src={`/blood.png`} alt={key} width={50} height={50} />
-      <Typography>{`${key}: ${currentBloodBankInventory[key as keyof typeof currentBloodBankInventory]}L`}</Typography>
-    </Box>
-  ))}
-</Box>
+                {Object.keys(currentBloodBankInventory).map((key) => (
+                    <Box key={key} textAlign="center">
+                        <img src={`/blood.png`} alt={key} width={50} height={50} />
+                        <Typography>{`${key}: ${currentBloodBankInventory[key as keyof typeof currentBloodBankInventory]}L`}</Typography>
+                        <Button
+                            variant="contained"
+                            style={{ width: "30px", height: "30px", minWidth: "unset", borderRadius: "50%", backgroundColor: "#b2102f", color: "white", padding: 0 }}
+                            onClick={() => handleShortageNews(key)}
+                        >
+                            <AddIcon />
+                        </Button>
+                    </Box>
+                ))}
+            </Box>
 
 
             {/* News */}

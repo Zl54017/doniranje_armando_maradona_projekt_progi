@@ -194,7 +194,6 @@ function Map() {
       .catch((error) => {
         // Check the error response from the backend
         if (error.payload && error.payload.title && error.payload.text) {
-          // Handle registration failure with specific error message
           setDialogContent({
             title: error.payload.title,
             message: error.payload.text,
@@ -274,9 +273,9 @@ function Map() {
               component="a"
               onClick={() => handleDonationClick(action)}
               sx={{
-                border: "2px solid #b2102f", // Red border around each action
-                borderRadius: 5, // Optional: Add border radius
-                marginBottom: 2, // Optional: Add margin between actions
+                border: "2px solid #b2102f",
+                borderRadius: 5,
+                marginBottom: 2,
               }}
             >
                 <ListItemText
