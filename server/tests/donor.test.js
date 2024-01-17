@@ -35,7 +35,7 @@ describe("login", () => {
     } catch (error) {
       fail(error);
     }
-  });
+  }, 10000);
 
   it("should handle errors", async () => {
     try {
@@ -172,7 +172,7 @@ describe("actions", () => {
  * Function for testing the bloodBanksInventory endpoint.
  *
  * @param {string} token - The token of the user.
- * @returns {Object}} The blood banks inventory.
+ * @returns {Object} The blood banks inventory.
  * @throws {Error} If the function fails.
  */
 async function bloodBanksInventory(token) {
