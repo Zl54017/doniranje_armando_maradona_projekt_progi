@@ -398,10 +398,41 @@ async function testForFE() {
   await daysUntilNextDonation(token);
 }
 
-async function temp() {
-  var token = await login("DinoCiani@gmail.com", "password");
+async function deleteFAQ(token, id) {
+  const url = `${address}bloodbank/deleteFAQ/${token}`;
 
-  await actionRegistration(token, 26);
+  const requestBody = {
+    faqId: id,
+  };
+
+  try {
+    const response = await axios.post(url, requestBody);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function deleteNews(token, id) {
+  const url = `${address}bloodbank/deleteNews/${token}`;
+
+  const requestBody = {
+    newsId: id,
+  };
+
+  try {
+    const response = await axios.post(url, requestBody);
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+async function temp() {
+  var token = await login("KBCOsijek@gmail.com", "password");
+
+  await deleteNews(token, 6);
+  await deleteNews(token, 8);
+  await deleteNews(token, 11);
 }
 
 temp();

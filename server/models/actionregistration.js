@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      ActionRegistration.belongsTo(models.Action, { foreignKey: "actionId" });
     }
   }
   ActionRegistration.init(

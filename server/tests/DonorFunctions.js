@@ -1,6 +1,7 @@
 const axios = require("axios");
 
-const address = "https://donationsbe.onrender.com/";
+var address = "https://donationsbe.onrender.com/";
+address = "http://localhost:5000/";
 
 ///Donor (sudionik) može:
 

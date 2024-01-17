@@ -304,13 +304,13 @@ router.post("/actionRegistration/:token", async (req, res, next) => {
             title: "Neuspješna prijava",
             text: "Davatelj krvi treba pričekati 90 dana nakon zadnje donacije.",
           });
-        } else if (donor.gender == "F") {
-          if (daysBetweenDonationAndAction < 120) {
-            return res.json({
-              title: "Neuspješna prijava",
-              text: "Davatelj krvi treba pričekati 120 dana nakon zadnje donacije.",
-            });
-          }
+        }
+      } else if (donor.gender == "F") {
+        if (daysBetweenDonationAndAction < 120) {
+          return res.json({
+            title: "Neuspješna prijava",
+            text: "Davatelj krvi treba pričekati 120 dana nakon zadnje donacije.",
+          });
         }
       }
     }
@@ -327,6 +327,50 @@ router.post("/actionRegistration/:token", async (req, res, next) => {
         title: "Neuspješna prijava",
         text: "Već ste prijavljeni na ovu akciju.",
       });
+    }
+
+    const existingRegisteredActions = await db.Action.findAll({
+      include: [
+        {
+          model: db.ActionRegistration,
+          where: {
+            donorId: decoded.id,
+          },
+        },
+      ],
+      where: {
+        date: {
+          [db.Sequelize.Op.gte]: new Date(),
+        },
+      },
+    });
+
+    var minDaysBetweenActions = 200;
+    for (const existingRegisteredAction of existingRegisteredActions) {
+      const daysBetweenActions = Math.floor(
+        Math.abs(action.date - existingRegisteredAction.date) /
+          (1000 * 60 * 60 * 24)
+      );
+
+      if (daysBetweenActions < minDaysBetweenActions) {
+        minDaysBetweenActions = daysBetweenActions;
+      }
+    }
+
+    if (donor.gender == "M") {
+      if (minDaysBetweenActions < 90) {
+        return res.json({
+          title: "Neuspješna prijava",
+          text: "Davatelj krvi treba pričekati 90 dana između akcija.",
+        });
+      }
+    } else if (donor.gender == "F") {
+      if (minDaysBetweenActions < 120) {
+        return res.json({
+          title: "Neuspješna prijava",
+          text: "Davatelj krvi treba pričekati 120 dana između akcija.",
+        });
+      }
     }
 
     const newActionRegistration = await db.ActionRegistration.create({

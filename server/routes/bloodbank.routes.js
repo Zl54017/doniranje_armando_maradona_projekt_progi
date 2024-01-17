@@ -410,7 +410,6 @@ router.get("/filteredDonors", async (req, res, next) => {
   }
 });
 
-
 // Funkcija za dodavanje zaposlenika zavoda (Employee)
 router.post("/addEmployee", async (req, res, next) => {
   try {
@@ -505,7 +504,6 @@ router.get("/bloodBankPastActions/:bloodBankId", async (req, res, next) => {
   }
 });
 
-
 // Funkcija za dohvaćanje popisa zaposlenika zavoda po imenu zavoda
 router.get("/employeesByBloodBank/:bloodBankName", async (req, res, next) => {
   try {
@@ -525,7 +523,7 @@ router.get("/employeesByBloodBank/:bloodBankName", async (req, res, next) => {
     const employees = await db.Employee.findAll({
       where: {
         bloodBankId: bloodBankId,
-        email: { [Sequelize.Op.notLike]: "%(archived)" }, 
+        email: { [Sequelize.Op.notLike]: "%(archived)" },
       },
     });
 
@@ -537,7 +535,6 @@ router.get("/employeesByBloodBank/:bloodBankName", async (req, res, next) => {
       .json({ error: "Failed to retrieve employees by blood bank" });
   }
 });
-
 
 // Funkcija za brisanje donora po Id-u
 router.delete("/deleteDonor/:donorId", async (req, res, next) => {
@@ -708,13 +705,15 @@ router.get("/getDonorsForAction/:actionId", async (req, res, next) => {
     });
 
     if (!registrations || registrations.length === 0) {
-      return res.status(404).json({ error: "No donors found for the specified action" });
+      return res
+        .status(404)
+        .json({ error: "No donors found for the specified action" });
     }
 
     const donorIds = registrations.map((registration) => registration.donorId);
 
     const donors = await db.Donor.findAll({
-      attributes: ['id', 'name'],
+      attributes: ["id", "name"],
       where: { id: donorIds },
     });
 
@@ -723,7 +722,9 @@ router.get("/getDonorsForAction/:actionId", async (req, res, next) => {
     res.json(donorNames);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Failed to get donors for the specified action" });
+    res
+      .status(500)
+      .json({ error: "Failed to get donors for the specified action" });
   }
 });
 
@@ -803,8 +804,8 @@ router.get("/allBloodBanks", async (req, res, next) => {
     res.json(bloodbankDictionary);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Failed to retrieve blood banks" });
-  }
+    res.status(500).json({ error: "Failed to retrieve blood banks" });
+  }
 });
 
 router.get("/allBloodBankz", async (req, res, next) => {
@@ -827,7 +828,6 @@ router.get("/allBloodBankz", async (req, res, next) => {
     res.status(500).json({ error: "Failed to retrieve blood banks" });
   }
 });
-
 
 /**
  * Handle the GET request to retrieve all news.
@@ -1056,6 +1056,86 @@ router.put("/editNews/:newsId", async (req, res, next) => {
   }
 });
 
+/**
+ * POST request to delete FAQ by id
+ */
+router.post("/deleteFAQ/:token", async (req, res, next) => {
+  const decoded = decode.jwtDecode(req.params.token);
+  try {
+    const bloodBank = await db.BloodBank.findOne({
+      where: {
+        id: decoded.id,
+      },
+    });
 
+    const employee = await db.Employee.findOne({
+      where: {
+        id: decoded.id,
+      },
+    });
+
+    if (!bloodBank && !employee) {
+      return res.status(404).json({ error: "Blood bank not found" });
+    }
+
+    const { faqId } = req.body;
+
+    if (!faqId) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const faq = await db.FAQ.destroy({
+      where: {
+        id: faqId,
+      },
+    });
+
+    res.json({ message: "FAQ deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to delete FAQ" });
+  }
+});
+
+/**
+ * POST request to delete News by id
+ */
+router.post("/deleteNews/:token", async (req, res, next) => {
+  const decoded = decode.jwtDecode(req.params.token);
+  try {
+    const bloodBank = await db.BloodBank.findOne({
+      where: {
+        id: decoded.id,
+      },
+    });
+
+    const employee = await db.Employee.findOne({
+      where: {
+        id: decoded.id,
+      },
+    });
+
+    if (!bloodBank && !employee) {
+      return res.status(404).json({ error: "Blood bank not found" });
+    }
+
+    const { newsId } = req.body;
+
+    if (!newsId) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const news = await db.News.destroy({
+      where: {
+        id: newsId,
+      },
+    });
+
+    res.json({ message: "News deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to delete news" });
+  }
+});
 
 module.exports = router;
