@@ -163,8 +163,22 @@ export default function Statistics(props: any) {
 
     }
   })
-  const yAxisData3 = bloodTypes.map(bloodType => currentBloodBankInventory[bloodType]);
+  var summary: Record<string, number> = {};
 
+  Object.keys(listOfAllInventory).forEach((hospital) => {
+    Object.keys(listOfAllInventory[hospital as keyof typeof listOfAllInventory]).forEach((bloodType) => {
+      summary[bloodType] = (summary[bloodType] || 0) + listOfAllInventory[hospital as keyof typeof listOfAllInventory][bloodType];
+    });
+  });
+  var yAxisData3;
+  if (user?.name === "Crveni Križ"){
+    yAxisData3 = bloodTypes.map(bloodType => summary[bloodType]);
+
+  }
+  else {
+    yAxisData3 = bloodTypes.map(bloodType => currentBloodBankInventory[bloodType]);
+
+  }
   return (
     <Container>
       <Box style={{
@@ -250,13 +264,26 @@ export default function Statistics(props: any) {
             height={300}
             colors={blueberryTwilightPaletteLight}
           />
+        
         </Box>
-        <Box> <Typography variant="h5"
-          align="center"
-          color="text.secondary"
-          component="p">
-          Graf količine krvi po zavodu u litrama
-        </Typography>
+        <Box> 
+        {user?.name === "Crveni Križ" && (
+            <Typography variant="h5"
+            align="center"
+            color="text.secondary"
+            component="p">
+            Graf količine krvi u svim zavodima u litrama
+          </Typography>
+          )}
+          {user?.name !== "Crveni Križ" && (
+            <Typography variant="h5"
+            align="center"
+            color="text.secondary"
+            component="p">
+            Graf količine krvi po zavodu u litrama
+          </Typography>
+          )}
+
           <BarChart
             xAxis={[
               {
