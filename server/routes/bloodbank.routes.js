@@ -20,6 +20,10 @@ router.get("/", async (req, res, next) => {});
 
 /**
  * Handle the POST request to retrieve inventory of blood
+ * for a specific blood bank.
+ * Returns a JSON object with blood types as keys and
+ * quantities in liters as values.
+ * Returns an error message if the request fails.
  */
 router.post("/inventory/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);
@@ -730,6 +734,8 @@ router.get("/getDonorsForAction/:actionId", async (req, res, next) => {
 
 /**
  * Handle the POST request to add a donation.
+ * Returns a JSON object with the donation data.
+ * Returns an error message if the request fails.
  */
 router.post("/addDonation/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);
@@ -769,6 +775,8 @@ router.post("/addDonation/:token", async (req, res, next) => {
 
 /**
  * Handle the POST request to see all registrations for an action.
+ * Returns a JSON object with the registration data.
+ * Returns an error message if the request fails.
  */
 router.post("/registrations", async (req, res, next) => {
   try {
@@ -789,6 +797,8 @@ router.post("/registrations", async (req, res, next) => {
 
 /**
  * Handle the GET request to retrieve all blood banks for selection (id and names).
+ * Returns a JSON object with blood bank ids as keys and names as values.
+ * Returns an error message if the request fails.
  */
 router.get("/allBloodBanks", async (req, res, next) => {
   try {
@@ -831,6 +841,8 @@ router.get("/allBloodBankz", async (req, res, next) => {
 
 /**
  * Handle the GET request to retrieve all news.
+ * Returns a JSON object with news data.
+ * Returns an error message if the request fails.
  */
 router.get("/news", async (req, res, next) => {
   try {
@@ -847,6 +859,8 @@ router.get("/news", async (req, res, next) => {
 
 /**
  * Handle the GET request to retrieve all faq.
+ * Returns a JSON object with faq data.
+ * Returns an error message if the request fails.
  */
 router.get("/faq", async (req, res, next) => {
   try {
@@ -863,6 +877,8 @@ router.get("/faq", async (req, res, next) => {
 
 /**
  * Handle the POST request to add news.
+ * Returns a JSON object with the news data.
+ * Returns an error message if the request fails.
  */
 router.post("/addNews/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);
@@ -904,6 +920,8 @@ router.post("/addNews/:token", async (req, res, next) => {
 
 /**
  * Handle the POST request to add FAQ.
+ * Returns a JSON object with the FAQ data.
+ * Returns an error message if the request fails.
  */
 router.post("/addFAQ/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);
@@ -944,6 +962,8 @@ router.post("/addFAQ/:token", async (req, res, next) => {
 
 /**
  * Handle the GET request to retrieve all donors.
+ * Returns a JSON object with donor data.
+ * Returns an error message if the request fails.
  */
 router.get("/allDonors/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);
@@ -959,6 +979,8 @@ router.get("/allDonors/:token", async (req, res, next) => {
 
 /**
  * Handle the GET request to retrieve inventory of blood from all blood banks.
+ * Returns a JSON object with blood bank names as keys and blood type counts as values.
+ * Returns an error message if the request fails.
  */
 router.get("/allInventory/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);
@@ -1058,6 +1080,8 @@ router.put("/editNews/:newsId", async (req, res, next) => {
 
 /**
  * POST request to delete FAQ by id
+ * Returns a JSON object with the message "FAQ deleted successfully".
+ * Returns an error message if the request fails.
  */
 router.post("/deleteFAQ/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);
@@ -1099,6 +1123,8 @@ router.post("/deleteFAQ/:token", async (req, res, next) => {
 
 /**
  * POST request to delete News by id
+ * Returns a JSON object with the message "News deleted successfully".
+ * Returns an error message if the request fails.
  */
 router.post("/deleteNews/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);

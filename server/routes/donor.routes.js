@@ -21,6 +21,9 @@ const certificate = require("../models/certificate");
 /**
  * Handle the POST request for deleting a donor.
  * Adds the word "archived" to the donor's email.
+ *
+ * Returns an error if the donor is not found.
+ * Returns a success message if the donor is successfully archived.
  */
 router.post("/delete/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);
@@ -32,10 +35,8 @@ router.post("/delete/:token", async (req, res, next) => {
       },
     });
 
-    // Add the word "archived" to the donor's email
     const archivedEmail = `${donor.email} (archived)`;
 
-    // Update the donor's email in the database
     await donor.update({
       email: archivedEmail,
     });
@@ -54,6 +55,7 @@ router.post("/delete/:token", async (req, res, next) => {
 /**
  * Handle the POST request to retrieve a donor's donations.
  * Returns a list of donations.
+ * Returns an error if the donor is not found.
  */
 router.post("/donations/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);
@@ -78,7 +80,8 @@ router.post("/donations/:token", async (req, res, next) => {
 
 /**
  * Handle the POST request to retrieve the number of days since the donors last donation.
- * Returns the number of days since the donors last donation
+ * Returns the number of days since the donors last donation.
+ * Returns an error if the donor is not found.
  */
 router.post("/lastDonationDays/:token", async (req, res, next) => {
   try {
@@ -125,7 +128,8 @@ router.post("/lastDonationDays/:token", async (req, res, next) => {
 
 /**
  * Handle the GET request to retrieve the number of days the donor has to wait until another donation.
- * Returns the number of days until the donor can donate again
+ * Returns the number of days until the donor can donate again.
+ * Returns an error if the donor is not found.
  */
 router.get("/daysUntilNextDonation/:token", async (req, res, next) => {
   try {
@@ -190,6 +194,7 @@ router.get("/daysUntilNextDonation/:token", async (req, res, next) => {
 /**
  * Handle the POST request to retrieve all actions from donor's institute.
  * Returns a list of actions.
+ * Returns an error if the donor is not found.
  */
 router.post("/actions/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);
@@ -219,8 +224,9 @@ router.post("/actions/:token", async (req, res, next) => {
 });
 
 /**
- * Handle the GET request to retrieve all actions.
+ * Handle the GET request to retrieve all actions for a specific blood bank.
  * Returns a list of actions.
+ * Returns an error if the blood bank is not found.
  */
 router.get("/allActions/:bloodBankName", async (req, res, next) => {
   const { bloodBankName } = req.params;
@@ -261,6 +267,12 @@ router.get("/allActions/:bloodBankName", async (req, res, next) => {
 /**
  * Handle the POST request for action registration.
  * Creates a new action registration and returns a response.
+ * Checks if the donor is already registered for the action.
+ * Checks if there is enough time between the last donation and the action.
+ * Checks if there is enough time between the actions.
+ * Returns an error if the donor is not found.
+ * Returns an error if the action is not found.
+ * Returns a success message if the donor is successfully registered for the action.
  */
 router.post("/actionRegistration/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);
@@ -393,6 +405,7 @@ router.post("/actionRegistration/:token", async (req, res, next) => {
 /**
  * Handle the POST request to retrieve inventory of blood of all blood types in all blood banks.
  * Returns a list of blood banks and their inventory.
+ * Returns an error if failed to retrieve inventory.
  */
 router.post("/bloodBanksInventory/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);
@@ -443,6 +456,7 @@ router.post("/bloodBanksInventory/:token", async (req, res, next) => {
 /**
  * Handle the GET request to retrieve inventory of blood of the donors blood type in all blood banks.
  * Returns a number of liters of blood.
+ * Returns an error if failed to retrieve inventory.
  */
 router.get("/inventoryOfBloodType/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);
@@ -496,6 +510,8 @@ router.get("/inventoryOfBloodType/:token", async (req, res, next) => {
 /**
  * Handle the POST request to change the donor's information.
  * Returns the updated donor.
+ * Returns an error if the donor is not found.
+ * Returns an error if the donor with the new email already exists.
  */
 router.post("/change/:token", async (req, res) => {
   const decoded = decode.jwtDecode(req.params.token);
@@ -577,6 +593,9 @@ router.post("/change/:token", async (req, res) => {
 
 /**
  * Handle the POST request for changing the donor's password.
+ * Checks if the old password is correct.
+ * Checks if the new passwords match.
+ * Returns an error if the donor is not found.
  */
 router.post("/changePassword/:token", async (req, res) => {
   const decoded = decode.jwtDecode(req.params.token);
@@ -627,6 +646,8 @@ router.post("/changePassword/:token", async (req, res) => {
 
 /**
  * Handle the POST for retrieving the donor's certificates.
+ * Returns a list of certificates.
+ * Returns an error if the donor is not found.
  */
 router.post("/awards/:token", async (req, res, next) => {
   const decoded = decode.jwtDecode(req.params.token);

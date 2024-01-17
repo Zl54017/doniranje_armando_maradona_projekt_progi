@@ -430,9 +430,7 @@ async function deleteNews(token, id) {
 async function temp() {
   var token = await login("KBCOsijek@gmail.com", "password");
 
-  await deleteNews(token, 6);
-  await deleteNews(token, 8);
-  await deleteNews(token, 11);
+  await addDonation(token, 86, "", new Date(), "Osijek");
 }
 
 temp();

@@ -17,8 +17,12 @@ const jwt = require("jsonwebtoken");
 const decode = require("jwt-decode");
 
 /**
- * Create a new donor.
+ * POST method for creating a new donor.
  * Checks if donor with given email already exists.
+ * Hashes password.
+ * Returns 401 if donor with given email already exists.
+ * Returns 500 if error occurs while creating donor.
+ * Returns 200 and token if donor is created successfully.
  */
 router.post("/", async (req, res) => {
   const {

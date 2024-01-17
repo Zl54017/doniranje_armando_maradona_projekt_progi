@@ -26,9 +26,9 @@ router.get("/:token", async (req, res, next) => {
     });
     res.json({
       user: donor,
-      role: 'donor',
+      role: "donor",
       token: req.params.token,
-    })
+    });
   } else if (decoded.role === "employee") {
     const employee = await db.Employee.findOne({
       where: {
@@ -37,22 +37,25 @@ router.get("/:token", async (req, res, next) => {
     });
     res.json({
       user: employee,
-      role: 'employee',
+      role: "employee",
       token: req.params.token,
-    })
-
+    });
   } else {
     res.status(404).json({
-      message: "Decode failed"
+      message: "Decode failed",
     });
   }
 });
 
+/**
+ * POST method for login.
+ * Finds user in database and returns token.
+ * Checks donor, bloodbank and employee tables.ž
+ * Returns 401 if login fails.
+ * Returns 200 and token if login succeeds.
+ */
 router.post("/", async (req, res) => {
-  const {
-    email,
-    password
-  } = req.body;
+  const { email, password } = req.body;
 
   const hashedPassword = crypto
     .createHash("sha256")
