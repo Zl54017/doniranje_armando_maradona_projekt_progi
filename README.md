@@ -6,6 +6,7 @@ Testni podaci:  <br>
 Donor - username: LukaModrić@gmail.com, password: password<br>
 BloodBank - username: KBCOsijek@gmail.com, password: password<br>
 Employees - username: RenatoMatić@gmail.com, password: password<br>
+RedCross - username: CrveniKriž@gmail.com, password: password<br>
 
 # Opis projektnog zadatka:
 Ovaj projekt je reultat timskog rada u sklopu projeknog zadatka kolegija [Programsko inženjerstvo](https://www.fer.unizg.hr/predmet/proinz) na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu.
