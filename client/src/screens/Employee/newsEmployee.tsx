@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Box, Container, Grid, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";
 import { useSelector } from "react-redux";
-import { attemptDeleteNews, attemptGetAllBloodBanks, attemptGetAllInventory, attemptGetBloodTypeInv, attemptGetDonors, attemptGetNews, attemptPostNews } from "../../redux/slices/authSlice";
+import { attemptDeleteNews, attemptGetAllBloodBanks, attemptGetAllInventory, attemptGetBloodBankDetails, attemptGetBloodTypeInv, attemptGetDonors, attemptGetNews, attemptPostNews } from "../../redux/slices/authSlice";
 import { RootState, useAppDispatch } from "../../redux/store";
 import LoginInput from "../../types/inputs/user/LoginInput";
 import AddIcon from "@mui/icons-material/Add";
+import BloodBank from ".";
 
 interface NewsItem {
     id: "",
@@ -125,6 +126,11 @@ function NewsEdit() {
 
     const handleCloseDialog = () => {
         setIsDialogOpen(false);
+        setNewNews({
+            title: "",
+            text: "",
+            picture: "/red-blood-cells.png",
+        })
     };
 
     const handleDeleteNews = (newsId: any) => {
@@ -145,11 +151,15 @@ function NewsEdit() {
     };
 
     const handleShortageNews = (bloodType: any) => {
-        setNewNews({
-            title: `Hitna potreba za krvnom grupom ${bloodType}!`,
-            text: `Hitno nam je potrebna vaša pomoć! Primjetili smo nedostatak krvne grupe ${bloodType}. Molimo sve dobrovoljne darivatelje s tom krvnom grupom da se jave i doniraju krv kako bismo pomogli onima kojima je to najpotrebnije.`,
-            picture: "/blood.png",
-        });
+        dispatch(attemptGetBloodBankDetails())
+            .then((response) => {
+                const bloodBanky = response.payload;
+                setNewNews({
+                    title: `Hitna potreba za krvnom grupom ${bloodType} u zavodu ${bloodBanky?.name}!`,
+                    text: `Hitno nam je potrebna vaša pomoć! Primjetili smo nedostatak krvne grupe ${bloodType}. Molimo sve dobrovoljne darivatelje s tom krvnom grupom da se jave i doniraju krv kako bismo pomogli onima kojima je to najpotrebnije.`,
+                    picture: "/red-blood-cells.png",
+                });
+            })
         setIsDialogOpen(true);
     };
 

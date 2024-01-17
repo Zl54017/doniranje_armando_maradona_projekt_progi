@@ -333,11 +333,9 @@ function Actions() {
                             <Grid item xs={12} sm={6}>
                             </Grid>
                             <Grid item xs={12} sm={6}>
-                              <Button onClick={handleNewAction} variant="contained" style={{ backgroundColor: "#b2102f", color: "white", gap: "10px" }}>
+                              <Button onClick={handleNewAction} variant="contained" style={{ backgroundColor: "#b2102f", color: "white", gap: "10px", marginRight: "2px" }}>
                                 Spremi Akciju
                               </Button>
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
                               <Button onClick={handleCloseDialog} variant="contained" style={{ backgroundColor: "#b2102f", color: "white", gap: "30px" }}>
                                 Otkaži
                               </Button>

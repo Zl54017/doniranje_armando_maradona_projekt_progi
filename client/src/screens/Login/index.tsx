@@ -52,8 +52,21 @@ export default function Login() {
   const { register, handleSubmit } = useForm<LoginInput>();
   const { user, role } = useSelector((state: RootState) => state.auth);
 
+  const [error, setError] = React.useState<string | null>(null);
+
   const onSubmit = (response: LoginInput) => {
-    dispatch(attemptLogin(response));
+    dispatch(attemptLogin(response))
+      .then((response) => {
+        if (response.payload === undefined) {
+          console.log(response);
+          setError("Neispravno korisničko ime ili lozinka");
+        } else {
+          setError(null);
+        }
+      })
+      .catch((error) => {
+        setError("Neispravno korisničko ime ili lozinka");
+      });
   };
 
   React.useEffect(() => {
@@ -123,7 +136,11 @@ export default function Login() {
               id="password"
               autoComplete="current-password"
             />
-
+            {error && (
+              <Typography variant="body2" color="error" align="center">
+                {error}
+              </Typography>
+            )}
             <Button
               type="submit"
               fullWidth

@@ -180,6 +180,7 @@ function MyForm() {
                                                     <TextField
                                                         label="Ime"
                                                         name="firstName"
+                                                        required
                                                         value={formData.firstName}
                                                         onChange={handleInputChange}
                                                         fullWidth
@@ -190,6 +191,7 @@ function MyForm() {
                                                     <TextField
                                                         label="Prezime"
                                                         name="lastName"
+                                                        required
                                                         value={formData.lastName}
                                                         onChange={handleInputChange}
                                                         fullWidth
@@ -201,6 +203,7 @@ function MyForm() {
                                                 label="Email"
                                                 name="email"
                                                 type="email"
+                                                required
                                                 value={formData.email}
                                                 onChange={handleInputChange}
                                                 fullWidth
@@ -210,6 +213,7 @@ function MyForm() {
                                                 label="Lozinka"
                                                 name="password"
                                                 type="password"
+                                                required
                                                 value={formData.password}
                                                 onChange={handleInputChange}
                                                 fullWidth

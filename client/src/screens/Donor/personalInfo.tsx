@@ -304,10 +304,8 @@ function PersonalInfo() {
               value={newPassword}
               onChange={(e) => {
                 setNewPassword(e.target.value);
-                // Add password validation logic here
                 validatePassword(e.target.value);
               }}
-              // Add helper text and error state
               helperText={passwordValidationMessage}
               error={Boolean(passwordValidationMessage)}
             />

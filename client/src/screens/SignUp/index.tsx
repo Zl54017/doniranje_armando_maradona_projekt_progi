@@ -56,13 +56,29 @@ function SignUp() {
   const location = useLocation();
   const { register, handleSubmit } = useForm<RegisterInput>();
   const { user, role } = useSelector((state: RootState) => state.auth);
-
+  const [passwordValidationMessage, setPasswordValidationMessage] = useState<string | null>(null);
   const [registrationType, setRegistrationType] = useState("");
   const ageOptions = Array.from({ length: 48 }, (_, index) => 18 + index);
 
 
   const onSubmit = (response: RegisterInput) => {
-    dispatch(attemptRegister(response));
+    if (!passwordValidationMessage) {
+      dispatch(attemptRegister(response));
+    }
+  };
+
+  const validatePassword = (password: string) => {
+    // Add your password validation logic here
+    let message = null;
+
+    if (password.length < 8) {
+      message = "Zaporka mora imati najmanje 8 znakova.";
+    } else if (!/\d/.test(password) || !/[a-zA-Z]/.test(password)) {
+      message = "Zaporka mora sadržavati kombinaciju slova i brojeva.";
+    }
+
+    // Update the state with the validation message
+    setPasswordValidationMessage(message);
   };
 
   React.useEffect(() => {
@@ -153,6 +169,9 @@ function SignUp() {
                   label="Lozinka"
                   name="password"
                   autoComplete="password"
+                  onChange={(e) => { validatePassword(e.target.value); }}
+                  helperText={passwordValidationMessage}
+                  error={Boolean(passwordValidationMessage)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -166,10 +185,10 @@ function SignUp() {
                   name="age"
                 >
                   {ageOptions.map((age) => (
-              <MenuItem key={age} value={age}>
-                {age}
-              </MenuItem>
-            ))}
+                    <MenuItem key={age} value={age}>
+                      {age}
+                    </MenuItem>
+                  ))}
                 </Select>
               </Grid>
               <Grid item xs={12}>

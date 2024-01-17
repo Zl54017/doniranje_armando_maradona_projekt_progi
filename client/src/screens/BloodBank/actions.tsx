@@ -99,6 +99,10 @@ function Actions() {
       date: dateTime || null,
       minNumOfDonors: user?.minNumOfDonors || 0,
     };
+    if(isRedCross){
+      const indeks = bloodBankList.findIndex(bolnica => bolnica.name === selectedBloodBank);
+      actionInput.bloodBankId = indeks;
+    }
 
     dispatch(attemptNewAction(actionInput))
       .then((response: any) => {
@@ -181,8 +185,6 @@ function Actions() {
     const selectedBloodBankInfo = bloodBankList.find(
       (bank: any) => bank.name.toLowerCase() === event.target.value.toLowerCase()
     );
-    console.log('Selected Blood Bank Info:', selectedBloodBankInfo);
-    console.log(event.target.value);
 
     setActionInfo({
       name: selectedBloodBankInfo?.name,

@@ -40,8 +40,14 @@ const attemptRegister = createAsyncThunk(
 
 const attemptAddEmployee = createAsyncThunk(
   "auth/addEmployeeStatus",
-  async (user: Employee) => {
-    const response = await authService.addEmployee(user);
+  async (user: any) => {
+    const employee = {
+      name: user.name,
+      email: user.email,
+      password: user.password,
+      bloodBankId: user.bloodBankId,
+    }
+    const response = await authService.addEmployee(employee);
     return response.data;
   }
 );
@@ -251,8 +257,14 @@ const attemptDeleteEmployeeById = createAsyncThunk(
 
 const attemptDeleteFAQ = createAsyncThunk(
   "auth/deleteFAQStatus", async (faqId: string) => {
-    const response = await authService.deleteFAQ(faqId);
-    return response.data;
+    const token = localStorageUtility.getAuthToken();
+    if(token){
+      const body = {
+        faqId: faqId,
+      }
+      const response = await authService.deleteFAQ(token, body);
+      return response.data;
+    }
   }
 );
 
@@ -287,8 +299,14 @@ const attemptEditedFAQ = createAsyncThunk(
 
 const attemptDeleteNews = createAsyncThunk(
   "auth/deleteNewsStatus", async (newsId: string) => {
-    const response = await authService.deleteFAQ(newsId);
-    return response.data;
+    const token = localStorageUtility.getAuthToken();
+    if(token){
+      const body = {
+        newsId: newsId,
+      }
+      const response = await authService.deleteNews(token, body);
+      return response.data;
+    }
   }
 );
 
