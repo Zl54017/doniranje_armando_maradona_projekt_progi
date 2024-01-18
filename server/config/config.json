@@ -1,0 +1,41 @@
+{
+  "development": {
+    "username": "armando",
+    "password": "wGPkY69e2aROm7uQyvHuc46FvFYzG8p8",
+    "database": "donations_db",
+    "host": "dpg-clod580gqk6s73e78hr0-a.frankfurt-postgres.render.com",
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false 
+      }
+    }
+  },
+  "test": {
+    "username": "armando",
+    "password": "wGPkY69e2aROm7uQyvHuc46FvFYzG8p8",
+    "database": "donations_db",
+    "host": "dpg-clod580gqk6s73e78hr0-a.frankfurt-postgres.render.com",
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false 
+      }
+    }
+  },
+  "production": {
+    "username": "armando",
+    "password": "wGPkY69e2aROm7uQyvHuc46FvFYzG8p8",
+    "database": "donations_db",
+    "host": "dpg-clod580gqk6s73e78hr0-a.frankfurt-postgres.render.com",
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false 
+      }
+    }
+  }
+}

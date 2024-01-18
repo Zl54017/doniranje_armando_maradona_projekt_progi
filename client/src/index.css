@@ -1,0 +1,9 @@
+.error .react-datepicker-wrapper {
+    border: 1px solid red;
+    /* Dodaj crvenu ivicu za prikaz greške */
+}
+
+.error .react-datepicker__input-container input {
+    border: none;
+    /* Ukloni defaultnu ivicu */
+}
