@@ -98,7 +98,7 @@ function SignUp() {
       localStorageUtility.getAuthToken() !== null &&
       location.pathname === "/signup"
     ) {
-      navigate(`/${role}`);
+      navigate(`/${role}/${user.id}`);
       console.log(role);
     }
   }, [user]);
