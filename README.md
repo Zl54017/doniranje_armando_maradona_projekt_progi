@@ -1,6 +1,12 @@
 # Programsko inženjerstvo - darivanje krvi
 TG07 Grupa 1 - Armando Maradona <br>
-Tema: Darivanje krvi
+Tema: Darivanje krvi <br>
+Link stranice: https://donationsfe.onrender.com <br>
+Login podatci: 
+  Donor = email: LukaModrić@gmail.com password: password <br>
+  Employee = email: RenatoMatić@gmail.com password: password <br>
+  BloodBank = email: KBCOsijek@gmail.com password: password <br>
+  RedCross = email: CrveniKriž@gmail.com password: password <br>
 
 # Opis projektnog zadatka:
 Ovaj projekt je reultat timskog rada u sklopu projeknog zadatka kolegija [Programsko inženjerstvo](https://www.fer.unizg.hr/predmet/proinz) na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu.
