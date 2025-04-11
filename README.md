@@ -1,7 +1,7 @@
 # Programsko inženjerstvo - darivanje krvi
 TG07 Grupa 1 - Armando Maradona <br>
 Tema: Darivanje krvi <br>
-Link stranice: https://donationsfe.onrender.com <br>
+Link stranice: https://donationsfe.onrender.com (besplatna verzija, neaktivno od: 1.1.2025.)<br>
 Login podatci: 
   Donor = email: LukaModrić@gmail.com password: password <br>
   Employee = email: RenatoMatić@gmail.com password: password <br>
